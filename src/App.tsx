@@ -1,4 +1,5 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { SpeedInsights } from "@vercel/speed-insights/react";
 import { PublicLayout } from './components/layout/PublicLayout';
 import { AppLayout } from './components/layout/AppLayout';
 import { AdminLayout } from './components/layout/AdminLayout';
@@ -134,6 +135,7 @@ function App() {
           isOpen={showOnboarding}
           onComplete={() => setShowOnboarding(false)}
         />
+        <SpeedInsights />
         </ErrorBoundary>
       </BrowserRouter>
     </AuthProvider>
