@@ -83,7 +83,7 @@ export const SearchPanel: React.FC<SearchPanelProps> = ({
             user: userMap.get(msg.user_id) || null
           }));
           
-          setResults(resultsWithUsers);
+          setResults(resultsWithUsers as any);
         } else {
           setResults([]);
         }

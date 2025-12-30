@@ -320,7 +320,7 @@ export const TaskDetailPanel: React.FC<TaskDetailPanelProps> = ({
                   <div className="flex items-center gap-2 text-sm text-slate-600">
                     <CalendarIcon className="h-4 w-4 text-slate-400" />
                     <span>Due:</span>
-                    <span className="font-medium">{formatDate(task.due_date)}</span>
+                    <span className="font-medium">{formatDate(task.due_date ?? null)}</span>
                   </div>
                 </div>
               </>

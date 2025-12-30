@@ -85,8 +85,8 @@ export const FocusTrendChart: React.FC<FocusTrendChartProps> = ({ data }) => {
         titleColor: '#fff',
         bodyColor: '#fff',
         padding: 14,
-        titleFont: { size: 13, weight: '600' as const },
-        bodyFont: { size: 14, weight: '500' as const },
+        titleFont: { size: 13, weight: 'bold' as const },
+        bodyFont: { size: 14, weight: 'normal' as const },
         displayColors: false,
         cornerRadius: 10,
         callbacks: {
@@ -108,7 +108,7 @@ export const FocusTrendChart: React.FC<FocusTrendChartProps> = ({ data }) => {
           display: false,
         },
         ticks: {
-          font: { size: 11, weight: '500' as const },
+          font: { size: 11, weight: 'normal' as const },
           color: '#94a3b8',
           padding: 8,
           stepSize: 25,
@@ -122,7 +122,7 @@ export const FocusTrendChart: React.FC<FocusTrendChartProps> = ({ data }) => {
           display: false,
         },
         ticks: {
-          font: { size: 11, weight: '500' as const },
+          font: { size: 11, weight: 'normal' as const },
           color: '#94a3b8',
           padding: 8,
         }
