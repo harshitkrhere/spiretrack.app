@@ -20,7 +20,7 @@ export const Pricing: React.FC = () => {
       name: 'Team Basic',
       price: '$8',
       period: '/user/month',
-      description: 'Essential collaboration features for small teams.',
+      description: 'Essential collaboration features.',
       features: [
         { name: 'Up to 10 team members', included: true },
         { name: 'Team chat with threads', included: true },
@@ -34,25 +34,6 @@ export const Pricing: React.FC = () => {
       ],
       cta: 'Start Basic',
       popular: false,
-    },
-    {
-      name: 'Team Pro',
-      price: '$16',
-      period: '/user/month',
-      description: 'Advanced features for high-performing teams.',
-      features: [
-        { name: 'Unlimited team members', included: true },
-        { name: 'Team chat with threads', included: true },
-        { name: 'Advanced review forms', included: true },
-        { name: 'Weekly team reviews', included: true },
-        { name: 'Unlimited analytics history', included: true },
-        { name: 'Priority support', included: true },
-        { name: 'AI-powered insights', included: true },
-        { name: 'Custom form builder', included: true },
-        { name: 'Advanced analytics dashboard', included: true },
-      ],
-      cta: 'Start Pro Trial',
-      popular: true,
     },
   ];
 
@@ -75,25 +56,6 @@ export const Pricing: React.FC = () => {
       ],
       cta: 'Get Started',
       popular: false,
-    },
-    {
-      name: 'Individual Pro',
-      price: '$9',
-      period: '/month',
-      description: 'Unlock your full productivity potential.',
-      features: [
-        { name: 'Weekly reviews with AI', included: true },
-        { name: 'Advanced habit tracking', included: true },
-        { name: 'Join unlimited teams', included: true },
-        { name: 'Unlimited analytics', included: true },
-        { name: 'All premium templates', included: true },
-        { name: 'Priority support', included: true },
-        { name: 'AI-powered insights', included: true },
-        { name: 'Full history export', included: true },
-        { name: 'Calendar integration', included: true },
-      ],
-      cta: 'Start Pro Trial',
-      popular: true,
     },
   ];
 
@@ -155,14 +117,14 @@ export const Pricing: React.FC = () => {
       {/* Pricing Cards */}
       <section className="py-12 px-6">
         <div className="max-w-4xl mx-auto">
-          <div className="grid md:grid-cols-2 gap-8">
+          <div className="flex justify-center">
             {plans.map((plan, i) => (
               <motion.div
                 key={plan.name}
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.1 }}
-                className={`relative p-8 rounded-3xl ${
+                className={`relative p-8 rounded-3xl w-full max-w-md ${
                   plan.popular 
                     ? 'bg-gray-900 text-white' 
                     : 'bg-gray-50'
