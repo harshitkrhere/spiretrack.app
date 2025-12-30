@@ -116,25 +116,22 @@ export const WhitelistSettings: React.FC<WhitelistSettingsProps> = ({ teamId }) 
   if (loading) return <div className="animate-pulse h-32 bg-gray-100 rounded-xl"></div>;
 
   return (
-    <div className="space-y-4 sm:space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 p-3 sm:p-4 bg-gray-50 rounded-xl border border-gray-200">
-        <div className="flex-1 min-w-0">
-          <h3 className="text-sm sm:text-base font-semibold text-gray-900">Whitelist Only Mode</h3>
-          <p className="text-xs sm:text-sm text-gray-500 mt-0.5 sm:mt-1">Only users in the list below can join the team.</p>
+    <div>
+      <div className="flex items-center justify-between px-4 py-3.5 hover:bg-slate-50 transition-colors">
+        <div className="flex-1 pr-4">
+          <span className="text-sm font-medium text-slate-700">Whitelist Only Mode</span>
+          <p className="text-xs text-slate-400 mt-0.5">Only users in the list below can join the team.</p>
         </div>
-        <Switch
-          checked={enabled}
-          onChange={handleToggle}
-          className={`${
-            enabled ? 'bg-brand-600' : 'bg-gray-200'
-          } relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-2 flex-shrink-0`}
+        <button
+          onClick={() => handleToggle(!enabled)}
+          className={`relative w-11 h-6 rounded-full transition-colors duration-200 ${
+            enabled ? 'bg-emerald-500' : 'bg-slate-200'
+          }`}
         >
-          <span
-            className={`${
-              enabled ? 'translate-x-6' : 'translate-x-1'
-            } inline-block h-4 w-4 transform rounded-full bg-white transition-transform`}
-          />
-        </Switch>
+          <span className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow-md transition-transform duration-200 ${
+            enabled ? 'translate-x-5' : 'translate-x-0'
+          }`} />
+        </button>
       </div>
 
       {enabled && (

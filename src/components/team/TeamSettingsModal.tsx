@@ -1,6 +1,6 @@
 import React from 'react';
 import { Dialog } from '@headlessui/react';
-import { XMarkIcon } from '@heroicons/react/24/outline';
+import { XMarkIcon, Cog6ToothIcon, ClockIcon, ShieldCheckIcon } from '@heroicons/react/24/outline';
 import { WhitelistSettings } from './settings/WhitelistSettings';
 import { ReviewSettingsPanel } from '../admin/ReviewSettingsPanel';
 
@@ -14,50 +14,72 @@ interface TeamSettingsModalProps {
 export const TeamSettingsModal: React.FC<TeamSettingsModalProps> = ({ isOpen, onClose, teamId, teamName }) => {
   return (
     <Dialog open={isOpen} onClose={onClose} className="relative z-50">
-      {/* Backdrop - subtle */}
-      <div className="fixed inset-0 bg-black/20 backdrop-blur-sm" aria-hidden="true" />
+      {/* Backdrop */}
+      <div className="fixed inset-0 bg-black/40 backdrop-blur-sm" aria-hidden="true" />
       
-      <div className="fixed inset-0 flex items-center justify-center p-2 sm:p-4">
-        <Dialog.Panel className="mx-auto max-w-[95vw] sm:max-w-xl w-full bg-[#f5f5f7] rounded-xl shadow-xl shadow-black/10 max-h-[90vh] sm:max-h-[85vh] flex flex-col overflow-hidden">
+      <div className="fixed inset-0 flex items-center justify-center p-4">
+        <Dialog.Panel className="mx-auto max-w-lg w-full bg-white rounded-2xl shadow-2xl max-h-[85vh] flex flex-col overflow-hidden">
           
-          {/* Header - System style */}
-          <div className="flex items-center justify-between px-5 py-4 bg-white border-b border-[#e5e5e7]">
-            <div className="w-16" /> {/* Spacer for centering */}
-            <div className="text-center">
-              <Dialog.Title className="text-[17px] font-semibold text-[#1d1d1f]">
-                Settings
-              </Dialog.Title>
-              <p className="text-[13px] text-[#86868b]">{teamName}</p>
+          {/* Header - Modern gradient */}
+          <div className="relative px-6 py-5 bg-gradient-to-br from-slate-800 to-slate-900">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center">
+                  <Cog6ToothIcon className="w-5 h-5 text-white" />
+                </div>
+                <div>
+                  <Dialog.Title className="text-lg font-semibold text-white">
+                    Team Settings
+                  </Dialog.Title>
+                  <p className="text-sm text-slate-400">{teamName}</p>
+                </div>
+              </div>
+              <button 
+                onClick={onClose} 
+                className="w-8 h-8 rounded-lg bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors"
+              >
+                <XMarkIcon className="w-5 h-5 text-white" />
+              </button>
             </div>
-            <button 
-              onClick={onClose} 
-              className="w-16 text-right text-[#007aff] text-[17px] font-normal hover:opacity-70 transition-opacity"
-            >
-              Done
-            </button>
           </div>
           
           {/* Content */}
-          <div className="flex-1 overflow-y-auto">
+          <div className="flex-1 overflow-y-auto bg-slate-50">
             {/* Submission Deadline Section */}
-            <div className="mt-8 mx-4">
-              <p className="text-[13px] font-normal text-[#86868b] uppercase tracking-wide px-3 mb-2">
-                Submission Deadline
-              </p>
-              <div className="bg-white rounded-xl overflow-hidden">
+            <div className="p-5">
+              <div className="flex items-center gap-2 mb-3">
+                <ClockIcon className="w-4 h-4 text-emerald-600" />
+                <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                  Submission Deadline
+                </h3>
+              </div>
+              <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
                 <ReviewSettingsPanel teamId={teamId} />
               </div>
             </div>
             
             {/* Access Control Section */}
-            <div className="mt-8 mx-4 mb-8">
-              <p className="text-[13px] font-normal text-[#86868b] uppercase tracking-wide px-3 mb-2">
-                Access Control
-              </p>
-              <div className="bg-white rounded-xl overflow-hidden">
+            <div className="px-5 pb-5">
+              <div className="flex items-center gap-2 mb-3">
+                <ShieldCheckIcon className="w-4 h-4 text-blue-600" />
+                <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                  Access Control
+                </h3>
+              </div>
+              <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
                 <WhitelistSettings teamId={teamId} />
               </div>
             </div>
+          </div>
+          
+          {/* Footer */}
+          <div className="px-6 py-4 bg-white border-t border-slate-100">
+            <button
+              onClick={onClose}
+              className="w-full py-2.5 bg-slate-900 text-white rounded-xl font-medium hover:bg-slate-800 transition-colors"
+            >
+              Done
+            </button>
           </div>
         </Dialog.Panel>
       </div>

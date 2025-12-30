@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../../lib/supabase';
+import { ChevronRightIcon } from '@heroicons/react/24/outline';
 
 interface ReviewSettingsPanelProps {
   teamId: string;
@@ -16,8 +17,7 @@ const DAYS_OF_WEEK = [
 ];
 
 /**
- * ReviewSettingsPanel - System Settings style
- * Clean, flat, system-like design
+ * ReviewSettingsPanel - Modern Settings Design
  */
 export const ReviewSettingsPanel: React.FC<ReviewSettingsPanelProps> = ({ teamId }) => {
   const [loading, setLoading] = useState(true);
@@ -84,108 +84,103 @@ export const ReviewSettingsPanel: React.FC<ReviewSettingsPanelProps> = ({ teamId
 
   const markChanged = () => setHasChanges(true);
 
+  // Modern Toggle Component
+  const Toggle = ({ enabled, onChange }: { enabled: boolean; onChange: () => void }) => (
+    <button
+      onClick={onChange}
+      className={`relative w-11 h-6 rounded-full transition-colors duration-200 ${
+        enabled ? 'bg-emerald-500' : 'bg-slate-200'
+      }`}
+    >
+      <span className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow-md transition-transform duration-200 ${
+        enabled ? 'translate-x-5' : 'translate-x-0'
+      }`} />
+    </button>
+  );
+
   if (loading) {
     return (
-      <div className="px-4 py-3">
-        <div className="animate-pulse h-5 bg-[#e5e5e7] rounded w-1/3" />
+      <div className="p-4 space-y-3">
+        <div className="animate-pulse h-10 bg-slate-100 rounded-lg" />
+        <div className="animate-pulse h-10 bg-slate-100 rounded-lg" />
       </div>
     );
   }
 
   return (
-    <div>
+    <div className="divide-y divide-slate-100">
       {/* Row: Deadline Day */}
-      <div className="flex items-center justify-between px-4 py-3 border-b border-[#e5e5e7]">
-        <span className="text-[15px] text-[#1d1d1f]">Day</span>
-        <select
-          value={deadlineDay ?? ''}
-          onChange={(e) => {
-            setDeadlineDay(e.target.value === '' ? null : parseInt(e.target.value));
-            markChanged();
-          }}
-          className="text-[15px] text-[#86868b] bg-transparent border-none text-right focus:outline-none cursor-pointer appearance-none pr-4"
-          style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2386868b'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M9 5l7 7-7 7'/%3E%3C/svg%3E")`, backgroundRepeat: 'no-repeat', backgroundPosition: 'right center', backgroundSize: '16px' }}
-        >
-          <option value="">None</option>
-          {DAYS_OF_WEEK.map(day => (
-            <option key={day.value} value={day.value}>{day.label}</option>
-          ))}
-        </select>
+      <div className="flex items-center justify-between px-4 py-3.5 hover:bg-slate-50 transition-colors">
+        <span className="text-sm font-medium text-slate-700">Day</span>
+        <div className="flex items-center gap-1">
+          <select
+            value={deadlineDay ?? ''}
+            onChange={(e) => {
+              setDeadlineDay(e.target.value === '' ? null : parseInt(e.target.value));
+              markChanged();
+            }}
+            className="text-sm text-slate-500 bg-transparent border-none text-right focus:outline-none focus:ring-0 cursor-pointer appearance-none font-medium"
+          >
+            <option value="">None</option>
+            {DAYS_OF_WEEK.map(day => (
+              <option key={day.value} value={day.value}>{day.label}</option>
+            ))}
+          </select>
+          <ChevronRightIcon className="w-4 h-4 text-slate-400" />
+        </div>
       </div>
 
       {/* Row: Deadline Time */}
-      <div className="flex items-center justify-between px-4 py-3 border-b border-[#e5e5e7]">
-        <span className="text-[15px] text-[#1d1d1f]">Time</span>
-        <input
-          type="time"
-          value={deadlineTime}
-          onChange={(e) => {
-            setDeadlineTime(e.target.value);
-            markChanged();
-          }}
-          disabled={deadlineDay === null}
-          className="text-[15px] text-[#86868b] bg-transparent border-none text-right focus:outline-none disabled:opacity-40"
-        />
+      <div className="flex items-center justify-between px-4 py-3.5 hover:bg-slate-50 transition-colors">
+        <span className="text-sm font-medium text-slate-700">Time</span>
+        <div className="flex items-center gap-2">
+          <input
+            type="time"
+            value={deadlineTime}
+            onChange={(e) => {
+              setDeadlineTime(e.target.value);
+              markChanged();
+            }}
+            disabled={deadlineDay === null}
+            className="text-sm text-slate-500 bg-transparent border-none text-right focus:outline-none focus:ring-0 disabled:opacity-40 font-medium"
+          />
+        </div>
       </div>
 
       {/* Row: Allow Late Submissions */}
-      <div className="flex items-center justify-between px-4 py-3 border-b border-[#e5e5e7]">
+      <div className="flex items-center justify-between px-4 py-3.5 hover:bg-slate-50 transition-colors">
         <div className="flex-1 pr-4">
-          <span className="text-[15px] text-[#1d1d1f]">Allow Late Submissions</span>
-          <p className="text-[12px] text-[#86868b] mt-0.5">Members can submit after deadline</p>
+          <span className="text-sm font-medium text-slate-700">Allow Late Submissions</span>
+          <p className="text-xs text-slate-400 mt-0.5">Members can submit after deadline</p>
         </div>
-        <button
-          onClick={() => {
-            setLateSubmissionAllowed(!lateSubmissionAllowed);
-            markChanged();
-          }}
-          className={`relative w-[51px] h-[31px] rounded-full transition-colors duration-200 ${
-            lateSubmissionAllowed ? 'bg-[#34c759]' : 'bg-[#e5e5e7]'
-          }`}
-        >
-          <span className={`absolute top-[2px] w-[27px] h-[27px] bg-white rounded-full shadow-sm transition-transform duration-200 ${
-            lateSubmissionAllowed ? 'translate-x-[22px]' : 'translate-x-[2px]'
-          }`} />
-        </button>
+        <Toggle enabled={lateSubmissionAllowed} onChange={() => { setLateSubmissionAllowed(!lateSubmissionAllowed); markChanged(); }} />
       </div>
 
       {/* Row: Lock After Deadline */}
-      <div className="flex items-center justify-between px-4 py-3 border-b border-[#e5e5e7]">
+      <div className="flex items-center justify-between px-4 py-3.5 hover:bg-slate-50 transition-colors">
         <div className="flex-1 pr-4">
-          <span className="text-[15px] text-[#1d1d1f]">Lock After Deadline</span>
-          <p className="text-[12px] text-[#86868b] mt-0.5">Block submissions when deadline passes</p>
+          <span className="text-sm font-medium text-slate-700">Lock After Deadline</span>
+          <p className="text-xs text-slate-400 mt-0.5">Block submissions when deadline passes</p>
         </div>
-        <button
-          onClick={() => {
-            setLockAfterDeadline(!lockAfterDeadline);
-            markChanged();
-          }}
-          className={`relative w-[51px] h-[31px] rounded-full transition-colors duration-200 ${
-            lockAfterDeadline ? 'bg-[#34c759]' : 'bg-[#e5e5e7]'
-          }`}
-        >
-          <span className={`absolute top-[2px] w-[27px] h-[27px] bg-white rounded-full shadow-sm transition-transform duration-200 ${
-            lockAfterDeadline ? 'translate-x-[22px]' : 'translate-x-[2px]'
-          }`} />
-        </button>
+        <Toggle enabled={lockAfterDeadline} onChange={() => { setLockAfterDeadline(!lockAfterDeadline); markChanged(); }} />
       </div>
 
-      {/* Summary - quiet inline */}
+      {/* Summary */}
       {deadlineDay !== null && (
-        <div className="px-4 py-3 border-b border-[#e5e5e7]">
-          <p className="text-[13px] text-[#86868b]">
-            Deadline: Every {DAYS_OF_WEEK[deadlineDay].label} at {deadlineTime}
+        <div className="px-4 py-3 bg-slate-50">
+          <p className="text-xs text-slate-500">
+            📅 Deadline: Every <span className="font-medium text-slate-600">{DAYS_OF_WEEK[deadlineDay].label}</span> at <span className="font-medium text-slate-600">{deadlineTime}</span>
           </p>
         </div>
       )}
 
-      {/* Save - only shows when changes exist */}
+      {/* Save Button */}
       {hasChanges && (
-        <div className="px-4 py-3">
+        <div className="p-4 bg-slate-50">
           <button
             onClick={handleSave}
             disabled={saving}
-            className="w-full py-2.5 text-[15px] font-medium text-white bg-[#007aff] rounded-lg hover:bg-[#0066d6] transition-colors disabled:opacity-50"
+            className="w-full py-2.5 text-sm font-medium text-white bg-emerald-500 rounded-lg hover:bg-emerald-600 transition-colors disabled:opacity-50"
           >
             {saving ? 'Saving...' : 'Save Changes'}
           </button>
