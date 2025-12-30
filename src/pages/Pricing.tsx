@@ -18,7 +18,7 @@ export const Pricing: React.FC = () => {
   const teamPlans = [
     {
       name: 'Team Basic',
-      price: '$8',
+      price: '$0',
       period: '/user/month',
       description: 'Essential collaboration features.',
       features: [
