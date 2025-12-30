@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
+import { ArrowLeftIcon, PlusIcon, DocumentTextIcon } from '@heroicons/react/24/outline';
 import { supabase } from '../lib/supabase';
 import { FormQuestionCard } from '../components/team/FormQuestionCard';
 import { FormPreview } from '../components/team/FormPreview';
@@ -155,153 +157,256 @@ export const TeamFormBuilder: React.FC = () => {
 
   if (!isAdmin) {
     return (
-      <div className="min-h-screen bg-[#f5f5f7] flex items-center justify-center">
-        <p className="text-[15px] text-[#86868b]">Only team admins can manage forms.</p>
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="text-center px-6"
+        >
+          <p className="text-gray-400 text-lg">Only team admins can manage forms.</p>
+        </motion.div>
       </div>
     );
   }
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#f5f5f7] flex items-center justify-center">
-        <div className="w-5 h-5 border-2 border-[#86868b] border-t-transparent rounded-full animate-spin" />
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <motion.div
+          animate={{ rotate: 360 }}
+          transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+          className="w-6 h-6 border-2 border-gray-200 border-t-gray-900 rounded-full"
+        />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-[#f5f5f7]">
-      {/* Header */}
-      <div className="bg-white border-b border-[#e5e5e7]">
-        <div className="max-w-6xl mx-auto px-6 py-5">
-          {/* Back link - subtle */}
-          <button
+    <motion.div 
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.4 }}
+      className="min-h-screen bg-white"
+    >
+      {/* Hero Header */}
+      <div className="border-b border-gray-100">
+        <div className="max-w-5xl mx-auto px-6 py-8 sm:py-12">
+          {/* Back link */}
+          <motion.button
+            initial={{ opacity: 0, x: -10 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.1 }}
             onClick={() => navigate(`/app/team/${teamId}`)}
-            className="text-[13px] text-[#007aff] hover:opacity-70 transition-opacity mb-3"
+            className="flex items-center gap-2 text-sm text-gray-400 hover:text-gray-600 transition-colors mb-6"
           >
-            ← Team Dashboard
-          </button>
+            <ArrowLeftIcon className="w-4 h-4" />
+            Back to Team
+          </motion.button>
           
           {/* Title */}
-          <h1 className="text-[22px] font-semibold text-[#1d1d1f] tracking-tight">
-            Form Manager
-          </h1>
-          <p className="text-[13px] text-[#86868b] mt-1">
-            Build custom review forms for your team
-          </p>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.15 }}
+            className="text-center"
+          >
+            <h1 className="text-4xl sm:text-5xl font-light text-gray-900 tracking-tight mb-3"
+                style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", sans-serif' }}>
+              Form Builder
+            </h1>
+            <p className="text-lg text-gray-400 font-light">
+              Create custom review forms for your team
+            </p>
+          </motion.div>
         </div>
       </div>
 
-      {/* Segmented Control */}
-      <div className="bg-white border-b border-[#e5e5e7]">
-        <div className="max-w-6xl mx-auto px-6 py-3">
-          <div className="inline-flex bg-[#e5e5e7] rounded-lg p-0.5">
-            <button
-              onClick={() => setActiveTab('builder')}
-              className={`px-4 py-1.5 text-[13px] font-medium rounded-md transition-all duration-200 ${
-                activeTab === 'builder'
-                  ? 'bg-white text-[#1d1d1f] shadow-sm'
-                  : 'text-[#86868b] hover:text-[#1d1d1f]'
-              }`}
-            >
-              Build Form
-            </button>
-            <button
-              onClick={() => setActiveTab('submissions')}
-              className={`px-4 py-1.5 text-[13px] font-medium rounded-md transition-all duration-200 ${
-                activeTab === 'submissions'
-                  ? 'bg-white text-[#1d1d1f] shadow-sm'
-                  : 'text-[#86868b] hover:text-[#1d1d1f]'
-              }`}
-            >
-              Submissions
-            </button>
+      {/* Tab Navigation */}
+      <motion.div 
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.2 }}
+        className="border-b border-gray-100"
+      >
+        <div className="max-w-5xl mx-auto px-6 py-4">
+          <div className="flex justify-center">
+            <div className="inline-flex bg-gray-100 rounded-full p-1">
+              <button
+                onClick={() => setActiveTab('builder')}
+                className={`px-6 py-2 text-sm font-medium rounded-full transition-all duration-300 ${
+                  activeTab === 'builder'
+                    ? 'bg-white text-gray-900 shadow-sm'
+                    : 'text-gray-500 hover:text-gray-700'
+                }`}
+              >
+                Build Form
+              </button>
+              <button
+                onClick={() => setActiveTab('submissions')}
+                className={`px-6 py-2 text-sm font-medium rounded-full transition-all duration-300 ${
+                  activeTab === 'submissions'
+                    ? 'bg-white text-gray-900 shadow-sm'
+                    : 'text-gray-500 hover:text-gray-700'
+                }`}
+              >
+                Submissions
+              </button>
+            </div>
           </div>
         </div>
-      </div>
+      </motion.div>
 
       {/* Content */}
-      <div className="max-w-6xl mx-auto px-6 py-6">
-        {activeTab === 'builder' ? (
-          <>
-            {/* Info note - quiet inline */}
-            <p className="text-[12px] text-[#86868b] mb-6">
-              Changes apply to future weeks only. Past submissions remain unchanged.
-            </p>
+      <div className="max-w-5xl mx-auto px-6 py-8">
+        <AnimatePresence mode="wait">
+          {activeTab === 'builder' ? (
+            <motion.div
+              key="builder"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.3 }}
+            >
+              {/* Info note */}
+              <motion.p 
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.3 }}
+                className="text-sm text-gray-400 text-center mb-8"
+              >
+                Changes apply to future weeks only. Past submissions remain unchanged.
+              </motion.p>
 
-            {/* Error */}
-            {error && (
-              <div className="mb-4 px-4 py-3 bg-white rounded-lg border border-[#e5e5e7]">
-                <p className="text-[13px] text-[#ff3b30]">{error}</p>
-              </div>
-            )}
-
-            {/* Editor + Preview Grid */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-              
-              {/* Left: Questions Editor */}
-              <div>
-                <div className="flex items-center justify-between mb-4">
-                  <h2 className="text-[15px] font-medium text-[#1d1d1f]">Questions</h2>
-                  <button
-                    onClick={addQuestion}
-                    className="text-[13px] text-[#007aff] hover:opacity-70 transition-opacity"
+              {/* Error */}
+              <AnimatePresence>
+                {error && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    className="mb-6 px-4 py-3 bg-red-50 rounded-xl border border-red-100 text-center"
                   >
-                    + Add Question
-                  </button>
+                    <p className="text-sm text-red-600">{error}</p>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+
+              {/* Editor + Preview Grid */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
+                
+                {/* Left: Questions Editor */}
+                <div>
+                  <div className="flex items-center justify-between mb-6">
+                    <h2 className="text-xl font-medium text-gray-900">Questions</h2>
+                    <motion.button
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                      onClick={addQuestion}
+                      className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-600 bg-gray-100 rounded-full hover:bg-gray-200 transition-colors"
+                    >
+                      <PlusIcon className="w-4 h-4" />
+                      Add Question
+                    </motion.button>
+                  </div>
+
+                  {questions.length === 0 ? (
+                    <motion.div
+                      initial={{ opacity: 0, scale: 0.95 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      className="bg-gray-50 rounded-2xl px-8 py-16 text-center"
+                    >
+                      <div className="w-16 h-16 bg-gray-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                        <DocumentTextIcon className="w-8 h-8 text-gray-400" />
+                      </div>
+                      <p className="text-lg text-gray-500 mb-2">No questions yet</p>
+                      <p className="text-sm text-gray-400 mb-6">Start building your review form</p>
+                      <motion.button
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                        onClick={addQuestion}
+                        className="inline-flex items-center gap-2 px-5 py-2.5 bg-gray-900 text-white text-sm font-medium rounded-full hover:bg-gray-800 transition-colors"
+                      >
+                        <PlusIcon className="w-4 h-4" />
+                        Add your first question
+                      </motion.button>
+                    </motion.div>
+                  ) : (
+                    <div className="space-y-4">
+                      <AnimatePresence>
+                        {questions.map((question, index) => (
+                          <motion.div
+                            key={question.id || `new-${index}`}
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, x: -20, height: 0 }}
+                            transition={{ duration: 0.2 }}
+                            layout
+                          >
+                            <FormQuestionCard
+                              question={question}
+                              index={index}
+                              totalQuestions={questions.length}
+                              onUpdate={(updates) => updateQuestion(index, updates)}
+                              onDelete={() => deleteQuestion(index)}
+                              onMove={(direction) => moveQuestion(index, direction)}
+                            />
+                          </motion.div>
+                        ))}
+                      </AnimatePresence>
+                    </div>
+                  )}
+
+                  {/* Save Button */}
+                  {questions.length > 0 && (
+                    <motion.div 
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      className="mt-8"
+                    >
+                      <motion.button
+                        whileHover={{ scale: 1.01 }}
+                        whileTap={{ scale: 0.99 }}
+                        onClick={saveForm}
+                        disabled={saving}
+                        className="w-full py-4 text-base font-medium text-white bg-gray-900 rounded-2xl hover:bg-gray-800 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                      >
+                        {saving ? (
+                          <span className="flex items-center justify-center gap-2">
+                            <motion.div
+                              animate={{ rotate: 360 }}
+                              transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                              className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full"
+                            />
+                            Saving...
+                          </span>
+                        ) : (
+                          'Save Form'
+                        )}
+                      </motion.button>
+                    </motion.div>
+                  )}
                 </div>
 
-                {questions.length === 0 ? (
-                  <div className="bg-white rounded-xl border border-[#e5e5e7] px-6 py-12 text-center">
-                    <p className="text-[15px] text-[#86868b]">No questions yet</p>
-                    <button
-                      onClick={addQuestion}
-                      className="mt-3 text-[13px] text-[#007aff] hover:opacity-70 transition-opacity"
-                    >
-                      Add your first question
-                    </button>
-                  </div>
-                ) : (
-                  <div className="space-y-3">
-                    {questions.map((question, index) => (
-                      <FormQuestionCard
-                        key={index}
-                        question={question}
-                        index={index}
-                        totalQuestions={questions.length}
-                        onUpdate={(updates) => updateQuestion(index, updates)}
-                        onDelete={() => deleteQuestion(index)}
-                        onMove={(direction) => moveQuestion(index, direction)}
-                      />
-                    ))}
-                  </div>
-                )}
-
-                {/* Save - appears when questions exist */}
-                {questions.length > 0 && (
-                  <div className="mt-6">
-                    <button
-                      onClick={saveForm}
-                      disabled={saving}
-                      className="w-full py-3 text-[15px] font-medium text-white bg-[#007aff] rounded-xl hover:bg-[#0066d6] transition-colors disabled:opacity-50"
-                    >
-                      {saving ? 'Saving...' : 'Save Form'}
-                    </button>
-                  </div>
-                )}
+                {/* Right: Live Preview */}
+                <div className="lg:sticky lg:top-8 lg:self-start">
+                  <h2 className="text-xl font-medium text-gray-900 mb-6">Preview</h2>
+                  <FormPreview questions={questions} />
+                </div>
               </div>
-
-              {/* Right: Live Preview */}
-              <div className="lg:sticky lg:top-6 lg:self-start">
-                <h2 className="text-[15px] font-medium text-[#1d1d1f] mb-4">Preview</h2>
-                <FormPreview questions={questions} />
-              </div>
-            </div>
-          </>
-        ) : (
-          <SubmissionsViewer teamId={teamId!} />
-        )}
+            </motion.div>
+          ) : (
+            <motion.div
+              key="submissions"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.3 }}
+            >
+              <SubmissionsViewer teamId={teamId!} />
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
-    </div>
+    </motion.div>
   );
 };

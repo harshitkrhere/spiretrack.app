@@ -1,4 +1,6 @@
 import React from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { DevicePhoneMobileIcon } from '@heroicons/react/24/outline';
 
 interface Question {
   id?: string;
@@ -14,7 +16,7 @@ interface FormPreviewProps {
 
 export const FormPreview: React.FC<FormPreviewProps> = ({ questions }) => {
   const renderQuestionPreview = (question: Question) => {
-    const inputClass = "w-full px-3 py-2.5 bg-[#f5f5f7] border border-[#e5e5e7] rounded-lg text-[15px] text-[#aeaeb2]";
+    const inputClass = "w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-base text-gray-400 placeholder-gray-300";
     
     switch (question.question_type) {
       case 'text':
@@ -41,19 +43,20 @@ export const FormPreview: React.FC<FormPreviewProps> = ({ questions }) => {
             type="number"
             disabled
             placeholder="Number"
-            className={inputClass + " max-w-[120px]"}
+            className={inputClass + " max-w-[140px]"}
           />
         );
       case 'rating':
         return (
-          <div className="flex gap-1.5 flex-wrap">
+          <div className="flex gap-2 flex-wrap">
             {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((num) => (
-              <div
+              <motion.div
                 key={num}
-                className="w-8 h-8 flex items-center justify-center bg-[#f5f5f7] border border-[#e5e5e7] rounded-lg text-[13px] text-[#aeaeb2]"
+                whileHover={{ scale: 1.1 }}
+                className="w-9 h-9 flex items-center justify-center bg-gray-50 border border-gray-200 rounded-xl text-sm text-gray-400 hover:border-gray-300 transition-colors cursor-pointer"
               >
                 {num}
-              </div>
+              </motion.div>
             ))}
           </div>
         );
@@ -61,36 +64,80 @@ export const FormPreview: React.FC<FormPreviewProps> = ({ questions }) => {
   };
 
   return (
-    <div className="bg-white rounded-xl border border-[#e5e5e7] overflow-hidden">
-      {/* Header */}
-      <div className="px-5 py-4 border-b border-[#e5e5e7] bg-[#f5f5f7]">
-        <p className="text-[13px] text-[#86868b]">
-          Member view
-        </p>
+    <div className="bg-gradient-to-b from-gray-100 to-gray-50 rounded-3xl p-6 border border-gray-200">
+      {/* Device Frame Header */}
+      <div className="flex items-center justify-center gap-2 mb-6">
+        <DevicePhoneMobileIcon className="w-5 h-5 text-gray-400" />
+        <span className="text-sm text-gray-500 font-medium">Member View</span>
       </div>
 
-      {/* Preview Content */}
-      <div className="p-5">
-        {questions.length === 0 ? (
-          <p className="text-[15px] text-[#aeaeb2] text-center py-8">
-            Add questions to see preview
-          </p>
-        ) : (
-          <div className="space-y-6">
-            {questions.map((question, index) => (
-              <div key={index}>
-                <label className="block text-[15px] text-[#1d1d1f] mb-2">
-                  <span className="text-[#86868b] mr-1.5">{index + 1}.</span>
-                  {question.question_text || 'Untitled question'}
-                  {question.is_required && (
-                    <span className="text-[#86868b] text-[13px] ml-1">*</span>
-                  )}
-                </label>
-                {renderQuestionPreview(question)}
-              </div>
-            ))}
-          </div>
-        )}
+      {/* Preview Content (Mock Phone) */}
+      <div className="bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-200/50">
+        {/* Mock Status Bar */}
+        <div className="h-6 bg-gray-900 flex items-center justify-center">
+          <div className="w-20 h-1 bg-white/30 rounded-full"></div>
+        </div>
+
+        {/* Content Area */}
+        <div className="p-5">
+          <AnimatePresence mode="popLayout">
+            {questions.length === 0 ? (
+              <motion.div
+                key="empty"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="py-12 text-center"
+              >
+                <p className="text-gray-400 text-sm">Add questions to see preview</p>
+              </motion.div>
+            ) : (
+              <motion.div
+                key="questions"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="space-y-6"
+              >
+                {questions.map((question, index) => (
+                  <motion.div 
+                    key={question.id || `preview-${index}`}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: index * 0.05 }}
+                  >
+                    <label className="block text-sm text-gray-700 mb-2 font-medium">
+                      <span className="text-gray-400 mr-1">{index + 1}.</span>
+                      {question.question_text || 'Untitled question'}
+                      {question.is_required && (
+                        <span className="text-red-400 ml-1">*</span>
+                      )}
+                    </label>
+                    {renderQuestionPreview(question)}
+                  </motion.div>
+                ))}
+
+                {/* Mock Submit Button */}
+                {questions.length > 0 && (
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 0.3 }}
+                    className="pt-4"
+                  >
+                    <div className="w-full py-3 bg-gray-900 text-white text-sm font-medium text-center rounded-xl opacity-50">
+                      Submit Review
+                    </div>
+                  </motion.div>
+                )}
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+
+        {/* Mock Home Indicator */}
+        <div className="h-8 flex items-center justify-center">
+          <div className="w-24 h-1 bg-gray-200 rounded-full"></div>
+        </div>
       </div>
     </div>
   );
