@@ -13,9 +13,9 @@ const AboutPage: React.FC = () => {
   return (
     <>
       <SEOHead
-        title="About SpireTrack — Simple Weekly Team Check-ins"
+        title="About SpireTrack — Our Mission to Simplify Team Alignment"
         description="Learn why we built SpireTrack. We believe the best teams aren't the ones with the most meetings—they're the ones with the clearest systems. Simple weekly alignment for modern teams."
-        keywords="about SpireTrack, team alignment company, weekly check-in tool, async team management, team productivity mission"
+        keywords="about spiretrack, spiretrack company, spiretrack team, spiretrack mission, spiretrack vision, team alignment company, weekly check-in tool, async team management, team productivity mission, who built spiretrack, spiretrack founders, spiretrack story, team software company, productivity software company, saas company, b2b software, team tools startup, remote work company, async work advocates, meeting-free movement, fewer meetings company, simple software philosophy, minimalist team tools"
         canonicalUrl="https://spiretrack.app/about"
       />
       <div className="min-h-screen bg-white overflow-hidden">

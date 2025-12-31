@@ -11,9 +11,9 @@ export const ForSmallBusiness: React.FC = () => {
   return (
     <>
       <SEOHead
-        title="SpireTrack for Small Business — Simple Team Tracking That Works"
-        description="Built for small businesses that need team visibility without complexity. Weekly check-ins, clear communication, no learning curve. Free to start."
-        keywords="small business productivity, simple team tracking, small team management, lightweight project tracking"
+        title="SpireTrack for Small Business — Simple Team Tracking That Works | SMB Tools"
+        description="Built for small businesses that need team visibility without complexity. Weekly check-ins, clear communication, no learning curve. Free to start, no credit card needed."
+        keywords="spiretrack for small business, small business productivity, simple team tracking, small team management, lightweight project tracking, smb team software, small business tools, small company management, growing business software, local business team tracking, agency team management, service business tools, retail team coordination, restaurant staff management, construction team tracking, healthcare team software, legal team management, accounting firm tools, marketing agency software, consulting firm team tracking, freelancer team tools, contractor management, small business owner tools, simple employee tracking, easy team management, affordable team software, free team tracking, no-cost team management, small business collaboration"
         canonicalUrl="https://spiretrack.app/for-small-business"
       />
       

@@ -11,9 +11,9 @@ export const HowItWorks: React.FC = () => {
   return (
     <>
       <SEOHead
-        title="How SpireTrack Works — Simple Weekly Team Check-ins"
-        description="Learn how SpireTrack replaces status meetings with 5-minute weekly reviews. Three simple steps: submit, review, act. No complex setup required."
-        keywords="how weekly check-ins work, team review process, async team updates, simple team tracking"
+        title="How SpireTrack Works — Simple Weekly Team Check-ins in 3 Steps"
+        description="Learn how SpireTrack replaces status meetings with 5-minute weekly reviews. Three simple steps: submit, review, act. No complex setup required. Start free today."
+        keywords="how spiretrack works, how weekly check-ins work, team review process, async team updates, simple team tracking, three step team alignment, weekly review workflow, team check-in process, how to run async standups, standup meeting alternative explained, team visibility how it works, simple team management process, easy team tracking setup, quick team onboarding, instant team setup, 2 minute team setup, fast team alignment, simple weekly rhythm, team sync process, automatic team updates, effortless team tracking"
         canonicalUrl="https://spiretrack.app/how-it-works"
       />
       

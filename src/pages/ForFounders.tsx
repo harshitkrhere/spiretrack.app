@@ -11,9 +11,9 @@ export const ForFounders: React.FC = () => {
   return (
     <>
       <SEOHead
-        title="SpireTrack for Founders — Keep Your Startup Team Aligned"
-        description="Built for startup founders who need visibility without micromanagement. Weekly check-ins that take 5 minutes, not hours. Know what your team is building."
-        keywords="startup team alignment, founder productivity tool, small team visibility, startup team management"
+        title="SpireTrack for Founders — Keep Your Startup Team Aligned | Founder Tools"
+        description="Built for startup founders who need visibility without micromanagement. Weekly check-ins that take 5 minutes, not hours. Know what your team is building. Free to start."
+        keywords="spiretrack for founders, startup team alignment, founder productivity tool, small team visibility, startup team management, founder tools, entrepreneur software, startup productivity app, early stage startup tools, seed stage team management, ceo visibility tools, cto team tracking, startup operations software, founder dashboard, startup team communication, async startup updates, remote startup tools, distributed startup team, startup scaling tools, growing team management, team alignment for founders, founder weekly review, startup check-in software, startup standup alternative, founder time management, startup team visibility, early team tracking, co-founder alignment, startup team sync"
         canonicalUrl="https://spiretrack.app/for-founders"
       />
       

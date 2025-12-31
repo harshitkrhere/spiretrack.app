@@ -14,9 +14,9 @@ export const ForTeams: React.FC = () => {
   return (
     <>
       <SEOHead
-        title="SpireTrack for Teams — Weekly Check-ins That Actually Work"
-        description="Built for teams that want visibility without the meeting overhead. Replace status meetings with 5-minute weekly reviews. Async-first, remote-friendly, simple to use."
-        keywords="weekly team check-ins, async team reviews, team alignment tool, remote team management, team visibility software"
+        title="SpireTrack for Teams — Weekly Check-ins That Actually Work | Team Productivity App"
+        description="Built for teams that want visibility without the meeting overhead. Replace status meetings with 5-minute weekly reviews. Async-first, remote-friendly, simple to use. Free to start."
+        keywords="spiretrack for teams, team check-in app, weekly team check-ins, async team reviews, team alignment tool, remote team management, team visibility software, team tracking app, team productivity software, weekly standup alternative, async standup app, remote work tools, distributed team software, team collaboration platform, team status updates, team progress tracking, engineering team tools, product team management, design team collaboration, sales team tracking, marketing team alignment, startup team software, enterprise team tools, hybrid team management, team meeting alternative, team sync tool, team dashboard software, team analytics, team performance tracking, team engagement software, employee check-in tool, staff management app, workforce visibility"
         canonicalUrl="https://spiretrack.app/for-teams"
       />
       

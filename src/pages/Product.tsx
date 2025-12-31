@@ -74,9 +74,9 @@ export const Product: React.FC = () => {
   return (
     <>
       <SEOHead
-        title="SpireTrack Features — Everything Your Team Needs to Stay Aligned"
-        description="Weekly reviews, team chat, smart reminders, and analytics. Simple tools that work. No feature bloat. Just what you need to keep your team on the same page."
-        keywords="team check-in features, weekly review tool, team dashboard, async team updates"
+        title="SpireTrack Features — Weekly Reviews, Team Dashboard, Chat & Analytics"
+        description="Weekly reviews, team chat, smart reminders, and analytics. Simple tools that work. No feature bloat. Just what you need to keep your team on the same page. Free to try."
+        keywords="spiretrack features, team check-in features, weekly review tool, team dashboard, async team updates, team tracking features, weekly check-in software features, team visibility features, team alignment features, smart reminders, automated reminders, team notifications, push notifications, email reminders, team analytics, team insights, team metrics, team reports, team chat, team messaging, team communication, custom forms, form builder, review templates, question builder, team health tracking, blocker tracking, wins tracking, progress tracking, submission tracking, engagement tracking"
         canonicalUrl="https://spiretrack.app/features"
       />
       

@@ -56,9 +56,9 @@ export const Pricing: React.FC = () => {
   return (
     <>
       <SEOHead
-        title="SpireTrack Pricing — Simple Plans for Teams of All Sizes"
-        description="Start free with up to 5 team members. Upgrade to Team plan for unlimited members, custom forms, and analytics. No credit card required."
-        keywords="team productivity pricing, weekly check-in software cost, team alignment tool pricing"
+        title="SpireTrack Pricing — Free Team Tracking | Affordable Team Software"
+        description="Start free with up to 5 team members. Upgrade to Team plan at $8/user/month for unlimited members, custom forms, and analytics. No credit card required."
+        keywords="spiretrack pricing, team productivity pricing, weekly check-in software cost, team alignment tool pricing, free team tracking, free team software, affordable team management, cheap team tools, best value team software, team software pricing comparison, slack alternative pricing, asana alternative pricing, monday alternative pricing, basecamp alternative pricing, notion alternative pricing, free standup software, free async standup, free team dashboard, free team analytics, team plan pricing, enterprise team pricing, startup team pricing, small business team pricing, per user pricing, monthly team subscription, annual team discount"
         canonicalUrl="https://spiretrack.app/pricing"
       />
       
