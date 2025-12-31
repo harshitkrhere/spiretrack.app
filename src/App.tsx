@@ -29,13 +29,16 @@ import { TeamMembersPage } from './pages/TeamMembersPage';
 import { TeamFormBuilder } from './pages/TeamFormBuilder';
 import { ChatLayout } from './components/team/chat/ChatLayout';
 import { ForTeams } from './pages/ForTeams';
-import { ForIndividuals } from './pages/ForIndividuals';
+import { ForFounders } from './pages/ForFounders';
+import { ForSmallBusiness } from './pages/ForSmallBusiness';
+import { HowItWorks } from './pages/HowItWorks';
 import { Pricing } from './pages/Pricing';
 import { PrivacyPolicy } from './pages/PrivacyPolicy';
 import { TermsOfService } from './pages/TermsOfService';
 import { ErrorBoundary } from './components/ui/ErrorBoundary';
 import { DocsPage } from './pages/DocsPage';
 import { SplashScreen } from './pages/SplashScreen';
+import AboutPage from './pages/About';
 
 import { useNotificationListener } from './hooks/useNotificationListener';
 
@@ -83,9 +86,13 @@ function App() {
           <Route element={<PublicLayout />}>
             <Route path="/" element={<Landing />} />
             <Route path="/product" element={<Product />} />
+            <Route path="/features" element={<Product />} />
+            <Route path="/how-it-works" element={<HowItWorks />} />
             <Route path="/for-teams" element={<ForTeams />} />
-            <Route path="/for-individuals" element={<ForIndividuals />} />
+            <Route path="/for-founders" element={<ForFounders />} />
+            <Route path="/for-small-business" element={<ForSmallBusiness />} />
             <Route path="/pricing" element={<Pricing />} />
+            <Route path="/about" element={<AboutPage />} />
             <Route path="/privacy" element={<PrivacyPolicy />} />
             <Route path="/terms" element={<TermsOfService />} />
             <Route path="/login" element={<Login />} />

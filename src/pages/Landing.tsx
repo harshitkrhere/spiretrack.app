@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
+import { SEOHead } from '../components/SEOHead';
 import { 
   ArrowRightIcon, 
   PlayIcon,
@@ -45,7 +46,7 @@ const HeroSection: React.FC = () => {
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
             <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
           </span>
-          <span className="text-sm font-medium text-emerald-600 uppercase tracking-widest">The Operating System for High-Performance Teams</span>
+          <span className="text-sm font-medium text-emerald-600 uppercase tracking-widest">Team Alignment, Simplified</span>
         </motion.div>
 
         {/* Headline */}
@@ -56,9 +57,9 @@ const HeroSection: React.FC = () => {
           className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-light text-gray-900 leading-tight tracking-tight mb-8"
           style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", sans-serif' }}
         >
-          Achieve Radical Alignment.
+          Weekly team check-ins
           <span className="block mt-2 text-transparent bg-clip-text bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500">
-            Ship Faster, Together.
+            that take 5 minutes, not 50.
           </span>
         </motion.h1>
 
@@ -69,8 +70,8 @@ const HeroSection: React.FC = () => {
           transition={{ duration: 0.5, delay: 0.2 }}
           className="text-lg sm:text-xl text-gray-500 max-w-2xl mx-auto mb-12 leading-relaxed font-light"
         >
-          Stop scattered workflows. SpireTrack synchronizes your team's weekly cadence, 
-          async communication, and strategic goals into a single, unstoppable rhythm.
+          Replace status meetings with simple weekly reviews. Know what your team is working on, 
+          blocked by, and feeling—without the endless meetings.
         </motion.p>
 
         {/* CTAs */}
@@ -674,7 +675,7 @@ const Footer: React.FC = () => (
             <span className="text-lg font-bold text-white">SpireTrack</span>
           </Link>
           <p className="text-sm text-slate-500">
-            The operating system for high-performance teams.
+            Simple weekly team check-ins. Replace status meetings with 5-minute reviews.
           </p>
         </div>
 
@@ -682,25 +683,28 @@ const Footer: React.FC = () => (
         <div>
           <h4 className="font-semibold text-white mb-4">Product</h4>
           <ul className="space-y-2 text-sm text-slate-400">
-            <li><Link to="/product" className="hover:text-white transition-colors">Features</Link></li>
+            <li><Link to="/features" className="hover:text-white transition-colors">Features</Link></li>
+            <li><Link to="/how-it-works" className="hover:text-white transition-colors">How It Works</Link></li>
             <li><Link to="/pricing" className="hover:text-white transition-colors">Pricing</Link></li>
             <li><Link to="/login" className="hover:text-white transition-colors">Login</Link></li>
           </ul>
         </div>
 
-        {/* Company */}
+        {/* Use Cases */}
         <div>
-          <h4 className="font-semibold text-white mb-4">Company</h4>
+          <h4 className="font-semibold text-white mb-4">Use Cases</h4>
           <ul className="space-y-2 text-sm text-slate-400">
             <li><Link to="/for-teams" className="hover:text-white transition-colors">For Teams</Link></li>
-            <li><Link to="/for-individuals" className="hover:text-white transition-colors">For Individuals</Link></li>
+            <li><Link to="/for-founders" className="hover:text-white transition-colors">For Founders</Link></li>
+            <li><Link to="/for-small-business" className="hover:text-white transition-colors">For Small Business</Link></li>
           </ul>
         </div>
 
-        {/* Legal */}
+        {/* Company & Legal */}
         <div>
-          <h4 className="font-semibold text-white mb-4">Legal</h4>
+          <h4 className="font-semibold text-white mb-4">Company</h4>
           <ul className="space-y-2 text-sm text-slate-400">
+            <li><Link to="/about" className="hover:text-white transition-colors">About Us</Link></li>
             <li><Link to="/privacy" className="hover:text-white transition-colors">Privacy Policy</Link></li>
             <li><Link to="/terms" className="hover:text-white transition-colors">Terms of Service</Link></li>
           </ul>
@@ -716,21 +720,25 @@ const Footer: React.FC = () => (
 
 // --- MAIN LANDING COMPONENT ---
 export const Landing: React.FC = () => {
-  useEffect(() => {
-    document.title = 'SpireTrack — Team Alignment, Simplified';
-  }, []);
-
   return (
-    <div className="min-h-screen bg-slate-950">
-      <HeroSection />
-      <SocialTrustBar />
-      <ChaosProblemSection />
-      <SolutionSection />
-      <FeatureDiveSection />
-      <TeamHealthSection />
-      <SocialProofSection />
-      <FinalCTASection />
-      <Footer />
-    </div>
+    <>
+      <SEOHead
+        title="SpireTrack — Weekly Team Check-ins That Take 5 Minutes, Not 50"
+        description="Replace status meetings with simple weekly reviews. SpireTrack helps teams stay aligned with async check-ins, team visibility, and actionable insights. Free to start."
+        keywords="weekly team check-ins, async team reviews, team alignment tool, lightweight team tracking, simple project tracking, team productivity"
+        canonicalUrl="https://spiretrack.app/"
+      />
+      <div className="min-h-screen bg-slate-950">
+        <HeroSection />
+        <SocialTrustBar />
+        <ChaosProblemSection />
+        <SolutionSection />
+        <FeatureDiveSection />
+        <TeamHealthSection />
+        <SocialProofSection />
+        <FinalCTASection />
+        <Footer />
+      </div>
+    </>
   );
 };

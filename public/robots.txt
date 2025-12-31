@@ -1,0 +1,13 @@
+# SpireTrack Robots.txt
+# Allow all crawlers to index public pages
+
+User-agent: *
+Allow: /
+
+# Disallow app routes (authenticated areas)
+Disallow: /app/
+Disallow: /admin/
+Disallow: /splash
+
+# Sitemap location
+Sitemap: https://spiretrack.app/sitemap.xml

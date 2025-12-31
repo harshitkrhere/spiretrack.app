@@ -23,10 +23,13 @@ export const PublicHeader: React.FC = () => {
     }, [location.pathname]);
 
     const navLinks = [
-        { name: 'Product', path: '/product' },
-        { name: 'Pricing', path: '/pricing' },
+        { name: 'About', path: '/about' },
+        { name: 'Features', path: '/features' },
+        { name: 'How It Works', path: '/how-it-works' },
         { name: 'For Teams', path: '/for-teams' },
-        { name: 'For Individuals', path: '/for-individuals' },
+        { name: 'For Founders', path: '/for-founders' },
+        { name: 'For Small Business', path: '/for-small-business' },
+        { name: 'Pricing', path: '/pricing' },
     ];
 
     const isActive = (path: string) => location.pathname === path;
