@@ -17,9 +17,9 @@ export const Pricing: React.FC = () => {
     'Custom forms',
     'Analytics & trends',
     'Team chat',
-    'Spire AI — 1,000 tokens/month',
-    'AI Insights — 1,000 tokens/month',
-    'Weekly Report AI — 1,000 tokens/month',
+    'Spire AI — 1,000 tokens',
+    'AI Insights — 1,000 tokens',
+    'Weekly Report AI — 1,000 tokens',
   ];
 
   return (
@@ -108,10 +108,10 @@ export const Pricing: React.FC = () => {
         </section>
 
         {/* ========== FAQ SECTION ========== */}
-        <section className="px-6 py-24">
-          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-slate-900/50 to-transparent" />
+        <section className="px-6 py-24 relative">
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-slate-900/50 to-transparent pointer-events-none" />
           
-          <div className="max-w-3xl mx-auto relative">
+          <div className="max-w-3xl mx-auto relative z-10">
             <motion.h2
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
