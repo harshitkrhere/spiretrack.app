@@ -1,4 +1,5 @@
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap");
+/* Google Fonts - loaded via preload in index.html for better performance */
+/* Fallback font stack ensures text is visible immediately */
 
 @tailwind base;
 @tailwind components;

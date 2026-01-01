@@ -1,48 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <!-- Iubenda Cookie Solution -->
-    <script type="text/javascript">
-      var _iub = _iub || [];
-      _iub.csConfiguration = {
-        "siteId": 4368909,
-        "cookiePolicyId": 46703028,
-        "lang": "en",
-        "storage": { "useSiteId": true },
-      };
-    </script>
-    <script
-      type="text/javascript"
-      src="https://cs.iubenda.com/autoblocking/4368909.js"
-      async
-    ></script>
-    <script
-      type="text/javascript"
-      src="//cdn.iubenda.com/cs/gpp/stub.js"
-      async
-    ></script>
-    <script
-      type="text/javascript"
-      src="//cdn.iubenda.com/cs/iubenda_cs.js"
-      charset="UTF-8"
-      async
-    ></script>
-
-    <!-- Google tag (gtag.js) - Deferred for performance -->
-    <script defer src="https://www.googletagmanager.com/gtag/js?id=G-W8J492Y52K"></script>
-    <script defer>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-
-      gtag('config', 'G-W8J492Y52K');
-    </script>
+    <!-- Critical: Charset and viewport MUST be first -->
     <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     
-    <!-- Performance: Preconnect to external domains -->
+    <!-- Performance: Preconnect to external domains (before any resource hints) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preconnect" href="https://www.googletagmanager.com">
+    <link rel="dns-prefetch" href="https://cdn.iubenda.com">
+    <link rel="dns-prefetch" href="https://cs.iubenda.com">
+    
+    <!-- Performance: Preload critical font with font-display:swap -->
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"></noscript>
     
     <!-- Favicon Configuration -->
     <link rel="icon" type="image/png" sizes="32x32" href="/logo.png" />
@@ -51,7 +23,6 @@
     <link rel="shortcut icon" href="/logo.png" />
     <link rel="manifest" href="/manifest.json" />
     
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     
     <!-- Default SEO Meta Tags (overridden by page-specific SEOHead) -->
     <title>SpireTrack — Weekly Team Check-ins Made Simple | Team Productivity App</title>
@@ -280,5 +251,30 @@
 
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
+    
+    <!-- Third-party scripts moved to end of body for non-blocking load -->
+    
+    <!-- Iubenda Cookie Solution - deferred -->
+    <script type="text/javascript">
+      var _iub = _iub || [];
+      _iub.csConfiguration = {
+        "siteId": 4368909,
+        "cookiePolicyId": 46703028,
+        "lang": "en",
+        "storage": { "useSiteId": true },
+      };
+    </script>
+    <script defer src="https://cs.iubenda.com/autoblocking/4368909.js"></script>
+    <script defer src="//cdn.iubenda.com/cs/gpp/stub.js"></script>
+    <script defer src="//cdn.iubenda.com/cs/iubenda_cs.js" charset="UTF-8"></script>
+    
+    <!-- Google Analytics - deferred -->
+    <script defer src="https://www.googletagmanager.com/gtag/js?id=G-W8J492Y52K"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-W8J492Y52K');
+    </script>
   </body>
 </html>

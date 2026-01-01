@@ -6,41 +6,52 @@ import { AppLayout } from './components/layout/AppLayout';
 import { AdminLayout } from './components/layout/AdminLayout';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { Login } from './pages/Login';
-import Report from './pages/Report';
 import { OnboardingModal } from './components/auth/OnboardingModal';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, lazy, Suspense } from 'react';
 import { supabase } from './lib/supabase';
 
-import { Dashboard } from './pages/Dashboard';
-import Review from './pages/Review';
-import { Calendar } from './pages/Calendar';
-import { History } from './pages/History';
-import { Settings } from './pages/Settings';
-import { ProfilePage } from './pages/ProfilePage';
-import { AdminDashboard } from './pages/AdminDashboard';
-import { AdminUsers } from './pages/AdminUsers';
+// Keep Landing eager for fast initial paint
 import { Landing } from './pages/Landing';
-import { Product } from './pages/Product';
-import { Analytics } from './pages/Analytics';
-import { TeamDashboard } from './pages/TeamDashboard';
-import { TeamList } from './pages/TeamList';
-import { TeamReviewPage } from './pages/TeamReviewPage';
-import { TeamMembersPage } from './pages/TeamMembersPage';
-import { TeamFormBuilder } from './pages/TeamFormBuilder';
-import { ChatLayout } from './components/team/chat/ChatLayout';
-import { ForTeams } from './pages/ForTeams';
-import { ForFounders } from './pages/ForFounders';
-import { ForSmallBusiness } from './pages/ForSmallBusiness';
-import { HowItWorks } from './pages/HowItWorks';
-import { Pricing } from './pages/Pricing';
-import { PrivacyPolicy } from './pages/PrivacyPolicy';
-import { TermsOfService } from './pages/TermsOfService';
+
+// Lazy load all other pages for code splitting
+const Report = lazy(() => import('./pages/Report'));
+const Dashboard = lazy(() => import('./pages/Dashboard').then(m => ({ default: m.Dashboard })));
+const Review = lazy(() => import('./pages/Review'));
+const Calendar = lazy(() => import('./pages/Calendar').then(m => ({ default: m.Calendar })));
+const History = lazy(() => import('./pages/History').then(m => ({ default: m.History })));
+const Settings = lazy(() => import('./pages/Settings').then(m => ({ default: m.Settings })));
+const ProfilePage = lazy(() => import('./pages/ProfilePage').then(m => ({ default: m.ProfilePage })));
+const AdminDashboard = lazy(() => import('./pages/AdminDashboard').then(m => ({ default: m.AdminDashboard })));
+const AdminUsers = lazy(() => import('./pages/AdminUsers').then(m => ({ default: m.AdminUsers })));
+const Product = lazy(() => import('./pages/Product').then(m => ({ default: m.Product })));
+const Analytics = lazy(() => import('./pages/Analytics').then(m => ({ default: m.Analytics })));
+const TeamDashboard = lazy(() => import('./pages/TeamDashboard').then(m => ({ default: m.TeamDashboard })));
+const TeamList = lazy(() => import('./pages/TeamList').then(m => ({ default: m.TeamList })));
+const TeamReviewPage = lazy(() => import('./pages/TeamReviewPage').then(m => ({ default: m.TeamReviewPage })));
+const TeamMembersPage = lazy(() => import('./pages/TeamMembersPage').then(m => ({ default: m.TeamMembersPage })));
+const TeamFormBuilder = lazy(() => import('./pages/TeamFormBuilder').then(m => ({ default: m.TeamFormBuilder })));
+const ChatLayout = lazy(() => import('./components/team/chat/ChatLayout').then(m => ({ default: m.ChatLayout })));
+const ForTeams = lazy(() => import('./pages/ForTeams').then(m => ({ default: m.ForTeams })));
+const ForFounders = lazy(() => import('./pages/ForFounders').then(m => ({ default: m.ForFounders })));
+const ForSmallBusiness = lazy(() => import('./pages/ForSmallBusiness').then(m => ({ default: m.ForSmallBusiness })));
+const HowItWorks = lazy(() => import('./pages/HowItWorks').then(m => ({ default: m.HowItWorks })));
+const Pricing = lazy(() => import('./pages/Pricing').then(m => ({ default: m.Pricing })));
+const PrivacyPolicy = lazy(() => import('./pages/PrivacyPolicy').then(m => ({ default: m.PrivacyPolicy })));
+const TermsOfService = lazy(() => import('./pages/TermsOfService').then(m => ({ default: m.TermsOfService })));
+// ErrorBoundary must be eager since it wraps the entire app
 import { ErrorBoundary } from './components/ui/ErrorBoundary';
-import { DocsPage } from './pages/DocsPage';
-import { SplashScreen } from './pages/SplashScreen';
-import AboutPage from './pages/About';
+const DocsPage = lazy(() => import('./pages/DocsPage').then(m => ({ default: m.DocsPage })));
+const SplashScreen = lazy(() => import('./pages/SplashScreen').then(m => ({ default: m.SplashScreen })));
+const AboutPage = lazy(() => import('./pages/About'));
 
 import { useNotificationListener } from './hooks/useNotificationListener';
+
+// Minimal loading fallback for Suspense
+const PageLoader = () => (
+  <div className="min-h-screen flex items-center justify-center bg-white">
+    <div className="w-8 h-8 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin" />
+  </div>
+);
 
 // Protected Route Wrapper
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
@@ -81,6 +92,7 @@ function App() {
     <AuthProvider>
       <BrowserRouter>
         <ErrorBoundary>
+        <Suspense fallback={<PageLoader />}>
         <Routes>
           {/* Public Routes */}
           <Route element={<PublicLayout />}>
@@ -138,6 +150,7 @@ function App() {
           {/* Fallback */}
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
+        </Suspense>
 
         <OnboardingModal
           isOpen={showOnboarding}
