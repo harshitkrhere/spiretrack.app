@@ -14,10 +14,12 @@
     <script
       type="text/javascript"
       src="https://cs.iubenda.com/autoblocking/4368909.js"
+      async
     ></script>
     <script
       type="text/javascript"
       src="//cdn.iubenda.com/cs/gpp/stub.js"
+      async
     ></script>
     <script
       type="text/javascript"
@@ -26,9 +28,9 @@
       async
     ></script>
 
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-W8J492Y52K"></script>
-    <script>
+    <!-- Google tag (gtag.js) - Deferred for performance -->
+    <script defer src="https://www.googletagmanager.com/gtag/js?id=G-W8J492Y52K"></script>
+    <script defer>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
@@ -36,6 +38,11 @@
       gtag('config', 'G-W8J492Y52K');
     </script>
     <meta charset="UTF-8" />
+    
+    <!-- Performance: Preconnect to external domains -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://www.googletagmanager.com">
     
     <!-- Favicon Configuration -->
     <link rel="icon" type="image/png" sizes="32x32" href="/logo.png" />
