@@ -17,23 +17,30 @@ function formatMonth(monthStr: string): string {
   return date.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
 }
 
-// Get all Mondays in a month
+// Get all weeks in a month (Sunday-based, starting from day 1)
 function getWeeksInMonth(monthStr: string): { week: number; weekStart: string }[] {
   const weeks: { week: number; weekStart: string }[] = [];
   const monthDate = new Date(monthStr);
   const year = monthDate.getFullYear();
   const month = monthDate.getMonth();
   
-  // Start from day 1
+  // Always start from day 1 of the month
   let current = new Date(year, month, 1);
-  
-  // Find first Monday
-  while (current.getDay() !== 1) {
-    current.setDate(current.getDate() + 1);
-  }
-  
   let weekNum = 1;
-  while (current.getMonth() === month && weekNum <= 5) {
+  
+  // First week starts on day 1 (regardless of day of week)
+  weeks.push({
+    week: weekNum,
+    weekStart: current.toISOString().split('T')[0]
+  });
+  weekNum++;
+  
+  // Find the next Sunday after day 1 for subsequent weeks
+  // Move to the next Sunday (day 0)
+  current.setDate(current.getDate() + (7 - current.getDay()));
+  
+  // Continue adding weeks while still in the same month
+  while (current.getMonth() === month && weekNum <= 6) {
     weeks.push({
       week: weekNum,
       weekStart: current.toISOString().split('T')[0]
