@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Dialog } from '@headlessui/react';
-import { XMarkIcon, Cog6ToothIcon, ClockIcon, ShieldCheckIcon } from '@heroicons/react/24/outline';
+import { XMarkIcon, Cog6ToothIcon, ClockIcon, ShieldCheckIcon, ClipboardIcon, CheckIcon, UserPlusIcon } from '@heroicons/react/24/outline';
 import { WhitelistSettings } from './settings/WhitelistSettings';
 import { ReviewSettingsPanel } from '../admin/ReviewSettingsPanel';
 
@@ -12,6 +12,27 @@ interface TeamSettingsModalProps {
 }
 
 export const TeamSettingsModal: React.FC<TeamSettingsModalProps> = ({ isOpen, onClose, teamId, teamName }) => {
+  const [copied, setCopied] = useState(false);
+
+  const handleCopyCode = async () => {
+    try {
+      await navigator.clipboard.writeText(teamId);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch (err) {
+      console.error('Failed to copy:', err);
+      // Fallback for older browsers
+      const textArea = document.createElement('textarea');
+      textArea.value = teamId;
+      document.body.appendChild(textArea);
+      textArea.select();
+      document.execCommand('copy');
+      document.body.removeChild(textArea);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    }
+  };
+
   return (
     <Dialog open={isOpen} onClose={onClose} className="relative z-50">
       {/* Backdrop */}
@@ -45,8 +66,48 @@ export const TeamSettingsModal: React.FC<TeamSettingsModalProps> = ({ isOpen, on
           
           {/* Content */}
           <div className="flex-1 overflow-y-auto bg-slate-50">
-            {/* Submission Deadline Section */}
+            {/* Team Invite Code Section */}
             <div className="p-5">
+              <div className="flex items-center gap-2 mb-3">
+                <UserPlusIcon className="w-4 h-4 text-orange-500" />
+                <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                  Team Invite Code
+                </h3>
+              </div>
+              <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-4">
+                <p className="text-xs text-slate-500 mb-3">
+                  Share this code with others to let them join your team.
+                </p>
+                <div className="flex items-center gap-2">
+                  <div className="flex-1 bg-slate-50 border border-slate-200 rounded-lg px-3 py-2.5 font-mono text-sm text-slate-700 select-all overflow-x-auto">
+                    {teamId}
+                  </div>
+                  <button
+                    onClick={handleCopyCode}
+                    className={`flex items-center gap-1.5 px-3 py-2.5 rounded-lg font-medium text-sm transition-all ${
+                      copied 
+                        ? 'bg-emerald-50 text-emerald-600 border border-emerald-200' 
+                        : 'bg-slate-900 text-white hover:bg-slate-800'
+                    }`}
+                  >
+                    {copied ? (
+                      <>
+                        <CheckIcon className="w-4 h-4" />
+                        Copied!
+                      </>
+                    ) : (
+                      <>
+                        <ClipboardIcon className="w-4 h-4" />
+                        Copy
+                      </>
+                    )}
+                  </button>
+                </div>
+              </div>
+            </div>
+            
+            {/* Submission Deadline Section */}
+            <div className="px-5">
               <div className="flex items-center gap-2 mb-3">
                 <ClockIcon className="w-4 h-4 text-emerald-600" />
                 <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
