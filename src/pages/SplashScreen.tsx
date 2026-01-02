@@ -1,20 +1,23 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
+import { supabase } from '../lib/supabase';
 
 export const SplashScreen: React.FC = () => {
   const navigate = useNavigate();
   const { user, loading } = useAuth();
   const [phase, setPhase] = useState(0);
-  const [splashComplete, setSplashComplete] = useState(false);
+  const [minTimeElapsed, setMinTimeElapsed] = useState(false);
+  const [authProcessed, setAuthProcessed] = useState(false);
+  const hasNavigated = useRef(false);
 
   // Animation phases
   useEffect(() => {
     const t1 = setTimeout(() => setPhase(1), 300);
     const t2 = setTimeout(() => setPhase(2), 1200);
-    const t3 = setTimeout(() => setPhase(3), 3500);
-    const t4 = setTimeout(() => setPhase(4), 4700);
+    const t3 = setTimeout(() => setPhase(3), 2500);
+    const t4 = setTimeout(() => setPhase(4), 3500);
 
     return () => {
       clearTimeout(t1);
@@ -24,16 +27,35 @@ export const SplashScreen: React.FC = () => {
     };
   }, []);
 
+  // Handle magic link callback - process auth from URL if present
   useEffect(() => {
-    const timer = setTimeout(() => setSplashComplete(true), 5000);
+    const handleAuthCallback = async () => {
+      // Check if this is a redirect from magic link (has hash params)
+      const hash = window.location.hash;
+      if (hash && hash.includes('access_token')) {
+        // Let Supabase process the hash automatically
+        // The onAuthStateChange in AuthContext will pick this up
+        await supabase.auth.getSession();
+      }
+      setAuthProcessed(true);
+    };
+    
+    handleAuthCallback();
+  }, []);
+
+  // Minimum time before navigation (allows auth to complete)
+  useEffect(() => {
+    const timer = setTimeout(() => setMinTimeElapsed(true), 4000);
     return () => clearTimeout(timer);
   }, []);
 
+  // Navigate after auth processed, min time elapsed, and not loading
   useEffect(() => {
-    if (splashComplete && !loading) {
+    if (minTimeElapsed && !loading && authProcessed && !hasNavigated.current) {
+      hasNavigated.current = true;
       navigate(user ? '/app' : '/register', { replace: true });
     }
-  }, [splashComplete, loading, user, navigate]);
+  }, [minTimeElapsed, loading, authProcessed, user, navigate]);
 
   return (
     <div className="fixed inset-0 z-[100] bg-white flex items-center justify-center px-4 sm:px-6">
