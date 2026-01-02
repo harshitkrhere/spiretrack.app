@@ -17,30 +17,27 @@ function formatMonth(monthStr: string): string {
   return date.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
 }
 
-// Get all weeks in a month (Sunday-based, starting from day 1)
+// Get all weeks in a month (Monday-based weeks)
+// Each week starts on Monday and ends on Sunday
+// Days before the first Monday belong to the previous month's last week
+// The last week of a month extends into the next month until Sunday
 function getWeeksInMonth(monthStr: string): { week: number; weekStart: string }[] {
   const weeks: { week: number; weekStart: string }[] = [];
   const monthDate = new Date(monthStr);
   const year = monthDate.getFullYear();
   const month = monthDate.getMonth();
   
-  // Always start from day 1 of the month
-  let current = new Date(year, month, 1);
+  // Find the first Monday of the month
+  const firstMonday = new Date(year, month, 1);
+  while (firstMonday.getDay() !== 1) {
+    firstMonday.setDate(firstMonday.getDate() + 1);
+  }
+  
+  // Add all Mondays within this month (no Week 0)
+  let current = new Date(firstMonday);
   let weekNum = 1;
   
-  // First week starts on day 1 (regardless of day of week)
-  weeks.push({
-    week: weekNum,
-    weekStart: current.toISOString().split('T')[0]
-  });
-  weekNum++;
-  
-  // Find the next Sunday after day 1 for subsequent weeks
-  // Move to the next Sunday (day 0)
-  current.setDate(current.getDate() + (7 - current.getDay()));
-  
-  // Continue adding weeks while still in the same month
-  while (current.getMonth() === month && weekNum <= 6) {
+  while (current.getMonth() === month && weekNum <= 5) {
     weeks.push({
       week: weekNum,
       weekStart: current.toISOString().split('T')[0]
@@ -51,6 +48,36 @@ function getWeeksInMonth(monthStr: string): { week: number; weekStart: string }[
   
   return weeks;
 }
+
+// Get date range for fetching reviews
+// Starts from first Monday, ends on Sunday after the last Monday (extends into next month)
+function getMonthQueryRange(monthStr: string): { start: string; end: string } {
+  const monthDate = new Date(monthStr);
+  const year = monthDate.getFullYear();
+  const month = monthDate.getMonth();
+  
+  // Find first Monday of month
+  const firstMonday = new Date(year, month, 1);
+  while (firstMonday.getDay() !== 1) {
+    firstMonday.setDate(firstMonday.getDate() + 1);
+  }
+  
+  // Find the last Monday of the month
+  const lastMonday = new Date(year, month + 1, 0); // Last day of month
+  while (lastMonday.getDay() !== 1) {
+    lastMonday.setDate(lastMonday.getDate() - 1);
+  }
+  
+  // End is the Sunday after the last Monday (7 days later)
+  const weekEnd = new Date(lastMonday);
+  weekEnd.setDate(weekEnd.getDate() + 7); // Next Monday (exclusive)
+  
+  return {
+    start: firstMonday.toISOString().split('T')[0],
+    end: weekEnd.toISOString().split('T')[0]
+  };
+}
+
 
 serve(async (req: Request) => {
   if (req.method === 'OPTIONS') {
@@ -81,21 +108,17 @@ serve(async (req: Request) => {
 
     console.log(`[generate-analytics] User: ${user.id}`);
 
-    // 2. Calculate month boundaries
-    const monthDate = new Date(selectedMonth);
-    const nextMonth = new Date(monthDate);
-    nextMonth.setMonth(nextMonth.getMonth() + 1);
-    const monthEnd = nextMonth.toISOString().split('T')[0];
+    // 2. Calculate query range (extends last week into next month)
+    const queryRange = getMonthQueryRange(selectedMonth);
+    console.log(`[generate-analytics] Query range: ${queryRange.start} to ${queryRange.end}`);
 
-    console.log(`[generate-analytics] Date range: ${selectedMonth} to ${monthEnd}`);
-
-    // 3. Fetch reviews for ONLY this specific month
+    // 3. Fetch reviews for this month's weeks (extends into next month for last week)
     const { data: reviews, error: reviewsError } = await supabaseClient
       .from('weekly_reviews')
       .select('id, week_start_date, answers, ai_output, scores, status')
       .eq('user_id', user.id)
-      .gte('week_start_date', selectedMonth)
-      .lt('week_start_date', monthEnd)
+      .gte('week_start_date', queryRange.start)
+      .lt('week_start_date', queryRange.end)
       .order('week_start_date', { ascending: true });
 
     if (reviewsError) {
