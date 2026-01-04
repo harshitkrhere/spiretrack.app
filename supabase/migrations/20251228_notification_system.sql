@@ -119,6 +119,11 @@ CREATE POLICY "Users can view own notifications"
     ON public.notification_queue FOR SELECT
     USING (auth.uid() = user_id);
 
+-- Users can update their own notifications (mark as read)
+CREATE POLICY "Users can update own notifications"
+    ON public.notification_queue FOR UPDATE
+    USING (auth.uid() = user_id);
+
 
 -- ============================================
 -- 3. UPDATE PUSH_SUBSCRIPTIONS
