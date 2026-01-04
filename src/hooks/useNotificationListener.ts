@@ -103,14 +103,9 @@ export function useNotificationListener() {
                     // Show the notification
                     showNotification(notification);
 
-                    // Mark as sent in queue
-                    await supabase
-                        .from('notification_queue')
-                        .update({ 
-                            status: 'sent', 
-                            processed_at: new Date().toISOString() 
-                        })
-                        .eq('id', notification.id);
+                    // Note: We no longer mark as 'sent' here - leave as 'pending' 
+                    // so the red badge shows correctly in the bell icon.
+                    // User will mark as read via the notification panel.
                 }
             )
             .subscribe();
