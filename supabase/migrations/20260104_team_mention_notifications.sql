@@ -1,37 +1,40 @@
--- ============================================
--- ADD @TEAM MENTION NOTIFICATION SUPPORT
--- When admins use @team, all team members get notified
--- ============================================
+-- Migration to add support for @team mentions in chat
+-- This function monitors new chat messages and queues notifications
 
 CREATE OR REPLACE FUNCTION public.queue_chat_notification()
 RETURNS TRIGGER AS $$
 DECLARE
     v_team_id UUID;
-    v_channel_name TEXT;
-    v_sender_name TEXT;
-    v_message_preview TEXT;
     v_mentioned_users UUID[];
     v_team_member RECORD;
+    v_sender_name TEXT;
+    v_channel_name TEXT;
+    v_message_preview TEXT;
     v_event_hash TEXT;
     v_timestamp_bucket TEXT;
     v_is_team_mention BOOLEAN;
 BEGIN
-    -- Get channel and team info (team_messages uses channel_id)
-    SELECT c.team_id, c.name INTO v_team_id, v_channel_name
-    FROM public.team_channels c
-    WHERE c.id = NEW.channel_id;
+    v_team_id := NEW.team_id;
     
-    -- Get sender name
-    SELECT COALESCE(u.full_name, u.email, 'Someone') INTO v_sender_name
-    FROM public.users u
-    WHERE u.id = NEW.user_id;
+    -- Get sender details
+    SELECT full_name INTO v_sender_name
+    FROM public.users
+    WHERE id = NEW.user_id;
     
-    -- Create message preview (max 100 chars)
-    v_message_preview := LEFT(NEW.content, 100);
-    IF LENGTH(NEW.content) > 100 THEN
+    -- Get channel name
+    SELECT name INTO v_channel_name
+    FROM public.channels
+    WHERE id = NEW.channel_id;
+
+    -- Create message preview (truncate to 100 chars)
+    v_message_preview := substring(NEW.content from 1 for 100);
+    IF length(NEW.content) > 100 THEN
         v_message_preview := v_message_preview || '...';
     END IF;
-    
+
+    -- Create a 1-minute bucket for deduplication
+    v_timestamp_bucket := to_char(NEW.created_at, 'YYYY-MM-DD"T"HH24:MI');
+
     -- Check for @team mention (case-insensitive)
     -- ONLY count it as team mention if sender is an admin
     v_is_team_mention := FALSE;
@@ -69,14 +72,12 @@ BEGIN
     FROM public.users u
     WHERE NEW.content ILIKE '%@' || u.username || '%'
        OR NEW.content ILIKE '%@' || u.full_name || '%';
-    
-    -- Timestamp bucket for idempotency (1-minute granularity)
-    v_timestamp_bucket := to_char(NEW.created_at, 'YYYY-MM-DD"T"HH24:MI');
-    
-    -- Queue notifications for each team member (except sender)
+
+    -- Loop through all team members to queue notifications
     FOR v_team_member IN
-        SELECT tm.user_id
+        SELECT tm.user_id 
         FROM public.team_members tm
+        JOIN public.users u ON u.id = tm.user_id
         WHERE tm.team_id = v_team_id
           AND tm.user_id != NEW.user_id
           AND tm.status != 'banned'
@@ -146,3 +147,10 @@ $$ LANGUAGE plpgsql SECURITY DEFINER;
 
 -- Update comment
 COMMENT ON FUNCTION public.queue_chat_notification IS 'Queues chat notifications, handles @team mentions and @username mentions';
+
+-- Ensure trigger exists
+DROP TRIGGER IF EXISTS on_chat_message_notification ON public.team_messages;
+CREATE TRIGGER on_chat_message_notification
+    AFTER INSERT ON public.team_messages
+    FOR EACH ROW
+    EXECUTE FUNCTION public.queue_chat_notification();
