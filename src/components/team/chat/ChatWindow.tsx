@@ -250,6 +250,45 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
         });
       }
       
+      // Fetch reactions for all messages directly from database
+      const messageIds = newMessages.map((m: Message) => m.id);
+      if (messageIds.length > 0) {
+        const { data: allReactions } = await supabase
+          .from('message_reactions')
+          .select('id, message_id, user_id, reaction_type, created_at')
+          .in('message_id', messageIds);
+        
+        if (allReactions && allReactions.length > 0) {
+          // Get user info for reactions
+          const reactionUserIds = [...new Set(allReactions.map(r => r.user_id))];
+          const { data: reactionUsers } = await supabase
+            .from('users')
+            .select('id, email, full_name, avatar_url')
+            .in('id', reactionUserIds);
+          
+          const userMap = new Map(reactionUsers?.map(u => [u.id, u]) || []);
+          
+          // Group reactions by message_id
+          const reactionsMap = new Map<string, any[]>();
+          allReactions.forEach(reaction => {
+            if (!reactionsMap.has(reaction.message_id)) {
+              reactionsMap.set(reaction.message_id, []);
+            }
+            reactionsMap.get(reaction.message_id)!.push({
+              ...reaction,
+              user: userMap.get(reaction.user_id) || null
+            });
+          });
+          
+          // Attach reactions to messages
+          newMessages.forEach((msg: Message) => {
+            if (reactionsMap.has(msg.id)) {
+              msg.reactions = reactionsMap.get(msg.id);
+            }
+          });
+        }
+      }
+      
       // Reverse to show oldest first
       const orderedMessages = [...newMessages].reverse();
       
