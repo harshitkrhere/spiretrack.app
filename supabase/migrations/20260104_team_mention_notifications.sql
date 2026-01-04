@@ -33,7 +33,19 @@ BEGIN
     END IF;
     
     -- Check for @team mention (case-insensitive)
-    v_is_team_mention := NEW.content ILIKE '%@team%';
+    -- ONLY count it as team mention if sender is an admin
+    v_is_team_mention := FALSE;
+    IF NEW.content ILIKE '%@team%' THEN
+        -- Check if sender is admin (either role='admin' or is_creator=true)
+        IF EXISTS (
+            SELECT 1 FROM public.team_members
+            WHERE team_id = v_team_id
+              AND user_id = NEW.user_id
+              AND (role = 'admin' OR is_creator = TRUE)
+        ) THEN
+            v_is_team_mention := TRUE;
+        END IF;
+    END IF;
     
     -- Extract @mentions from message (matches @username pattern)
     -- Format: array of user IDs that were mentioned
