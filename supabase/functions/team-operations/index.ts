@@ -1428,10 +1428,95 @@ Be specific, actionable, and prioritize based on urgency and impact.`
         });
       }
 
-      // Transform messages to include user data and is_pinned status
+      // Fetch reactions for all messages
+      const messageIds = messages?.map((m: any) => m.id) || [];
+      const reactionsMap: Record<string, any[]> = {};
+      
+      if (messageIds.length > 0) {
+        const { data: reactions } = await adminClient
+          .from('message_reactions')
+          .select('id, message_id, user_id, reaction_type, created_at')
+          .in('message_id', messageIds);
+        
+        // Group reactions by message_id
+        reactions?.forEach((reaction: any) => {
+          if (!reactionsMap[reaction.message_id]) {
+            reactionsMap[reaction.message_id] = [];
+          }
+          // Add user info to reaction
+          reactionsMap[reaction.message_id].push({
+            ...reaction,
+            user: userDetailsMap[reaction.user_id] || null
+          });
+        });
+      }
+
+      // Fetch thread participants (reply authors) for messages with replies
+      const messagesWithThreads = messages?.filter((m: any) => m.thread_reply_count > 0) || [];
+      const threadParticipantsMap: Record<string, any[]> = {};
+      
+      if (messagesWithThreads.length > 0) {
+        // Get all parent message IDs that have replies
+        const parentIds = messagesWithThreads.map((m: any) => m.id);
+        
+        // Fetch reply authors (unique user_ids per parent message)
+        const { data: replies } = await adminClient
+          .from('team_messages')
+          .select('parent_message_id, user_id')
+          .in('parent_message_id', parentIds)
+          .order('created_at', { ascending: false });
+        
+        if (replies && replies.length > 0) {
+          // Group by parent_message_id and get unique users (up to 3)
+          const parentUserMap: Record<string, Set<string>> = {};
+          replies.forEach((r: any) => {
+            if (!parentUserMap[r.parent_message_id]) {
+              parentUserMap[r.parent_message_id] = new Set();
+            }
+            if (parentUserMap[r.parent_message_id].size < 3) {
+              parentUserMap[r.parent_message_id].add(r.user_id);
+            }
+          });
+          
+          // Collect all unique user IDs from thread participants
+          const threadUserIds = new Set<string>();
+          Object.values(parentUserMap).forEach(userSet => {
+            userSet.forEach(id => threadUserIds.add(id));
+          });
+          
+          // Fetch user details for thread participants not already in userDetailsMap
+          const missingUserIds = [...threadUserIds].filter(id => !userDetailsMap[id]);
+          if (missingUserIds.length > 0) {
+            const { data: threadUsers } = await adminClient
+              .from('users')
+              .select('id, email, full_name, avatar_url')
+              .in('id', missingUserIds);
+            
+            threadUsers?.forEach((u: any) => {
+              userDetailsMap[u.id] = {
+                id: u.id,
+                email: u.email,
+                full_name: u.full_name,
+                avatar_url: u.avatar_url
+              };
+            });
+          }
+          
+          // Build thread_participants array for each message
+          Object.entries(parentUserMap).forEach(([parentId, userSet]) => {
+            threadParticipantsMap[parentId] = [...userSet].map(userId => 
+              userDetailsMap[userId] || { id: userId, full_name: 'Unknown' }
+            );
+          });
+        }
+      }
+
+      // Transform messages to include user data, is_pinned status, reactions, and thread_participants
       const formattedMessages = messages?.map((msg: any) => ({
         ...msg,
         is_pinned: pinnedMessageIds.has(msg.id),
+        reactions: reactionsMap[msg.id] || [],
+        thread_participants: threadParticipantsMap[msg.id] || [],
         user: userDetailsMap[msg.user_id] || {
           id: msg.user_id,
           email: 'Unknown',
