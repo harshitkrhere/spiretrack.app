@@ -90,8 +90,10 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
         data.forEach((m: any) => {
           if (m.role === 'admin') {
             admins.add(m.user_id);
+            console.log('[DEBUG] Found admin:', m.user_id, m.users?.full_name);
           }
         });
+        console.log('[DEBUG] Total admins found:', admins.size, Array.from(admins));
         setAdminUserIds(admins);
       }
     };
