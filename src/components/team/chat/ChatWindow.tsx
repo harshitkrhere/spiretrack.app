@@ -75,7 +75,7 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
   // Fetch team members for avatar display and admin detection
   useEffect(() => {
     const fetchTeamMembers = async () => {
-      // First, get team members with roles
+      // First, get team members with base roles
       const { data: memberData, error: memberError } = await supabase
         .from('team_members')
         .select('user_id, role')
@@ -86,19 +86,18 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
         return;
       }
       
+      const admins = new Set<string>();
+      
       if (memberData && memberData.length > 0) {
-        // Build set of admin user IDs
-        const admins = new Set<string>();
+        // Add users with role='admin' from team_members
         memberData.forEach((m: any) => {
           if (m.role === 'admin') {
             admins.add(m.user_id);
-            console.log('[DEBUG] Found admin user_id:', m.user_id);
+            console.log('[DEBUG] Found admin from team_members:', m.user_id);
           }
         });
-        console.log('[DEBUG] Total admins found:', admins.size, Array.from(admins));
-        setAdminUserIds(admins);
         
-        // Now fetch user details separately
+        // Now fetch user details
         const userIds = memberData.map((m: any) => m.user_id);
         const { data: usersData, error: usersError } = await supabase
           .from('users')
@@ -110,6 +109,25 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
           setMemberCount(usersData.length);
         }
       }
+      
+      // Also check for custom roles with is_admin=true
+      const { data: customAdminData, error: customAdminError } = await supabase
+        .from('team_member_roles')
+        .select('user_id, role:team_roles!inner(is_admin)')
+        .eq('team_id', teamId);
+      
+      if (!customAdminError && customAdminData) {
+        customAdminData.forEach((m: any) => {
+          // role is the team_roles object with is_admin field
+          if (m.role?.is_admin === true) {
+            admins.add(m.user_id);
+            console.log('[DEBUG] Found admin from custom role:', m.user_id);
+          }
+        });
+      }
+      
+      console.log('[DEBUG] Total admins found:', admins.size, Array.from(admins));
+      setAdminUserIds(admins);
     };
     fetchTeamMembers();
   }, [teamId]);
