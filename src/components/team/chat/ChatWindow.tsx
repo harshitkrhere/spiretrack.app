@@ -93,7 +93,6 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
         memberData.forEach((m: any) => {
           if (m.role === 'admin') {
             admins.add(m.user_id);
-            console.log('[DEBUG] Found admin from team_members:', m.user_id);
           }
         });
         
@@ -121,12 +120,10 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
           // role is the team_roles object with is_admin field
           if (m.role?.is_admin === true) {
             admins.add(m.user_id);
-            console.log('[DEBUG] Found admin from custom role:', m.user_id);
           }
         });
       }
       
-      console.log('[DEBUG] Total admins found:', admins.size, Array.from(admins));
       setAdminUserIds(admins);
     };
     fetchTeamMembers();
