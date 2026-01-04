@@ -1386,12 +1386,13 @@ Be specific, actionable, and prioritize based on urgency and impact.`
         );
       }
 
-      // First, fetch messages
+      // First, fetch main messages only (exclude thread replies)
       const { data: messages, error } = await adminClient
         .from('team_messages')
         .select('*')
         .eq('team_id', team_id)
         .eq('channel_id', channel_id)
+        .is('parent_message_id', null)  // Only parent messages, not thread replies
         .order('created_at', { ascending: false })
         .range(offset, offset + limit - 1);
 
