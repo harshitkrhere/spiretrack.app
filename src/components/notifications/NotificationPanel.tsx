@@ -14,12 +14,12 @@ import { cn } from '../../lib/utils';
 
 interface Notification {
   id: string;
-  type: 'mention' | 'team_invite' | 'report_ready' | 'reminder' | 'system';
+  notification_type: string;
   title: string;
   body: string | null;
-  link: string | null;
-  read: boolean;
-  metadata: Record<string, any>;
+  url: string | null;
+  status: string;
+  data: Record<string, any>;
   created_at: string;
 }
 
@@ -31,19 +31,21 @@ interface NotificationPanelProps {
 }
 
 const notificationIcons: Record<string, React.ComponentType<{ className?: string }>> = {
-  mention: AtSymbolIcon,
-  team_invite: UserPlusIcon,
-  report_ready: DocumentChartBarIcon,
-  reminder: ClockIcon,
-  system: InformationCircleIcon,
+  chat_mention: AtSymbolIcon,
+  chat_message: AtSymbolIcon,
+  team_activity: UserPlusIcon,
+  task_update: DocumentChartBarIcon,
+  system_alert: ClockIcon,
+  account_security: InformationCircleIcon,
 };
 
 const notificationColors: Record<string, string> = {
-  mention: 'bg-blue-100 text-blue-600',
-  team_invite: 'bg-green-100 text-green-600',
-  report_ready: 'bg-purple-100 text-purple-600',
-  reminder: 'bg-amber-100 text-amber-600',
-  system: 'bg-slate-100 text-slate-600',
+  chat_mention: 'bg-blue-100 text-blue-600',
+  chat_message: 'bg-slate-100 text-slate-600',
+  team_activity: 'bg-green-100 text-green-600',
+  task_update: 'bg-purple-100 text-purple-600',
+  system_alert: 'bg-amber-100 text-amber-600',
+  account_security: 'bg-red-100 text-red-600',
 };
 
 export const NotificationPanel: React.FC<NotificationPanelProps> = ({
@@ -74,7 +76,7 @@ export const NotificationPanel: React.FC<NotificationPanelProps> = ({
   const fetchNotifications = async () => {
     try {
       const { data, error } = await supabase
-        .from('notifications')
+        .from('notification_queue')
         .select('*')
         .eq('user_id', userId)
         .order('created_at', { ascending: false })
@@ -90,22 +92,22 @@ export const NotificationPanel: React.FC<NotificationPanelProps> = ({
   };
 
   const handleClick = async (notification: Notification) => {
-    // Mark as read
-    if (!notification.read) {
+    // Mark as sent (read)
+    if (notification.status === 'pending') {
       await supabase
-        .from('notifications')
-        .update({ read: true })
+        .from('notification_queue')
+        .update({ status: 'sent', processed_at: new Date().toISOString() })
         .eq('id', notification.id);
       
       setNotifications(prev => 
-        prev.map(n => n.id === notification.id ? { ...n, read: true } : n)
+        prev.map(n => n.id === notification.id ? { ...n, status: 'sent' } : n)
       );
       onRefresh();
     }
 
-    // Navigate if link provided
-    if (notification.link) {
-      navigate(notification.link);
+    // Navigate if url provided
+    if (notification.url) {
+      navigate(notification.url);
       onClose();
     }
   };
@@ -114,12 +116,12 @@ export const NotificationPanel: React.FC<NotificationPanelProps> = ({
     e.stopPropagation();
     
     await supabase
-      .from('notifications')
-      .update({ read: true })
+      .from('notification_queue')
+      .update({ status: 'sent', processed_at: new Date().toISOString() })
       .eq('id', notificationId);
     
     setNotifications(prev => 
-      prev.map(n => n.id === notificationId ? { ...n, read: true } : n)
+      prev.map(n => n.id === notificationId ? { ...n, status: 'sent' } : n)
     );
     onRefresh();
   };
@@ -139,7 +141,7 @@ export const NotificationPanel: React.FC<NotificationPanelProps> = ({
     return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
   };
 
-  const unreadCount = notifications.filter(n => !n.read).length;
+  const unreadCount = notifications.filter(n => n.status === 'pending').length;
 
   return (
     <div
@@ -189,8 +191,8 @@ export const NotificationPanel: React.FC<NotificationPanelProps> = ({
         ) : (
           <div className="divide-y divide-slate-100">
             {notifications.map((notification) => {
-              const IconComponent = notificationIcons[notification.type] || InformationCircleIcon;
-              const colorClass = notificationColors[notification.type] || notificationColors.system;
+              const IconComponent = notificationIcons[notification.notification_type] || InformationCircleIcon;
+              const colorClass = notificationColors[notification.notification_type] || notificationColors.chat_message;
               
               return (
                 <div
@@ -198,7 +200,7 @@ export const NotificationPanel: React.FC<NotificationPanelProps> = ({
                   onClick={() => handleClick(notification)}
                   className={cn(
                     "px-4 py-3 hover:bg-slate-50 transition-colors cursor-pointer flex items-start gap-3",
-                    !notification.read && "bg-blue-50/50"
+                    notification.status === 'pending' && "bg-blue-50/50"
                   )}
                 >
                   {/* Icon */}
@@ -211,7 +213,7 @@ export const NotificationPanel: React.FC<NotificationPanelProps> = ({
                     <div className="flex items-start justify-between gap-2">
                       <p className={cn(
                         "text-sm leading-snug",
-                        notification.read ? "text-slate-700" : "text-slate-900 font-medium"
+                        notification.status !== 'pending' ? "text-slate-700" : "text-slate-900 font-medium"
                       )}>
                         {notification.title}
                       </p>
@@ -223,7 +225,7 @@ export const NotificationPanel: React.FC<NotificationPanelProps> = ({
                   </div>
 
                   {/* Mark as read button */}
-                  {!notification.read && (
+                  {notification.status === 'pending' && (
                     <button
                       onClick={(e) => handleMarkAsRead(e, notification.id)}
                       className="flex-shrink-0 p-1.5 text-slate-400 hover:text-green-600 hover:bg-green-50 rounded-md transition-colors"

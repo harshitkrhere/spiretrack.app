@@ -12,13 +12,13 @@ export const NotificationBell: React.FC<NotificationBellProps> = ({ userId }) =>
   const [unreadCount, setUnreadCount] = useState(0);
   const [showPanel, setShowPanel] = useState(false);
 
-  // Fetch unread count
+  // Fetch unread count from notification_queue (pending = unread)
   const fetchUnreadCount = async () => {
     const { count, error } = await supabase
-      .from('notifications')
+      .from('notification_queue')
       .select('*', { count: 'exact', head: true })
       .eq('user_id', userId)
-      .eq('read', false);
+      .eq('status', 'pending');
 
     if (!error && count !== null) {
       setUnreadCount(count);
@@ -37,7 +37,7 @@ export const NotificationBell: React.FC<NotificationBellProps> = ({ userId }) =>
           {
             event: 'INSERT',
             schema: 'public',
-            table: 'notifications',
+            table: 'notification_queue',
             filter: `user_id=eq.${userId}`,
           },
           () => {
@@ -49,7 +49,7 @@ export const NotificationBell: React.FC<NotificationBellProps> = ({ userId }) =>
           {
             event: 'UPDATE',
             schema: 'public',
-            table: 'notifications',
+            table: 'notification_queue',
             filter: `user_id=eq.${userId}`,
           },
           () => {
@@ -66,10 +66,10 @@ export const NotificationBell: React.FC<NotificationBellProps> = ({ userId }) =>
 
   const handleMarkAllRead = async () => {
     await supabase
-      .from('notifications')
-      .update({ read: true })
+      .from('notification_queue')
+      .update({ status: 'sent' })
       .eq('user_id', userId)
-      .eq('read', false);
+      .eq('status', 'pending');
     
     setUnreadCount(0);
   };
