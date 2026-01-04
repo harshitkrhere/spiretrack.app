@@ -116,8 +116,8 @@ export const MessageItem: React.FC<MessageItemProps> = ({
         "group px-6 hover:bg-slate-50/50 transition-colors relative",
         isGrouped ? "py-0.5" : "py-2",
         isInThread && "py-1",
-        // Subtle left border for admin @team messages - slightly more visible
-        isAdminTeamMention && "border-l-[3px] border-l-slate-400 bg-slate-100/50"
+        // Subtle left border for admin @team messages - green accent
+        isAdminTeamMention && "border-l-[3px] border-l-emerald-500 bg-emerald-50/40"
       )}
       id={`message-${message.id}`}
       onMouseEnter={() => setShowActions(true)}
