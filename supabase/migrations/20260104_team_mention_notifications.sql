@@ -112,7 +112,7 @@ BEGIN
             )
             ON CONFLICT (event_hash) DO NOTHING;
         ELSIF v_mentioned_users IS NOT NULL AND v_team_member.user_id = ANY(v_mentioned_users) THEN
-            -- User is individually mentioned
+            -- User is individually mentioned (@username)
             INSERT INTO public.notification_queue (
                 event_hash,
                 user_id,
@@ -136,32 +136,8 @@ BEGIN
                 )
             )
             ON CONFLICT (event_hash) DO NOTHING;
-        ELSE
-            -- User is NOT mentioned - send regular chat message notification
-            INSERT INTO public.notification_queue (
-                event_hash,
-                user_id,
-                notification_type,
-                title,
-                body,
-                url,
-                data
-            ) VALUES (
-                v_event_hash,
-                v_team_member.user_id,
-                'chat_message',
-                v_channel_name || ' • ' || v_sender_name,
-                v_message_preview,
-                '/app/team/' || v_team_id || '/chat/' || NEW.channel_id,
-                jsonb_build_object(
-                    'team_id', v_team_id,
-                    'channel_id', NEW.channel_id,
-                    'message_id', NEW.id,
-                    'channel_name', v_channel_name
-                )
-            )
-            ON CONFLICT (event_hash) DO NOTHING;
         END IF;
+        -- No ELSE branch - regular messages don't trigger bell notifications
     END LOOP;
     
     RETURN NEW;
