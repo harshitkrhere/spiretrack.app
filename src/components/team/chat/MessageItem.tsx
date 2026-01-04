@@ -230,13 +230,13 @@ export const MessageItem: React.FC<MessageItemProps> = ({
                         name={participant.full_name}
                         email={participant.email}
                         size="xs"
-                        className="ring-1 ring-white w-4 h-4 text-[8px]"
+                        className="ring-2 ring-white w-5 h-5 text-[9px]"
                       />
                     ))
                   ) : (
                     <>
-                      <div className="w-4 h-4 rounded-full ring-1 ring-white bg-slate-200"></div>
-                      <div className="w-4 h-4 rounded-full ring-1 ring-white bg-slate-300"></div>
+                      <div className="w-5 h-5 rounded-full ring-2 ring-white bg-slate-200"></div>
+                      <div className="w-5 h-5 rounded-full ring-2 ring-white bg-slate-300"></div>
                     </>
                   )}
                 </div>
