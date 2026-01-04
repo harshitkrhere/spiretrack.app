@@ -48,6 +48,9 @@ BEGIN
               AND created_by = NEW.user_id
         ) THEN
             v_is_team_mention := TRUE;
+        ELSE
+            -- Non-admin tried to use @team - skip ALL notifications for this message
+            RETURN NEW;
         END IF;
     END IF;
     
