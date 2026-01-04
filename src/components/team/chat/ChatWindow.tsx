@@ -75,26 +75,40 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
   // Fetch team members for avatar display and admin detection
   useEffect(() => {
     const fetchTeamMembers = async () => {
-      const { data, error } = await supabase
+      // First, get team members with roles
+      const { data: memberData, error: memberError } = await supabase
         .from('team_members')
-        .select('user_id, role, users!inner(id, email, full_name, avatar_url)')
+        .select('user_id, role')
         .eq('team_id', teamId);
       
-      if (data && !error) {
-        const members = data.map((m: any) => m.users) as MessageUser[];
-        setTeamMembers(members);
-        setMemberCount(members.length);
-        
+      if (memberError) {
+        console.error('[DEBUG] team_members fetch error:', memberError);
+        return;
+      }
+      
+      if (memberData && memberData.length > 0) {
         // Build set of admin user IDs
         const admins = new Set<string>();
-        data.forEach((m: any) => {
+        memberData.forEach((m: any) => {
           if (m.role === 'admin') {
             admins.add(m.user_id);
-            console.log('[DEBUG] Found admin:', m.user_id, m.users?.full_name);
+            console.log('[DEBUG] Found admin user_id:', m.user_id);
           }
         });
         console.log('[DEBUG] Total admins found:', admins.size, Array.from(admins));
         setAdminUserIds(admins);
+        
+        // Now fetch user details separately
+        const userIds = memberData.map((m: any) => m.user_id);
+        const { data: usersData, error: usersError } = await supabase
+          .from('users')
+          .select('id, email, full_name, avatar_url')
+          .in('id', userIds);
+        
+        if (usersData && !usersError) {
+          setTeamMembers(usersData as MessageUser[]);
+          setMemberCount(usersData.length);
+        }
       }
     };
     fetchTeamMembers();
