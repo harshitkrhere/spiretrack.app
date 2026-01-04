@@ -36,13 +36,16 @@ BEGIN
     -- ONLY count it as team mention if sender is an admin
     v_is_team_mention := FALSE;
     IF NEW.content ILIKE '%@team%' THEN
-        -- Check if sender is admin (role='admin' in team_members OR is team creator in teams table)
+        -- Check if sender is admin using:
+        -- 1. role='admin' in team_members OR
+        -- 2. is_team_admin() function (checks custom roles with is_admin=true) OR
+        -- 3. is team creator
         IF EXISTS (
             SELECT 1 FROM public.team_members
             WHERE team_id = v_team_id
               AND user_id = NEW.user_id
               AND role = 'admin'
-        ) OR EXISTS (
+        ) OR is_team_admin(v_team_id, NEW.user_id) OR EXISTS (
             SELECT 1 FROM public.teams
             WHERE id = v_team_id
               AND created_by = NEW.user_id
