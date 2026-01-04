@@ -16,6 +16,7 @@ interface MessageItemProps {
   message: Message;
   currentUserId: string;
   isAdmin: boolean;
+  senderIsAdmin?: boolean; // Whether the message SENDER is an admin
   onReply: (messageId: string) => void;
   onReactionToggle: (messageId: string, reactionType: ReactionType) => void;
   onPin?: (messageId: string) => void;
@@ -30,6 +31,7 @@ export const MessageItem: React.FC<MessageItemProps> = ({
   message,
   currentUserId,
   isAdmin,
+  senderIsAdmin = false,
   onReply,
   onReactionToggle,
   onPin,
@@ -100,12 +102,22 @@ export const MessageItem: React.FC<MessageItemProps> = ({
     return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' });
   };
 
+  // Subtle highlight for admin @team messages only
+  // Must be: sender is admin + contains @team + not in thread + not a reply
+  const isAdminTeamMention = 
+    senderIsAdmin && 
+    message.content.toLowerCase().includes('@team') && 
+    !isInThread && 
+    !message.parent_message_id;
+
   return (
     <div
       className={cn(
         "group px-6 hover:bg-slate-50/50 transition-colors relative",
         isGrouped ? "py-0.5" : "py-2",
-        isInThread && "py-1"
+        isInThread && "py-1",
+        // Subtle left border for admin @team messages - very understated
+        isAdminTeamMention && "border-l-2 border-l-slate-300 bg-slate-50/30"
       )}
       id={`message-${message.id}`}
       onMouseEnter={() => setShowActions(true)}

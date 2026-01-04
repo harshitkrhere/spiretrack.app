@@ -44,6 +44,7 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
   
   // Team Members for avatar display
   const [teamMembers, setTeamMembers] = useState<MessageUser[]>([]);
+  const [adminUserIds, setAdminUserIds] = useState<Set<string>>(new Set());
   const [showMembersList, setShowMembersList] = useState(false);
   
   // Phase 1.5: Channel Tabs
@@ -71,18 +72,27 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
     fetchChannel();
   }, [channelId]);
 
-  // Fetch team members for avatar display
+  // Fetch team members for avatar display and admin detection
   useEffect(() => {
     const fetchTeamMembers = async () => {
       const { data, error } = await supabase
         .from('team_members')
-        .select('user_id, users!inner(id, email, full_name, avatar_url)')
+        .select('user_id, role, users!inner(id, email, full_name, avatar_url)')
         .eq('team_id', teamId);
       
       if (data && !error) {
         const members = data.map((m: any) => m.users) as MessageUser[];
         setTeamMembers(members);
         setMemberCount(members.length);
+        
+        // Build set of admin user IDs
+        const admins = new Set<string>();
+        data.forEach((m: any) => {
+          if (m.role === 'admin') {
+            admins.add(m.user_id);
+          }
+        });
+        setAdminUserIds(admins);
       }
     };
     fetchTeamMembers();
@@ -825,6 +835,7 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
                       message={msg} 
                       currentUserId={currentUserId}
                       isAdmin={isAdmin}
+                      senderIsAdmin={adminUserIds.has(msg.user_id || '')}
                       onEdit={handleEdit}
                       onDelete={handleDelete}
                       onReactionToggle={handleReactionToggle}
