@@ -6,8 +6,7 @@
 // Re-export Excel export functions
 export { exportReportToExcel, exportIndividualReviewToExcel } from './excelExport';
 
-// Re-export Executive PDF functions
-export { exportExecutiveBriefToPdf, exportWeeklyBriefToPdf, exportTeamInsightsToPdf } from './executivePdfExport';
+
 
 // ========================================
 // CSV EXPORT (for Activity Logs)

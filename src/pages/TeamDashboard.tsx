@@ -20,7 +20,7 @@ import {
 import { TeamSettingsModal } from '../components/team/TeamSettingsModal';
 import { ActivityLogsPanel } from '../components/team/ActivityLogsPanel';
 import { EscalationPanel } from '../components/admin/EscalationPanel';
-import { exportReportToExcel, exportTeamInsightsToPdf } from '../lib/exportUtils';
+import { exportReportToExcel } from '../lib/exportUtils';
 import ContextualChat from '../components/ai/ContextualChat';
 import { LoadingScreen } from '../components/ui/LoadingScreen';
 
@@ -301,19 +301,7 @@ export const TeamDashboard: React.FC = () => {
     }
   };
 
-  const handlePdfExport = async () => {
-    if (!report || !team) {
-      alert('No report to export');
-      return;
-    }
-    try {
-      await exportTeamInsightsToPdf(report, team.name, new Date());
-      setShowExportMenu(false);
-    } catch (error) {
-      console.error('PDF export failed:', error);
-      alert('Failed to export PDF. Please try again.');
-    }
-  };
+
 
   const handleGenerateAIInsights = async () => {
     if (!teamId) return;
@@ -535,16 +523,6 @@ export const TeamDashboard: React.FC = () => {
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                         </svg>
                         Excel (.xlsx)
-                      </button>
-                      <div className="border-t border-slate-100 my-1" />
-                      <button
-                        onClick={handlePdfExport}
-                        className="w-full px-4 py-2 text-left text-sm text-slate-700 hover:bg-slate-50 flex items-center gap-2"
-                      >
-                        <svg className="w-4 h-4 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
-                        </svg>
-                        PDF Brief
                       </button>
                     </div>
                   )}
