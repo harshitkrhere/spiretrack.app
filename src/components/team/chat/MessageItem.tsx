@@ -165,7 +165,7 @@ export const MessageItem: React.FC<MessageItemProps> = ({
               <textarea
                 value={editContent}
                 onChange={(e) => setEditContent(e.target.value)}
-                className="w-full p-2 border border-slate-300 rounded-sm focus:ring-1 focus:ring-slate-400 focus:border-slate-400 text-[15px] min-h-[60px] bg-white"
+                className="w-full p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-[15px] min-h-[60px] bg-white text-slate-900"
                 autoFocus
                 onKeyDown={(e) => {
                   if (e.key === 'Enter' && !e.shiftKey) {
@@ -179,20 +179,28 @@ export const MessageItem: React.FC<MessageItemProps> = ({
               <div className="flex justify-end gap-2 mt-2">
                 <button 
                   onClick={handleEditCancel}
-                  className="px-3 py-1.5 text-xs font-medium text-slate-600 hover:bg-slate-100 rounded-sm"
+                  className="px-4 py-2 text-sm font-medium text-slate-600 hover:bg-slate-100 rounded-lg transition-colors"
                 >
                   Cancel
                 </button>
                 <button 
                   onClick={handleEditSave}
-                  className="px-3 py-1.5 text-xs font-medium text-white bg-slate-900 hover:bg-slate-800 rounded-sm"
+                  className="px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors"
                 >
                   Save Changes
                 </button>
               </div>
             </div>
           ) : (
-            <div className="text-slate-800 text-[15px] leading-normal whitespace-pre-wrap break-words">
+            /* Message Content */
+            <div className={cn(
+              "text-[15px] leading-relaxed max-w-full break-words",
+              /* Mobile/Bubble style: Me = Blue Bubble, Others = Transparent (Slack style) */
+              /* But user asked for redesign, so let's give distinct look */
+              isOwnMessage 
+                ? "bg-blue-50/80 border border-blue-100 p-3 rounded-lg rounded-tl-none inline-block text-slate-800"
+                : "text-slate-800 py-1"
+            )}>
               {renderMentions(message.content)}
             </div>
           )}
@@ -242,19 +250,51 @@ export const MessageItem: React.FC<MessageItemProps> = ({
                       </div>
                     </>
                   ) : (
-                    /* File Attachment with Download Button */
-                    <div className="p-3 bg-slate-50 flex items-center gap-2 group-hover/att:bg-slate-100 transition-colors">
-                      <span className="text-xl">📄</span>
-                      <span className="text-sm truncate flex-1 font-medium text-slate-700">{att.name}</span>
+                    /* File Attachment Card - Slack style */
+                    <div className="flex items-center gap-3 p-3 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors min-w-[280px]">
+                      {/* File Type Icon with color */}
+                      <div className={cn(
+                        "w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0",
+                        att.name.endsWith('.pdf') ? "bg-red-100" :
+                        att.name.endsWith('.doc') || att.name.endsWith('.docx') ? "bg-blue-100" :
+                        att.name.endsWith('.xls') || att.name.endsWith('.xlsx') ? "bg-green-100" :
+                        att.name.endsWith('.ppt') || att.name.endsWith('.pptx') ? "bg-orange-100" :
+                        "bg-slate-100"
+                      )}>
+                        {att.name.endsWith('.pdf') ? (
+                          <svg className="w-5 h-5 text-red-600" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm-1 2l5 5h-5V4zM8.5 13h1v4h-1v-4zm3 0h1v4h-1v-4zm3 0h1v4h-1v-4z"/>
+                          </svg>
+                        ) : att.name.endsWith('.doc') || att.name.endsWith('.docx') ? (
+                          <svg className="w-5 h-5 text-blue-600" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm4 18H6V4h7v5h5v11z"/>
+                          </svg>
+                        ) : (
+                          <svg className="w-5 h-5 text-slate-500" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm4 18H6V4h7v5h5v11z"/>
+                          </svg>
+                        )}
+                      </div>
+                      {/* File Info */}
+                      <div className="flex-1 min-w-0">
+                        <div className="font-medium text-slate-900 text-sm truncate">{att.name}</div>
+                        <div className="text-xs text-slate-500">
+                          {att.size ? (att.size < 1024 * 1024 
+                            ? `${(att.size / 1024).toFixed(1)} KB` 
+                            : `${(att.size / (1024 * 1024)).toFixed(1)} MB`) 
+                          : 'File'}
+                        </div>
+                      </div>
+                      {/* Download Button */}
                       <a
                         href={att.url}
                         download={att.name}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="p-1.5 text-slate-400 hover:text-slate-700 hover:bg-white rounded-full transition-colors"
+                        className="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
                         title="Download"
                       >
-                        <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                         </svg>
                       </a>

@@ -44,6 +44,10 @@ const DocsPage = lazy(() => import('./pages/DocsPage').then(m => ({ default: m.D
 const SplashScreen = lazy(() => import('./pages/SplashScreen').then(m => ({ default: m.SplashScreen })));
 const AboutPage = lazy(() => import('./pages/About'));
 
+// SEO Landing Pages
+const GeekbotAlternative = lazy(() => import('./pages/GeekbotAlternative'));
+const AsyncStandupTools = lazy(() => import('./pages/AsyncStandupTools'));
+
 import { useNotificationListener } from './hooks/useNotificationListener';
 
 // Minimal loading fallback for Suspense
@@ -109,6 +113,9 @@ function App() {
             <Route path="/terms" element={<TermsOfService />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Login />} />
+            {/* SEO Competitor & Ranking Pages */}
+            <Route path="/alternatives/geekbot" element={<GeekbotAlternative />} />
+            <Route path="/best-async-standup-tools" element={<AsyncStandupTools />} />
           </Route>
 
           {/* Splash Screen Route */}

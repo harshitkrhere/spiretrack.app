@@ -868,12 +868,38 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
 
               {messages.filter(m => !m.parent_message_id).map((msg, index, sectionMessages) => {
                 const prevMsg = index > 0 ? sectionMessages[index - 1] : null;
-                const isGrouped = prevMsg && 
+                
+                // Date Divider Logic
+                const showDateDivider = !prevMsg || 
+                  new Date(msg.created_at).toDateString() !== new Date(prevMsg.created_at).toDateString();
+                
+                const dateLabel = new Date(msg.created_at).toLocaleDateString('en-US', { 
+                  weekday: 'long', 
+                  month: 'long', 
+                  day: 'numeric' 
+                });
+                const isToday = new Date(msg.created_at).toDateString() === new Date().toDateString();
+                const displayDate = isToday ? 'Today' : dateLabel;
+
+                // Grouping Logic - force false if date changed
+                const isGrouped = !showDateDivider && prevMsg && 
                   prevMsg.user_id === msg.user_id && 
                   (new Date(msg.created_at).getTime() - new Date(prevMsg.created_at).getTime() < 2 * 60 * 1000);
 
                 return (
                   <div key={msg.id} id={`message-${msg.id}`} className="transition-colors duration-200">
+                    {/* Date Divider */}
+                    {showDateDivider && (
+                      <div className="flex items-center justify-center my-6 relative">
+                        <div className="absolute inset-0 flex items-center px-4">
+                          <div className="w-full border-t border-slate-200"></div>
+                        </div>
+                        <div className="relative bg-white px-4 py-1 text-xs font-semibold text-slate-500 rounded-full border border-slate-200 shadow-sm z-10">
+                          {displayDate}
+                        </div>
+                      </div>
+                    )}
+
                     <MessageItem 
                       message={msg} 
                       currentUserId={currentUserId}
