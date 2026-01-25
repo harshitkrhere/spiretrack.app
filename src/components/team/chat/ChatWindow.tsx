@@ -51,6 +51,7 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
   const [tabs, setTabs] = useState<ChannelTab[]>([]);
   const [activeTab, setActiveTab] = useState<ChannelTabType>('messages');
   const [tabsLoading, setTabsLoading] = useState(true);
+  const [isSending, setIsSending] = useState(false);
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -430,15 +431,20 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
             // Check for duplicates first
             if (prev.some(m => m.id === formattedMessage.id)) return prev;
             
-            // If it's our own message, remove any recent temp messages
+            // If it's our own message, find and replace the matching temp message
             if (formattedMessage.user_id === currentUserId) {
-              const now = Date.now();
-              const filtered = prev.filter(m => {
-                if (!m.id.startsWith('temp-')) return true;
-                const tempTime = parseInt(m.id.replace('temp-', ''));
-                return (now - tempTime) > 5000; // Keep temp messages older than 5s
-              });
-              return [...filtered, formattedMessage];
+              const tempIndex = prev.findIndex(m => 
+                m.id.startsWith('temp-') && 
+                m.content === formattedMessage.content &&
+                m.user_id === currentUserId
+              );
+              
+              if (tempIndex !== -1) {
+                // Replace temp message with real one (prevents duplicates)
+                const updated = [...prev];
+                updated[tempIndex] = formattedMessage;
+                return updated;
+              }
             }
             
             return [...prev, formattedMessage];
@@ -486,6 +492,10 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
   };
 
   const handleSendMessage = async (content: string, attachments: Attachment[]) => {
+    // Prevent duplicate sends
+    if (isSending) return;
+    setIsSending(true);
+    
     const tempId = 'temp-' + Date.now();
     const optimisticMessage: Message = {
       id: tempId,
@@ -532,6 +542,8 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
         console.log('[Notifications] Queue processing triggered', err ? `with warning: ${err.message}` : '');
       });
     }
+    
+    setIsSending(false);
   };
 
   const handleScroll = () => {

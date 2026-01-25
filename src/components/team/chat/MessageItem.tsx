@@ -44,6 +44,7 @@ export const MessageItem: React.FC<MessageItemProps> = ({
   const [isEditing, setIsEditing] = useState(false);
   const [editContent, setEditContent] = useState(message.content);
   const [showActions, setShowActions] = useState(false);
+  const [lightboxImage, setLightboxImage] = useState<{ url: string; name: string } | null>(null);
 
   // System messages use different component
   if (message.is_system_message) {
@@ -200,13 +201,63 @@ export const MessageItem: React.FC<MessageItemProps> = ({
           {message.attachments && message.attachments.length > 0 && (
             <div className="mt-2 grid grid-cols-2 gap-2 max-w-md">
               {message.attachments.map((att, i) => (
-                <div key={i} className="relative group/att rounded-sm overflow-hidden border border-slate-200">
+                <div key={i} className="relative group/att rounded-lg overflow-hidden border border-slate-200 shadow-sm">
                   {att.type === 'image' ? (
-                    <img src={att.url} alt={att.name} className="w-full h-32 object-cover" />
+                    <>
+                      {/* Clickable Image */}
+                      <button
+                        onClick={() => setLightboxImage({ url: att.url, name: att.name })}
+                        className="w-full cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      >
+                        <img 
+                          src={att.url} 
+                          alt={att.name} 
+                          className="w-full h-32 object-cover transition-transform group-hover/att:scale-105" 
+                        />
+                      </button>
+                      {/* Hover Overlay with Actions */}
+                      <div className="absolute inset-0 bg-black/40 opacity-0 group-hover/att:opacity-100 transition-opacity flex items-center justify-center gap-2 pointer-events-none group-hover/att:pointer-events-auto">
+                        <button
+                          onClick={() => setLightboxImage({ url: att.url, name: att.name })}
+                          className="p-2 bg-white/90 rounded-full hover:bg-white transition-colors"
+                          title="View full size"
+                        >
+                          <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 text-slate-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7" />
+                          </svg>
+                        </button>
+                        <a
+                          href={att.url}
+                          download={att.name}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="p-2 bg-white/90 rounded-full hover:bg-white transition-colors"
+                          title="Download"
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 text-slate-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                          </svg>
+                        </a>
+                      </div>
+                    </>
                   ) : (
-                    <div className="p-3 bg-slate-50 flex items-center gap-2">
+                    /* File Attachment with Download Button */
+                    <div className="p-3 bg-slate-50 flex items-center gap-2 group-hover/att:bg-slate-100 transition-colors">
                       <span className="text-xl">📄</span>
                       <span className="text-sm truncate flex-1 font-medium text-slate-700">{att.name}</span>
+                      <a
+                        href={att.url}
+                        download={att.name}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="p-1.5 text-slate-400 hover:text-slate-700 hover:bg-white rounded-full transition-colors"
+                        title="Download"
+                      >
+                        <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                        </svg>
+                      </a>
                     </div>
                   )}
                 </div>
@@ -327,6 +378,55 @@ export const MessageItem: React.FC<MessageItemProps> = ({
           </div>
         )}
       </div>
+
+      {/* Image Lightbox Modal */}
+      {lightboxImage && (
+        <div 
+          className="fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-4 animate-in fade-in duration-200"
+          onClick={() => setLightboxImage(null)}
+          onKeyDown={(e) => e.key === 'Escape' && setLightboxImage(null)}
+          tabIndex={0}
+        >
+          {/* Close Button */}
+          <button
+            onClick={() => setLightboxImage(null)}
+            className="absolute top-4 right-4 p-2 text-white/80 hover:text-white bg-black/30 hover:bg-black/50 rounded-full transition-colors"
+            title="Close (Esc)"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+          
+          {/* Download Button */}
+          <a
+            href={lightboxImage.url}
+            download={lightboxImage.name}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={(e) => e.stopPropagation()}
+            className="absolute top-4 left-4 flex items-center gap-2 px-4 py-2 text-white/90 hover:text-white bg-black/30 hover:bg-black/50 rounded-full transition-colors text-sm font-medium"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+            </svg>
+            Download
+          </a>
+          
+          {/* Image */}
+          <img
+            src={lightboxImage.url}
+            alt={lightboxImage.name}
+            className="max-w-full max-h-[90vh] object-contain rounded-lg shadow-2xl animate-in zoom-in-95 duration-200"
+            onClick={(e) => e.stopPropagation()}
+          />
+          
+          {/* Image Name */}
+          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 px-4 py-2 bg-black/50 text-white/90 rounded-full text-sm font-medium max-w-xs truncate">
+            {lightboxImage.name}
+          </div>
+        </div>
+      )}
     </div>
   );
 };
