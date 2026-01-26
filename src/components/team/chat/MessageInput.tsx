@@ -1,11 +1,13 @@
 import React, { useState, useRef } from 'react';
 import { supabase } from '../../../lib/supabase';
-import type { Attachment } from './types';
+import type { Attachment, SpireAIMode } from './types';
+import { SpireAIModeSelector, SpireAIModeBadge } from './SpireAIModeSelector';
+import { MentionDropdown } from './MentionDropdown';
 
 interface MessageInputProps {
   teamId: string;
   channelId: string;
-  onSendMessage: (content: string, attachments: Attachment[]) => Promise<void>;
+  onSendMessage: (content: string, attachments: Attachment[], spireMode?: SpireAIMode) => Promise<void>;
   isAdmin: boolean;
 }
 
@@ -25,6 +27,16 @@ export const MessageInput: React.FC<MessageInputProps> = ({
   const quickRepliesRef = useRef<HTMLDivElement>(null);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const emojiPickerRef = useRef<HTMLDivElement>(null);
+  
+  // SpireAI Mode Selector state
+  const [selectedSpireMode, setSelectedSpireMode] = useState<SpireAIMode | null>(null);
+  const [showModeSelector, setShowModeSelector] = useState(false);
+  const modeSelectorRef = useRef<HTMLDivElement>(null);
+  
+  // Mention dropdown state
+  const [showMentionDropdown, setShowMentionDropdown] = useState(false);
+  const [mentionQuery, setMentionQuery] = useState('');
+  const [mentionStartPos, setMentionStartPos] = useState<number | null>(null);
 
   // Common emojis for quick access - Professional & Expressive
   const commonEmojis = [
@@ -69,6 +81,60 @@ export const MessageInput: React.FC<MessageInputProps> = ({
 
   const insertEmoji = (emoji: string) => insertText(emoji);
 
+  // Handle mention selection
+  const handleMentionSelect = (username: string) => {
+    if (mentionStartPos !== null && textareaRef.current) {
+      const before = content.substring(0, mentionStartPos);
+      const after = content.substring(textareaRef.current.selectionStart);
+      const newContent = before + '@' + username + ' ' + after;
+      setContent(newContent);
+      setShowMentionDropdown(false);
+      setMentionQuery('');
+      setMentionStartPos(null);
+      
+      setTimeout(() => {
+        textareaRef.current?.focus();
+        const newPos = mentionStartPos + username.length + 2; // @ + username + space
+        textareaRef.current?.setSelectionRange(newPos, newPos);
+      }, 0);
+    }
+  };
+
+  // Detect @ mentions while typing
+  const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const value = e.target.value;
+    const cursorPos = e.target.selectionStart;
+    
+    setContent(value);
+    
+    // Find if we're in a mention context
+    const textBeforeCursor = value.substring(0, cursorPos);
+    const lastAtPos = textBeforeCursor.lastIndexOf('@');
+    
+    if (lastAtPos !== -1) {
+      // Check if @ is at start or preceded by whitespace
+      const charBeforeAt = lastAtPos > 0 ? textBeforeCursor[lastAtPos - 1] : ' ';
+      const isValidMentionStart = charBeforeAt === ' ' || charBeforeAt === '\n' || lastAtPos === 0;
+      
+      if (isValidMentionStart) {
+        // Get the query after @
+        const query = textBeforeCursor.substring(lastAtPos + 1);
+        // Only show dropdown if query doesn't contain spaces (still typing username)
+        if (!query.includes(' ')) {
+          setMentionQuery(query);
+          setMentionStartPos(lastAtPos);
+          setShowMentionDropdown(true);
+          return;
+        }
+      }
+    }
+    
+    // Close dropdown if we're not in a valid mention context
+    setShowMentionDropdown(false);
+    setMentionQuery('');
+    setMentionStartPos(null);
+  };
+
   // Close popups when clicking outside
   React.useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
@@ -87,14 +153,31 @@ export const MessageInput: React.FC<MessageInputProps> = ({
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [showEmojiPicker, showQuickReplies]);
 
+  // Check if content mentions @spireai
+  const hasSpireAIMention = content.toLowerCase().includes('@spireai');
+  
+  // Show mode selector when @spireai is detected and no mode selected
+  React.useEffect(() => {
+    if (hasSpireAIMention && !selectedSpireMode) {
+      setShowModeSelector(true);
+    }
+  }, [hasSpireAIMention, selectedSpireMode]);
+
   const handleSend = async () => {
     if ((!content.trim() && attachments.length === 0) || isSending) return;
+    
+    // If message contains @spireai, require mode selection
+    if (hasSpireAIMention && !selectedSpireMode) {
+      setShowModeSelector(true);
+      return;
+    }
 
     setIsSending(true);
     try {
-      await onSendMessage(content, attachments);
+      await onSendMessage(content, attachments, selectedSpireMode || undefined);
       setContent('');
       setAttachments([]);
+      setSelectedSpireMode(null); // Reset mode after sending
       // Reset height
       if (textareaRef.current) {
         textareaRef.current.style.height = 'auto';
@@ -246,7 +329,43 @@ export const MessageInput: React.FC<MessageInputProps> = ({
   };
 
   return (
-    <div className="bg-white rounded-2xl border border-gray-200">
+    <div className="bg-white rounded-2xl border border-gray-200 relative">
+      {/* SpireAI Mode Selector */}
+      <div ref={modeSelectorRef} className="relative">
+        <SpireAIModeSelector
+          selectedMode={selectedSpireMode}
+          onSelectMode={(mode) => {
+            setSelectedSpireMode(mode);
+            setShowModeSelector(false);
+          }}
+          onClose={() => setShowModeSelector(false)}
+          isOpen={showModeSelector}
+        />
+        
+        {/* Mention Dropdown */}
+        <MentionDropdown
+          teamId={teamId}
+          searchQuery={mentionQuery}
+          isOpen={showMentionDropdown}
+          onSelect={handleMentionSelect}
+          onClose={() => {
+            setShowMentionDropdown(false);
+            setMentionQuery('');
+            setMentionStartPos(null);
+          }}
+        />
+      </div>
+      
+      {/* SpireAI Mode Badge - show when mode is selected */}
+      {selectedSpireMode && (
+        <div className="px-4 pt-3 pb-0">
+          <SpireAIModeBadge 
+            mode={selectedSpireMode} 
+            onClear={() => setSelectedSpireMode(null)} 
+          />
+        </div>
+      )}
+      
       {/* Attachments Preview */}
       {attachments.length > 0 && (
         <div className="flex flex-wrap gap-2 px-4 pt-3">
@@ -352,9 +471,9 @@ export const MessageInput: React.FC<MessageInputProps> = ({
         <textarea
           ref={textareaRef}
           value={content}
-          onChange={handleInput}
+          onChange={handleInputChange}
           onKeyDown={handleKeyDown}
-          placeholder="Type your message here..."
+          placeholder="Type your message here... (type @ to mention)"
           className="flex-1 bg-transparent border-0 focus:ring-0 focus:outline-none resize-none py-1 text-sm max-h-[150px] min-h-[24px] text-gray-800 placeholder:text-gray-400"
           rows={1}
         />

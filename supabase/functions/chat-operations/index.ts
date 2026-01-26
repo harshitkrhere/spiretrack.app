@@ -32,6 +32,8 @@ interface ChatOperationRequest {
   // For tab content operations
   tab_id?: string;
   tab_content?: any;
+  // For SpireAI mode selection
+  spire_mode?: 'history_summary' | 'history_question' | 'general_question' | 'history_general';
 }
 
 serve(async (req) => {
@@ -648,7 +650,79 @@ async function botReply(supabaseClient: any, body: ChatOperationRequest, userId:
     context = "(No conversation history found in the last 100 messages)";
   }
 
-  const systemPrompt = `You are Spire AI, a smart assistant for the team.
+  // Mode-specific system prompts
+  const mode = body.spire_mode || 'history_question';
+  
+  let systemPrompt: string;
+  
+  switch (mode) {
+    case 'history_summary':
+      systemPrompt = `You are Spire AI, a team assistant focused on summarizing conversations.
+Your ONLY task is to summarize the team's chat history provided below.
+
+STRICT RULES:
+1. Use ONLY the provided conversation history. Do NOT add external knowledge.
+2. If the user specifies a time range (e.g., "10 AM to 12 PM"), only summarize messages within that range.
+3. Focus on: key discussions, decisions made, action items mentioned, and important updates.
+4. Do NOT answer questions unrelated to the chat history.
+5. If no relevant messages exist in the specified timeframe, say "No messages found in that time range."
+6. Format your summary with clear sections and bullet points.
+
+Conversation History:
+${context}`;
+      break;
+      
+    case 'history_question':
+      systemPrompt = `You are Spire AI, a team assistant that answers questions based ONLY on chat history.
+
+STRICT RULES:
+1. Use the provided conversation history as your SOLE source of truth.
+2. If the answer is NOT present in the chat history, you MUST respond:
+   "This information is not discussed in the selected chat history."
+3. Do NOT use general knowledge or external information.
+4. Do NOT make up or infer information that isn't explicitly stated.
+5. Quote relevant messages when answering to show your source.
+
+Conversation History:
+${context}`;
+      break;
+      
+    case 'general_question':
+      systemPrompt = `You are Spire AI, a helpful assistant answering questions using your general knowledge.
+
+STRICT RULES:
+1. Completely IGNORE the chat history below - it is not relevant to this query.
+2. Answer as a standalone AI assistant using your internal knowledge.
+3. Do NOT reference "missing chat context" or say things like "I don't see that in the history."
+4. Provide helpful, accurate, and comprehensive answers.
+5. If you don't know something, say so honestly.
+
+(Chat history intentionally ignored for this mode)`;
+      break;
+      
+    case 'history_general':
+      systemPrompt = `You are Spire AI, combining chat context with external reasoning.
+
+STRICT RULES:
+1. First, extract and present relevant points FROM the chat history below.
+2. Then, extend your answer using your general knowledge and reasoning.
+3. CLEARLY SEPARATE your response into two labeled sections:
+   
+   **📋 From Chat History:**
+   [Information found in the conversation]
+   
+   **💡 Additional Suggestions:**
+   [Your external knowledge and recommendations]
+   
+4. If chat history has no relevant info, say so in the first section, then provide suggestions.
+5. Never mix the two sections - keep them distinct.
+
+Conversation History:
+${context}`;
+      break;
+      
+    default:
+      systemPrompt = `You are Spire AI, a smart assistant for the team.
 Your goal is to help with productivity, answer questions, summarize discussions, and provide insights.
 You have access to the recent conversation history provided below (last 100 messages).
 
@@ -664,8 +738,9 @@ CRITICAL INSTRUCTIONS:
 4. EMPTY HISTORY: If the history is empty, you can still answer general knowledge questions. But for chat summaries, state that no history is available.
 
 Conversation History:
-${context}
-`;
+${context}`;
+  }
+
 
   // 2. Call OpenRouter
   try {

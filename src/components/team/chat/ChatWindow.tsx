@@ -8,7 +8,7 @@ import { SearchPanel } from './SearchPanel';
 import { PinnedMessagesPanel } from './PinnedMessagesPanel';
 import { TabBar, OverviewTab, TasksTab, FilesTab, ActivityTab, ExecutionBoard, DecisionLog, AnnouncementPanel } from './tabs';
 import { MembersSidebar } from '../MembersSidebar';
-import { MagnifyingGlassIcon, MapPinIcon } from '@heroicons/react/24/outline';
+import { MagnifyingGlassIcon, MapPinIcon, Bars3Icon, ChevronLeftIcon } from '@heroicons/react/24/outline';
 import { Avatar } from '../../ui/Avatar';
 
 interface ChatWindowProps {
@@ -16,13 +16,17 @@ interface ChatWindowProps {
   channelId: string;
   currentUserId: string;
   isAdmin: boolean;
+  sidebarCollapsed?: boolean;
+  onToggleSidebar?: () => void;
 }
 
 export const ChatWindow: React.FC<ChatWindowProps> = ({ 
   teamId, 
   channelId, 
   currentUserId,
-  isAdmin 
+  isAdmin,
+  sidebarCollapsed = false,
+  onToggleSidebar
 }) => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [loading, setLoading] = useState(true);
@@ -769,17 +773,31 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
         {/* Top Row: Channel Info & Actions */}
         <div className="px-6 h-14 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="flex items-center gap-1 cursor-pointer hover:bg-gray-50 px-2 py-1 rounded-md -ml-2 transition-colors">
+            {/* Sidebar Toggle Button - Left side */}
+            {onToggleSidebar && (
+              <button
+                onClick={onToggleSidebar}
+                className="hidden md:flex p-2 -ml-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
+                title={sidebarCollapsed ? "Show channels" : "Hide channels"}
+              >
+                {sidebarCollapsed ? (
+                  <Bars3Icon className="w-5 h-5" />
+                ) : (
+                  <ChevronLeftIcon className="w-5 h-5" />
+                )}
+              </button>
+            )}
+            <div className="flex items-center gap-1 cursor-pointer hover:bg-gray-50 px-2 py-1 rounded-md transition-colors">
               <span className="text-lg font-medium text-gray-900 leading-none">#</span>
               <h2 className="text-lg font-medium text-gray-900 leading-none">{channelName || 'Loading...'}</h2>
             </div>
           </div>
 
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2">
             {/* Member Avatars - Clickable to open member list */}
             <button 
               onClick={() => setShowMembersList(true)}
-              className="flex items-center mr-2 cursor-pointer hover:opacity-80 transition-opacity"
+              className="flex items-center cursor-pointer hover:opacity-80 transition-opacity"
               title="View team members"
             >
               <div className="flex -space-x-2">
@@ -794,34 +812,28 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
                   />
                 ))}
                 {teamMembers.length > 3 && (
-                  <div className="w-7 h-7 rounded-sm border-2 border-white bg-gray-200 flex items-center justify-center text-[10px] font-medium text-gray-600">
+                  <div className="w-6 h-6 rounded-full border-2 border-white bg-gray-100 flex items-center justify-center text-[10px] font-medium text-gray-500">
                     +{teamMembers.length - 3}
                   </div>
                 )}
               </div>
-              <div className="ml-2 px-2 py-0.5 bg-gray-100 rounded text-xs font-medium text-gray-600">
-                {memberCount}
-              </div>
             </button>
 
-            <div className="h-5 border-l border-gray-200 mx-1"></div>
-
-            <div className="flex items-center gap-1">
-              <button 
-                onClick={() => setShowSearch(!showSearch)}
-                className={`p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-50 rounded-full transition-colors ${showSearch ? 'bg-gray-100 text-gray-900' : ''}`}
-                title="Search messages"
-              >
-                <MagnifyingGlassIcon className="w-5 h-5" />
-              </button>
-              <button 
-                onClick={() => setShowPinned(!showPinned)}
-                className={`p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-50 rounded-full transition-colors ${showPinned ? 'bg-gray-100 text-gray-900' : ''}`}
-                title="Pinned messages"
-              >
-                <MapPinIcon className="w-5 h-5" />
-              </button>
-            </div>
+            {/* Search & Pin buttons */}
+            <button 
+              onClick={() => setShowSearch(!showSearch)}
+              className={`p-1.5 text-gray-400 hover:text-gray-600 rounded-md transition-colors ${showSearch ? 'bg-gray-100 text-gray-700' : ''}`}
+              title="Search messages"
+            >
+              <MagnifyingGlassIcon className="w-4 h-4" />
+            </button>
+            <button 
+              onClick={() => setShowPinned(!showPinned)}
+              className={`p-1.5 text-gray-400 hover:text-gray-600 rounded-md transition-colors ${showPinned ? 'bg-gray-100 text-gray-700' : ''}`}
+              title="Pinned messages"
+            >
+              <MapPinIcon className="w-4 h-4" />
+            </button>
           </div>
         </div>
 

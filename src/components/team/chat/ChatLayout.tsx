@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { supabase } from '../../../lib/supabase';
 import { ChannelList } from './ChannelList';
 import { ChatWindow } from './ChatWindow';
-import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
+import { Bars3Icon, XMarkIcon, ChevronLeftIcon, ArrowLeftIcon } from '@heroicons/react/24/outline';
 
 export const ChatLayout: React.FC = () => {
   const { teamId } = useParams<{ teamId: string }>();
@@ -14,6 +14,7 @@ export const ChatLayout: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [accessDenied, setAccessDenied] = useState(false);
   const [showChannelList, setShowChannelList] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
   useEffect(() => {
     const checkUser = async () => {
@@ -126,12 +127,25 @@ export const ChatLayout: React.FC = () => {
       {/* Sidebar - Channel List */}
       <div className={`
         fixed md:relative inset-y-0 left-0 z-40
-        w-64 sm:w-72 md:w-64 
+        ${sidebarCollapsed ? 'md:w-0 md:overflow-hidden' : 'w-64 sm:w-72 md:w-64'} 
         border-r border-gray-200 bg-stone-50 
         flex flex-col
-        transform transition-transform duration-300 ease-in-out
+        transform transition-all duration-300 ease-in-out
         ${showChannelList ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
+        ${sidebarCollapsed ? 'md:border-0 md:opacity-0 md:pointer-events-none' : 'md:opacity-100'}
       `}>
+        {/* Back to Team Dashboard Button */}
+        <div className="px-3 pt-3 pb-2 border-b border-gray-200">
+          <button
+            onClick={() => navigate(`/app/team/${teamId}`)}
+            className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-white rounded-lg transition-all w-full"
+            title="Back to Team"
+          >
+            <ArrowLeftIcon className="w-4 h-4" />
+            <span>Team</span>
+          </button>
+        </div>
+
         {/* Mobile Close Button */}
         <button
           className="md:hidden absolute top-4 right-4 p-2 hover:bg-gray-200 rounded-lg z-10"
@@ -149,13 +163,17 @@ export const ChatLayout: React.FC = () => {
       </div>
 
       {/* Main Chat Area */}
-      <div className="flex-1 flex flex-col min-w-0 bg-white">
+      <div className="flex-1 flex flex-col min-w-0 bg-white relative">
+
+
         {activeChannelId ? (
           <ChatWindow 
             teamId={teamId}
             channelId={activeChannelId}
             currentUserId={currentUserId}
             isAdmin={isAdmin}
+            sidebarCollapsed={sidebarCollapsed}
+            onToggleSidebar={() => setSidebarCollapsed(!sidebarCollapsed)}
           />
         ) : (
           <div className="flex-1 flex items-center justify-center text-gray-400 bg-gray-50/50 p-4">

@@ -300,3 +300,52 @@ export const TAB_CONFIG: Record<ChannelTabType, { label: string; icon: string }>
   decisions: { label: 'Decisions', icon: 'ScaleIcon' },
   announcements: { label: 'Announcements', icon: 'MegaphoneIcon' },
 };
+
+// ========================================
+// SPIREAI OPERATING MODES (Phase 4)
+// ========================================
+
+export type SpireAIMode = 
+  | 'history_summary' 
+  | 'history_question' 
+  | 'general_question' 
+  | 'history_general';
+
+export interface SpireAIModeConfig {
+  id: SpireAIMode;
+  label: string;
+  shortLabel: string;
+  description: string;
+  icon: string;
+}
+
+export const SPIREAI_MODES: SpireAIModeConfig[] = [
+  {
+    id: 'history_summary',
+    label: 'History Summary',
+    shortLabel: 'Summary',
+    description: 'Summarize past team conversations',
+    icon: '📋',
+  },
+  {
+    id: 'history_question',
+    label: 'History-Based Question',
+    shortLabel: 'History Q',
+    description: 'Answer only from chat history',
+    icon: '💬',
+  },
+  {
+    id: 'general_question',
+    label: 'General Question',
+    shortLabel: 'General',
+    description: 'Answer using general knowledge',
+    icon: '🧠',
+  },
+  {
+    id: 'history_general',
+    label: 'History + General',
+    shortLabel: 'Combined',
+    description: 'Combine chat context with reasoning',
+    icon: '🔗',
+  },
+];
