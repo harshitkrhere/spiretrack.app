@@ -55,7 +55,7 @@ export const TabBar: React.FC<TabBarProps> = ({
     .sort((a, b) => a.position - b.position);
 
   return (
-    <div className="flex items-center gap-0.5 px-2 border-b border-gray-100 bg-white overflow-x-auto scrollbar-hide">
+    <div className="flex items-center gap-0.5 px-2 sm:px-3 border-b border-gray-100 bg-white overflow-x-auto scrollbar-hide -webkit-overflow-scrolling-touch">
       {sortedTabs.map((tab) => {
         const Icon = TAB_ICONS[tab.type];
         const label = tab.label || TAB_LABELS[tab.type];
@@ -68,7 +68,7 @@ export const TabBar: React.FC<TabBarProps> = ({
             key={tab.id}
             onClick={() => onTabChange(tab.type)}
             className={cn(
-              "flex items-center gap-1.5 px-2.5 py-2 text-xs whitespace-nowrap transition-all relative",
+              "flex items-center gap-1.5 px-3 sm:px-2.5 py-2.5 sm:py-2 text-xs whitespace-nowrap transition-all relative touch-manipulation",
               "hover:bg-gray-50 rounded-t-md",
               isActive
                 ? "text-gray-900 font-medium"

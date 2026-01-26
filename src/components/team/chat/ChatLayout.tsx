@@ -104,10 +104,11 @@ export const ChatLayout: React.FC = () => {
 
   return (
     <div className="flex h-full bg-white overflow-hidden">
-      {/* Mobile Channel Toggle Button */}
+      {/* Mobile Channel Toggle Button - Positioned top-left to avoid input overlap */}
       <button
-        className="md:hidden fixed bottom-4 right-4 z-40 w-12 h-12 bg-gray-900 text-white rounded-full shadow-lg flex items-center justify-center"
+        className="md:hidden fixed top-20 left-4 z-40 w-10 h-10 bg-white text-gray-700 border border-gray-200 rounded-xl shadow-md flex items-center justify-center hover:bg-gray-50 transition-all"
         onClick={() => setShowChannelList(!showChannelList)}
+        aria-label="Toggle channel list"
       >
         {showChannelList ? (
           <XMarkIcon className="w-5 h-5" />
