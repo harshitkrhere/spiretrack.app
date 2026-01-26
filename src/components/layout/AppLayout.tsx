@@ -39,6 +39,9 @@ export const AppLayout = () => {
   const [teamsExpanded, setTeamsExpanded] = useState(true);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [showOnboarding, setShowOnboarding] = useState(false);
+  
+  // Check if we are on a chat page to conditionally hide the header
+  const isChatPage = /\/app\/team\/[^/]+\/chat/.test(location.pathname);
 
   // Check if first-time user for onboarding
   useEffect(() => {
@@ -248,6 +251,8 @@ export const AppLayout = () => {
     </>
   );
 
+
+
   return (
     <div className="h-screen flex overflow-hidden font-sans bg-gray-50">
       {/* Desktop Sidebar - Hidden on mobile */}
@@ -290,27 +295,30 @@ export const AppLayout = () => {
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden bg-white">
         {/* Top Header Bar */}
-        <header className="h-14 flex-shrink-0 flex items-center justify-between px-4 border-b border-slate-200 bg-white">
-          {/* Mobile Hamburger Menu */}
-          <button 
-            className="md:hidden p-2 rounded-lg hover:bg-gray-100"
-            onClick={() => setMobileMenuOpen(true)}
-          >
-            <Bars3Icon className="w-6 h-6 text-gray-600" />
-          </button>
+        {/* Top Header Bar - Hidden on Chat Pages */}
+        {!isChatPage && (
+          <header className="h-14 flex-shrink-0 flex items-center justify-between px-4 border-b border-slate-200 bg-white">
+            {/* Mobile Hamburger Menu */}
+            <button 
+              className="md:hidden p-2 rounded-lg hover:bg-gray-100"
+              onClick={() => setMobileMenuOpen(true)}
+            >
+              <Bars3Icon className="w-6 h-6 text-gray-600" />
+            </button>
 
-          {/* Mobile Logo */}
-          <div className="md:hidden flex items-center gap-2">
-            <img src="/logo.png" alt="SpireTrack" className="w-6 h-6" />
-            <span className="font-semibold text-gray-900">SpireTrack</span>
-          </div>
+            {/* Mobile Logo */}
+            <div className="md:hidden flex items-center gap-2">
+              <img src="/logo.png" alt="SpireTrack" className="w-6 h-6" />
+              <span className="font-semibold text-gray-900">SpireTrack</span>
+            </div>
 
-          {/* Desktop spacer */}
-          <div className="hidden md:block" />
+            {/* Desktop spacer */}
+            <div className="hidden md:block" />
 
-          {/* Notifications */}
-          {user && <NotificationBell userId={user.id} />}
-        </header>
+            {/* Notifications */}
+            {user && <NotificationBell userId={user.id} />}
+          </header>
+        )}
         
         <main className="flex-1 overflow-y-auto">
           <Outlet />

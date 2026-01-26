@@ -7,7 +7,7 @@ import { ThreadPanel } from './ThreadPanel';
 import { SearchPanel } from './SearchPanel';
 import { PinnedMessagesPanel } from './PinnedMessagesPanel';
 import { TabBar, OverviewTab, TasksTab, FilesTab, ActivityTab, ExecutionBoard, DecisionLog, AnnouncementPanel } from './tabs';
-import { MembersSidebar } from '../MembersSidebar';
+
 import { MagnifyingGlassIcon, MapPinIcon, Bars3Icon, ChevronLeftIcon } from '@heroicons/react/24/outline';
 import { Avatar } from '../../ui/Avatar';
 
@@ -30,6 +30,7 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
 }) => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [hasMore, setHasMore] = useState(true);
   const [page, setPage] = useState(0);
@@ -49,7 +50,7 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
   // Team Members for avatar display
   const [teamMembers, setTeamMembers] = useState<MessageUser[]>([]);
   const [adminUserIds, setAdminUserIds] = useState<Set<string>>(new Set());
-  const [showMembersList, setShowMembersList] = useState(false);
+
   
   // Phase 1.5: Channel Tabs
   const [tabs, setTabs] = useState<ChannelTab[]>([]);
@@ -365,6 +366,7 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
   // Initial Load & Channel Change
   useEffect(() => {
     setLoading(true);
+    setLoadingMore(false);
     setMessages([]);
     setPage(0);
     setHasMore(true);
@@ -587,13 +589,20 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
   const handleScroll = () => {
     if (scrollContainerRef.current) {
       const { scrollTop } = scrollContainerRef.current;
-      if (scrollTop === 0 && hasMore && !loading) {
+      // Load more when scrolled to top, have more messages, and not already loading
+      if (scrollTop === 0 && hasMore && !loading && !loadingMore) {
         const prevHeight = scrollContainerRef.current.scrollHeight;
-        setPage(prev => prev + 1);
-        fetchMessages(page + 1).then(() => {
+        const nextPage = page + 1;
+        setPage(nextPage);
+        setLoadingMore(true);
+        
+        fetchMessages(nextPage).then(() => {
           if (scrollContainerRef.current) {
+            // Preserve scroll position after loading older messages
             scrollContainerRef.current.scrollTop = scrollContainerRef.current.scrollHeight - prevHeight;
           }
+        }).finally(() => {
+          setLoadingMore(false);
         });
       }
     }
@@ -772,7 +781,7 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
       {/* Header */}
       <div className="flex flex-col border-b border-gray-200 bg-white z-20 relative">
         {/* Top Row: Channel Info & Actions */}
-        <div className="px-6 h-14 flex items-center justify-between">
+        <div className="px-4 h-11 flex items-center justify-between">
           <div className="flex items-center gap-3">
             {/* Sidebar Toggle Button - Left side */}
             {onToggleSidebar && (
@@ -789,36 +798,12 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
               </button>
             )}
             <div className="flex items-center gap-1 cursor-pointer hover:bg-gray-50 px-2 py-1 rounded-md transition-colors">
-              <span className="text-lg font-medium text-gray-900 leading-none">#</span>
-              <h2 className="text-lg font-medium text-gray-900 leading-none">{channelName || 'Loading...'}</h2>
+              <span className="text-base font-medium text-gray-900 leading-none">#</span>
+              <h2 className="text-base font-medium text-gray-900 leading-none">{channelName || 'Loading...'}</h2>
             </div>
           </div>
 
           <div className="flex items-center gap-2">
-            {/* Member Avatars - Clickable to open member list */}
-            <button 
-              onClick={() => setShowMembersList(true)}
-              className="flex items-center cursor-pointer hover:opacity-80 transition-opacity"
-              title="View team members"
-            >
-              <div className="flex -space-x-2">
-                {displayAvatars.map((member, i) => (
-                  <Avatar
-                    key={member.id || i}
-                    src={member.avatar_url}
-                    name={member.full_name}
-                    email={member.email}
-                    size="xs"
-                    className="border-2 border-white"
-                  />
-                ))}
-                {teamMembers.length > 3 && (
-                  <div className="w-6 h-6 rounded-full border-2 border-white bg-gray-100 flex items-center justify-center text-[10px] font-medium text-gray-500">
-                    +{teamMembers.length - 3}
-                  </div>
-                )}
-              </div>
-            </button>
 
             {/* Search & Pin buttons */}
             <button 
@@ -888,7 +873,15 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
                 </div>
               )}
               
-              {hasMore && !loading && (
+              {/* Loading indicator for older messages */}
+              {loadingMore && (
+                <div className="flex justify-center items-center gap-2 py-3 bg-stone-100/80">
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-green-500"></div>
+                  <span className="text-xs text-gray-500 font-medium">Loading older messages...</span>
+                </div>
+              )}
+              
+              {hasMore && !loading && !loadingMore && (
                 <div className="text-center py-2 text-xs text-gray-400 font-medium uppercase tracking-wider">
                   Scroll up to load more
                 </div>
@@ -1091,12 +1084,7 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
         />
       )}
 
-      {/* Members Sidebar */}
-      <MembersSidebar
-        teamId={teamId}
-        isOpen={showMembersList}
-        onClose={() => setShowMembersList(false)}
-      />
+
     </div>
   );
 };

@@ -55,7 +55,7 @@ export const TabBar: React.FC<TabBarProps> = ({
     .sort((a, b) => a.position - b.position);
 
   return (
-    <div className="flex items-center gap-1 px-6 border-b border-gray-100 bg-white overflow-x-auto scrollbar-hide">
+    <div className="flex items-center gap-0.5 px-2 border-b border-gray-100 bg-white overflow-x-auto scrollbar-hide">
       {sortedTabs.map((tab) => {
         const Icon = TAB_ICONS[tab.type];
         const label = tab.label || TAB_LABELS[tab.type];
@@ -68,19 +68,19 @@ export const TabBar: React.FC<TabBarProps> = ({
             key={tab.id}
             onClick={() => onTabChange(tab.type)}
             className={cn(
-              "flex items-center gap-2 px-4 py-3.5 text-sm whitespace-nowrap transition-all relative",
-              "hover:bg-gray-50",
+              "flex items-center gap-1.5 px-2.5 py-2 text-xs whitespace-nowrap transition-all relative",
+              "hover:bg-gray-50 rounded-t-md",
               isActive
                 ? "text-gray-900 font-medium"
                 : "text-gray-400 hover:text-gray-600 font-normal"
             )}
           >
-            <Icon className="w-4 h-4" />
+            <Icon className="w-3.5 h-3.5" />
             <span>{label}</span>
             
             {/* Active indicator */}
             {isActive && (
-              <div className="absolute bottom-0 left-4 right-4 h-0.5 bg-gray-900 rounded-full" />
+              <div className="absolute bottom-0 left-2 right-2 h-0.5 bg-gray-900 rounded-full" />
             )}
           </button>
         );

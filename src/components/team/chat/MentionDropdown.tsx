@@ -38,7 +38,7 @@ export const MentionDropdown: React.FC<MentionDropdownProps> = ({
       try {
         setLoading(true);
 
-        // Use the same endpoint as MembersSidebar for consistency
+        // Fetch team members for mentions
         const { data, error } = await supabase.functions.invoke('team-operations', {
           body: {
             action: 'get_team_members',

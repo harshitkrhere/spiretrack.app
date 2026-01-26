@@ -329,7 +329,7 @@ export const MessageInput: React.FC<MessageInputProps> = ({
   };
 
   return (
-    <div className="bg-white rounded-2xl border border-gray-200 relative">
+    <div className="bg-white rounded-full border border-gray-200 shadow-sm relative mx-2 mb-2">
       {/* SpireAI Mode Selector */}
       <div ref={modeSelectorRef} className="relative">
         <SpireAIModeSelector
@@ -385,16 +385,16 @@ export const MessageInput: React.FC<MessageInputProps> = ({
         </div>
       )}
 
-      {/* Main Input - Simple like reference design */}
-      <div className="flex items-center gap-2 px-4 py-3">
+      {/* Main Input - Compact and rounded */}
+      <div className="flex items-center gap-1 px-3 py-2">
         {/* Attachment Button */}
         <button
           onClick={() => fileInputRef.current?.click()}
           disabled={isUploading}
-          className="p-2 text-gray-400 hover:text-gray-600 rounded-full transition-colors flex-shrink-0"
+          className="p-1.5 text-gray-400 hover:text-gray-600 rounded-full transition-colors flex-shrink-0"
           title="Attach file"
         >
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" />
           </svg>
         </button>
@@ -410,10 +410,10 @@ export const MessageInput: React.FC<MessageInputProps> = ({
         <div className="relative" ref={quickRepliesRef}>
           <button 
             onClick={() => setShowQuickReplies(!showQuickReplies)}
-            className={`p-2 rounded-full transition-colors flex-shrink-0 ${showQuickReplies ? 'text-gray-600 bg-gray-100' : 'text-gray-400 hover:text-gray-600'}`}
+            className={`p-1.5 rounded-full transition-colors flex-shrink-0 ${showQuickReplies ? 'text-gray-600 bg-gray-100' : 'text-gray-400 hover:text-gray-600'}`}
             title="Quick replies"
           >
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
             </svg>
           </button>
@@ -441,10 +441,10 @@ export const MessageInput: React.FC<MessageInputProps> = ({
         <div className="relative" ref={emojiPickerRef}>
           <button 
             onClick={() => setShowEmojiPicker(!showEmojiPicker)}
-            className={`p-2 rounded-full transition-colors flex-shrink-0 ${showEmojiPicker ? 'text-gray-600 bg-gray-100' : 'text-gray-400 hover:text-gray-600'}`}
+            className={`p-1.5 rounded-full transition-colors flex-shrink-0 ${showEmojiPicker ? 'text-gray-600 bg-gray-100' : 'text-gray-400 hover:text-gray-600'}`}
             title="Add emoji"
           >
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
           </button>
@@ -483,15 +483,15 @@ export const MessageInput: React.FC<MessageInputProps> = ({
           <button
             onClick={handleSend}
             disabled={isSending || isUploading}
-            className="p-2 text-gray-900 hover:text-gray-700 rounded-full transition-colors flex-shrink-0"
+            className="p-1.5 text-gray-900 hover:text-gray-700 rounded-full transition-colors flex-shrink-0"
           >
             {isSending ? (
-              <svg className="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <svg className="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                 <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                 <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
               </svg>
             ) : (
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
                 <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z" />
               </svg>
             )}
