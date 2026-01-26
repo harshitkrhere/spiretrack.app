@@ -593,37 +593,56 @@ async function botReply(supabaseClient: any, body: ChatOperationRequest, userId:
   }
 
   // 1. Fetch recent context
+  
+  // Fetch messages first (without join to avoid FK issues)
   const { data: messages, error: contextError } = await supabaseClient
     .from('team_messages')
-    .select(`
-      content,
-      user_id,
-      created_at,
-      user:users(full_name)
-    `)
+    .select('content, user_id, created_at')
     .eq('channel_id', channel_id)
     .order('created_at', { ascending: false })
     .limit(100);
     
   if (contextError) {
-    console.error('[Bot] Context fetch error:', contextError);
+    console.error('[Bot] Context fetch error messages:', contextError);
     // Proceed without context if fail
   }
 
-  let context = (messages || [])
-    .filter((m: any) => m.user_id !== null) // Exclude bot messages
-    .reverse()
-    .map((m: any) => {
-      const sender = m.user?.full_name || 'Unknown User';
-      const time = new Date(m.created_at).toLocaleString('en-US', { 
-        weekday: 'short', 
-        hour: 'numeric', 
-        minute: 'numeric',
-        hour12: true 
-      });
-      return `[${time}] ${sender}: ${m.content}`;
-    })
-    .join('\n');
+  let context = "";
+  
+  if (messages && messages.length > 0) {
+    // Fetch user names for the messages
+    const userIds = [...new Set(messages.map((m: any) => m.user_id).filter(Boolean))];
+    
+    let userMap: Record<string, string> = {};
+    if (userIds.length > 0) {
+      const { data: users, error: usersError } = await supabaseClient
+        .from('users')
+        .select('id, full_name')
+        .in('id', userIds);
+        
+      if (!usersError && users) {
+        users.forEach((u: any) => {
+          userMap[u.id] = u.full_name;
+        });
+      }
+    }
+  
+    // Filter out bot messages (where user_id is null) and format with timestamp
+    context = messages
+      .filter((m: any) => m.user_id !== null) // Exclude bot messages
+      .reverse()
+      .map((m: any) => {
+        const sender = userMap[m.user_id] || 'Unknown User';
+        const time = new Date(m.created_at).toLocaleString('en-US', { 
+          weekday: 'short', 
+          hour: 'numeric', 
+          minute: 'numeric',
+          hour12: true 
+        });
+        return `[${time}] ${sender}: ${m.content}`;
+      })
+      .join('\n');
+  }
 
   if (!context.trim()) {
     context = "(No conversation history found in the last 100 messages)";
@@ -664,7 +683,7 @@ ${context}
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'openai/gpt-oss-20b:free',
+        model: 'google/gemini-2.0-flash-001', // reliable free model
         messages: [
           { role: 'system', content: systemPrompt },
           { role: 'user', content }

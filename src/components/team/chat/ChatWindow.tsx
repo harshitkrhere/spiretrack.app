@@ -565,9 +565,8 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
             console.error('[Chat] Bot reply function error:', error);
             setIsBotTyping(false); 
           } else {
-            // We keep it true until the real time subscription receives the message, 
-            // OR we can set it false here. Since wait time is small between insert and sub, 
-            // setting false here is safer to avoid hanging state.
+            // Clear typing indicator immediately on success to prevent it from getting stuck
+            // The real-time message will appear shortly via subscription
             setIsBotTyping(false);
           }
         }).catch(err => {
