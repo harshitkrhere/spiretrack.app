@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import type { Message, ReactionType, ReactionGroup } from './types';
 import { SystemMessage } from './SystemMessage';
 import { ReactionBar } from './ReactionBar';
-import { 
-  ChatBubbleLeftRightIcon, 
+import {
+  ChatBubbleLeftRightIcon,
   MapPinIcon,
   PencilIcon,
   TrashIcon,
@@ -71,32 +71,32 @@ export const MessageItem: React.FC<MessageItemProps> = ({
   // Group reactions by type
   const reactionGroups: ReactionGroup[] = message.reactions
     ? Object.values(
-        message.reactions.reduce((acc, reaction) => {
-          if (!acc[reaction.reaction_type]) {
-            acc[reaction.reaction_type] = {
-              type: reaction.reaction_type,
-              count: 0,
-              users: [],
-              has_current_user: false,
-            };
-          }
-          acc[reaction.reaction_type].count++;
-          if (reaction.user) {
-            acc[reaction.reaction_type].users.push(reaction.user);
-          }
-          if (reaction.user_id === currentUserId) {
-            acc[reaction.reaction_type].has_current_user = true;
-          }
-          return acc;
-        }, {} as Record<ReactionType, ReactionGroup>)
-      )
+      message.reactions.reduce((acc, reaction) => {
+        if (!acc[reaction.reaction_type]) {
+          acc[reaction.reaction_type] = {
+            type: reaction.reaction_type,
+            count: 0,
+            users: [],
+            has_current_user: false,
+          };
+        }
+        acc[reaction.reaction_type].count++;
+        if (reaction.user) {
+          acc[reaction.reaction_type].users.push(reaction.user);
+        }
+        if (reaction.user_id === currentUserId) {
+          acc[reaction.reaction_type].has_current_user = true;
+        }
+        return acc;
+      }, {} as Record<ReactionType, ReactionGroup>)
+    )
     : [];
 
   const formatTime = (timestamp: string) => {
     const date = new Date(timestamp);
     const today = new Date();
     const isToday = date.toDateString() === today.toDateString();
-    
+
     if (isToday) {
       return date.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
     }
@@ -105,10 +105,10 @@ export const MessageItem: React.FC<MessageItemProps> = ({
 
   // Subtle highlight for admin @team messages only
   // Must be: sender is admin + contains @team + not in thread + not a reply
-  const isAdminTeamMention = 
-    senderIsAdmin && 
-    message.content.toLowerCase().includes('@team') && 
-    !isInThread && 
+  const isAdminTeamMention =
+    senderIsAdmin &&
+    message.content.toLowerCase().includes('@team') &&
+    !isInThread &&
     !message.parent_message_id;
 
   return (
@@ -128,16 +128,25 @@ export const MessageItem: React.FC<MessageItemProps> = ({
         {/* Avatar - Hidden if grouped */}
         {!isGrouped && (
           <div className="flex-shrink-0 mt-0.5">
-            <Avatar
-              src={message.user?.avatar_url}
-              name={message.user?.full_name || (message.user_id ? 'Unknown' : 'Spire AI')}
-              email={message.user?.email}
-              size="sm"
-              className={cn("rounded-md", !message.user_id && !message.is_system_message && "bg-indigo-50 text-indigo-600 ring-1 ring-indigo-100")}
-            />
+            {!message.user_id && !message.is_system_message ? (
+              /* SpireAI Bot - Use the real logo */
+              <img
+                src="/spire-ai-logo.png"
+                alt="Spire AI"
+                className="w-9 h-9 rounded-md object-cover"
+              />
+            ) : (
+              <Avatar
+                src={message.user?.avatar_url}
+                name={message.user?.full_name || 'Unknown'}
+                email={message.user?.email}
+                size="sm"
+                className="rounded-md"
+              />
+            )}
           </div>
         )}
-        
+
         {/* Spacer when grouped to maintain alignment */}
         {isGrouped && <div className="w-9 flex-shrink-0" />}
 
@@ -146,7 +155,7 @@ export const MessageItem: React.FC<MessageItemProps> = ({
           {!isGrouped && (
             <div className="flex items-baseline gap-2 mb-1">
               <span className={cn(
-                "font-medium text-sm", 
+                "font-medium text-sm",
                 !message.user_id && !message.is_system_message ? "text-indigo-600 flex items-center gap-1.5" : "text-gray-900"
               )}>
                 {!message.user_id && !message.is_system_message && (
@@ -186,13 +195,13 @@ export const MessageItem: React.FC<MessageItemProps> = ({
                 }}
               />
               <div className="flex justify-end gap-2 mt-2">
-                <button 
+                <button
                   onClick={handleEditCancel}
                   className="px-4 py-2 text-sm text-gray-500 hover:bg-gray-100 rounded-full transition-colors"
                 >
                   Cancel
                 </button>
-                <button 
+                <button
                   onClick={handleEditSave}
                   className="px-4 py-2 text-sm font-medium text-white bg-gray-900 hover:bg-gray-800 rounded-full transition-colors"
                 >
@@ -219,10 +228,10 @@ export const MessageItem: React.FC<MessageItemProps> = ({
                         onClick={() => setLightboxImage({ url: att.url, name: att.name })}
                         className="w-full cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500"
                       >
-                        <img 
-                          src={att.url} 
-                          alt={att.name} 
-                          className="w-full h-32 object-cover transition-transform group-hover/att:scale-105" 
+                        <img
+                          src={att.url}
+                          alt={att.name}
+                          className="w-full h-32 object-cover transition-transform group-hover/att:scale-105"
                         />
                       </button>
                       {/* Hover Overlay with Actions */}
@@ -258,22 +267,22 @@ export const MessageItem: React.FC<MessageItemProps> = ({
                       <div className={cn(
                         "w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0",
                         att.name.endsWith('.pdf') ? "bg-red-100" :
-                        att.name.endsWith('.doc') || att.name.endsWith('.docx') ? "bg-blue-100" :
-                        att.name.endsWith('.xls') || att.name.endsWith('.xlsx') ? "bg-green-100" :
-                        att.name.endsWith('.ppt') || att.name.endsWith('.pptx') ? "bg-orange-100" :
-                        "bg-slate-100"
+                          att.name.endsWith('.doc') || att.name.endsWith('.docx') ? "bg-blue-100" :
+                            att.name.endsWith('.xls') || att.name.endsWith('.xlsx') ? "bg-green-100" :
+                              att.name.endsWith('.ppt') || att.name.endsWith('.pptx') ? "bg-orange-100" :
+                                "bg-slate-100"
                       )}>
                         {att.name.endsWith('.pdf') ? (
                           <svg className="w-5 h-5 text-red-600" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm-1 2l5 5h-5V4zM8.5 13h1v4h-1v-4zm3 0h1v4h-1v-4zm3 0h1v4h-1v-4z"/>
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm-1 2l5 5h-5V4zM8.5 13h1v4h-1v-4zm3 0h1v4h-1v-4zm3 0h1v4h-1v-4z" />
                           </svg>
                         ) : att.name.endsWith('.doc') || att.name.endsWith('.docx') ? (
                           <svg className="w-5 h-5 text-blue-600" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm4 18H6V4h7v5h5v11z"/>
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm4 18H6V4h7v5h5v11z" />
                           </svg>
                         ) : (
                           <svg className="w-5 h-5 text-slate-500" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm4 18H6V4h7v5h5v11z"/>
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm4 18H6V4h7v5h5v11z" />
                           </svg>
                         )}
                       </div>
@@ -281,10 +290,10 @@ export const MessageItem: React.FC<MessageItemProps> = ({
                       <div className="flex-1 min-w-0">
                         <div className="font-medium text-slate-900 text-sm truncate">{att.name}</div>
                         <div className="text-xs text-slate-500">
-                          {att.size ? (att.size < 1024 * 1024 
-                            ? `${(att.size / 1024).toFixed(1)} KB` 
-                            : `${(att.size / (1024 * 1024)).toFixed(1)} MB`) 
-                          : 'File'}
+                          {att.size ? (att.size < 1024 * 1024
+                            ? `${(att.size / 1024).toFixed(1)} KB`
+                            : `${(att.size / (1024 * 1024)).toFixed(1)} MB`)
+                            : 'File'}
                         </div>
                       </div>
                       {/* Download Button */}
@@ -306,11 +315,11 @@ export const MessageItem: React.FC<MessageItemProps> = ({
               ))}
             </div>
           )}
-          
+
           {/* Reaction Bar */}
           {reactionGroups.length > 0 && (
             <div className="mt-1.5">
-              <ReactionBar 
+              <ReactionBar
                 messageId={message.id}
                 reactionGroups={reactionGroups}
                 currentUserId={currentUserId}
@@ -322,7 +331,7 @@ export const MessageItem: React.FC<MessageItemProps> = ({
           {/* Thread Button */}
           {message.thread_reply_count > 0 && showThreadButton && (
             <div className="mt-1.5">
-              <button 
+              <button
                 onClick={() => onReply(message.id)}
                 className="flex items-center gap-2 px-2 py-1 bg-white border border-slate-200 rounded-sm shadow-sm hover:bg-slate-50 transition-colors group/thread"
               >
@@ -362,14 +371,14 @@ export const MessageItem: React.FC<MessageItemProps> = ({
             "absolute right-4 top-1 flex items-center bg-white shadow-sm border border-slate-200 rounded-sm p-0.5 opacity-0 group-hover:opacity-100 transition-opacity z-10",
             showActions && "opacity-100"
           )}>
-            <button 
+            <button
               onClick={() => onReactionToggle(message.id, 'acknowledge')}
               className="p-1.5 text-slate-400 hover:text-amber-600 hover:bg-amber-50 rounded-sm transition-colors"
               title="Like"
             >
               👍
             </button>
-            <button 
+            <button
               onClick={() => onReply(message.id)}
               className="p-1.5 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-sm transition-colors"
               title="Reply"
@@ -380,7 +389,7 @@ export const MessageItem: React.FC<MessageItemProps> = ({
               <>
                 <div className="w-px h-3 bg-slate-200 mx-1"></div>
                 {canEdit && (
-                  <button 
+                  <button
                     onClick={() => setIsEditing(true)}
                     className="p-1.5 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-sm transition-colors"
                     title="Edit"
@@ -389,12 +398,12 @@ export const MessageItem: React.FC<MessageItemProps> = ({
                   </button>
                 )}
                 {canPin && (
-                  <button 
+                  <button
                     onClick={() => onPin?.(message.id)}
                     className={cn(
                       "p-1.5 rounded-sm transition-colors",
-                      message.is_pinned 
-                        ? "text-amber-600 bg-amber-50" 
+                      message.is_pinned
+                        ? "text-amber-600 bg-amber-50"
                         : "text-slate-400 hover:text-slate-700 hover:bg-slate-100"
                     )}
                     title={message.is_pinned ? "Unpin" : "Pin"}
@@ -403,7 +412,7 @@ export const MessageItem: React.FC<MessageItemProps> = ({
                   </button>
                 )}
                 {canDelete && (
-                  <button 
+                  <button
                     onClick={() => {
                       if (confirm('Are you sure you want to delete this message?')) {
                         onDelete?.(message.id);
@@ -423,7 +432,7 @@ export const MessageItem: React.FC<MessageItemProps> = ({
 
       {/* Image Lightbox Modal */}
       {lightboxImage && (
-        <div 
+        <div
           className="fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-4 animate-in fade-in duration-200"
           onClick={() => setLightboxImage(null)}
           onKeyDown={(e) => e.key === 'Escape' && setLightboxImage(null)}
@@ -439,7 +448,7 @@ export const MessageItem: React.FC<MessageItemProps> = ({
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
             </svg>
           </button>
-          
+
           {/* Download Button */}
           <a
             href={lightboxImage.url}
@@ -454,7 +463,7 @@ export const MessageItem: React.FC<MessageItemProps> = ({
             </svg>
             Download
           </a>
-          
+
           {/* Image */}
           <img
             src={lightboxImage.url}
@@ -462,7 +471,7 @@ export const MessageItem: React.FC<MessageItemProps> = ({
             className="max-w-full max-h-[90vh] object-contain rounded-lg shadow-2xl animate-in zoom-in-95 duration-200"
             onClick={(e) => e.stopPropagation()}
           />
-          
+
           {/* Image Name */}
           <div className="absolute bottom-4 left-1/2 -translate-x-1/2 px-4 py-2 bg-black/50 text-white/90 rounded-full text-sm font-medium max-w-xs truncate">
             {lightboxImage.name}

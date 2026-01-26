@@ -32,8 +32,8 @@ interface ChatOperationRequest {
   // For tab content operations
   tab_id?: string;
   tab_content?: any;
-  // For SpireAI mode selection
-  spire_mode?: 'history_summary' | 'history_question' | 'general_question' | 'history_general';
+  // For SpireAI mode selection - MANDATORY, NO FALLBACK
+  spire_mode?: 'summary' | 'history_answer' | 'general' | 'hybrid';
 }
 
 serve(async (req) => {
@@ -51,7 +51,7 @@ serve(async (req) => {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
     }
-    
+
     const supabaseClient = createClient(
       Deno.env.get('SUPABASE_URL') ?? '',
       Deno.env.get('SUPABASE_ANON_KEY') ?? '',
@@ -72,7 +72,7 @@ serve(async (req) => {
     // However, some versions of supabase-js behave differently in Deno.
     const token = authHeader.replace('Bearer ', '');
     const { data: { user }, error: authError } = await supabaseClient.auth.getUser(token);
-    
+
     if (authError) {
       console.error('Auth error:', authError);
       return new Response(JSON.stringify({ error: 'Authentication failed', details: authError.message }), {
@@ -80,7 +80,7 @@ serve(async (req) => {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
     }
-    
+
     if (!user) {
       console.error('No user found');
       return new Response(JSON.stringify({ error: 'Unauthorized - no user session' }), {
@@ -100,39 +100,39 @@ serve(async (req) => {
       case 'fetch_thread':
         result = await fetchThread(supabaseClient, body, user.id);
         break;
-      
+
       case 'add_reaction':
         result = await addReaction(supabaseClient, body, user.id);
         break;
-      
+
       case 'remove_reaction':
         result = await removeReaction(supabaseClient, body, user.id);
         break;
-      
+
       case 'pin_message':
         result = await pinMessage(supabaseClient, body, user.id);
         break;
-      
+
       case 'unpin_message':
         result = await unpinMessage(supabaseClient, body, user.id);
         break;
-      
+
       case 'get_pinned_messages':
         result = await getPinnedMessages(supabaseClient, body, user.id);
         break;
-      
+
       case 'create_system_message':
         result = await createSystemMessage(supabaseClient, body, user.id);
         break;
-      
+
       case 'search_messages':
         result = await searchMessages(supabaseClient, body, user.id);
         break;
-      
+
       case 'edit_message':
         result = await editMessage(supabaseClient, body, user.id);
         break;
-      
+
       case 'save_tab_content':
         result = await saveTabContent(adminClient, body, user.id);
         break;
@@ -140,7 +140,7 @@ serve(async (req) => {
       case 'bot_reply':
         result = await botReply(supabaseClient, body, user.id);
         break;
-      
+
       default:
         return new Response(JSON.stringify({ error: 'Unknown action' }), {
           status: 400,
@@ -542,15 +542,15 @@ async function saveTabContent(adminClient: any, body: ChatOperationRequest, user
     .single();
 
   let result;
-  
+
   if (existing) {
     // Update existing
     const { data, error } = await adminClient
       .from('channel_tab_content')
-      .update({ 
-        content: tab_content, 
-        updated_by: userId, 
-        updated_at: new Date().toISOString() 
+      .update({
+        content: tab_content,
+        updated_by: userId,
+        updated_at: new Date().toISOString()
       })
       .eq('tab_id', tab_id)
       .select()
@@ -565,10 +565,10 @@ async function saveTabContent(adminClient: any, body: ChatOperationRequest, user
     // Insert new
     const { data, error } = await adminClient
       .from('channel_tab_content')
-      .insert({ 
-        tab_id, 
-        content: tab_content, 
-        updated_by: userId 
+      .insert({
+        tab_id,
+        content: tab_content,
+        updated_by: userId
       })
       .select()
       .single();
@@ -589,13 +589,13 @@ async function saveTabContent(adminClient: any, body: ChatOperationRequest, user
 
 async function botReply(supabaseClient: any, body: ChatOperationRequest, userId: string) {
   const { team_id, channel_id, content } = body;
-  
+
   if (!team_id || !channel_id || !content) {
     throw new Error('team_id, channel_id, and content required');
   }
 
   // 1. Fetch recent context
-  
+
   // Fetch messages first (without join to avoid FK issues)
   const { data: messages, error: contextError } = await supabaseClient
     .from('team_messages')
@@ -603,43 +603,43 @@ async function botReply(supabaseClient: any, body: ChatOperationRequest, userId:
     .eq('channel_id', channel_id)
     .order('created_at', { ascending: false })
     .limit(100);
-    
+
   if (contextError) {
     console.error('[Bot] Context fetch error messages:', contextError);
     // Proceed without context if fail
   }
 
   let context = "";
-  
+
   if (messages && messages.length > 0) {
     // Fetch user names for the messages
     const userIds = [...new Set(messages.map((m: any) => m.user_id).filter(Boolean))];
-    
+
     let userMap: Record<string, string> = {};
     if (userIds.length > 0) {
       const { data: users, error: usersError } = await supabaseClient
         .from('users')
         .select('id, full_name')
         .in('id', userIds);
-        
+
       if (!usersError && users) {
         users.forEach((u: any) => {
           userMap[u.id] = u.full_name;
         });
       }
     }
-  
+
     // Filter out bot messages (where user_id is null) and format with timestamp
     context = messages
       .filter((m: any) => m.user_id !== null) // Exclude bot messages
       .reverse()
       .map((m: any) => {
         const sender = userMap[m.user_id] || 'Unknown User';
-        const time = new Date(m.created_at).toLocaleString('en-US', { 
-          weekday: 'short', 
-          hour: 'numeric', 
+        const time = new Date(m.created_at).toLocaleString('en-US', {
+          weekday: 'short',
+          hour: 'numeric',
           minute: 'numeric',
-          hour12: true 
+          hour12: true
         });
         return `[${time}] ${sender}: ${m.content}`;
       })
@@ -650,95 +650,124 @@ async function botReply(supabaseClient: any, body: ChatOperationRequest, userId:
     context = "(No conversation history found in the last 100 messages)";
   }
 
-  // Mode-specific system prompts
-  const mode = body.spire_mode || 'history_question';
-  
+  // STRICT MODE ENFORCEMENT: Mode is MANDATORY
+  const mode = body.spire_mode;
+
+  // If no mode provided, REFUSE to respond
+  if (!mode) {
+    console.log('[Bot] No mode selected - refusing to process');
+
+    // Insert error message
+    const adminClient = createClient(
+      Deno.env.get('SUPABASE_URL') ?? '',
+      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
+    );
+
+    const { data, error } = await adminClient
+      .from('team_messages')
+      .insert({
+        team_id,
+        channel_id,
+        user_id: null,
+        content: '⚠️ **Mode Selection Required**\n\nPlease select a mode to proceed:\n\n- 📝 **Chat Summary**\n- 🔍 **Contextual Q&A**\n- 🧠 **General Intelligence**\n- ✨ **Hybrid Reasoning**',
+        is_system_message: false
+      })
+      .select()
+      .single();
+
+    if (error) throw error;
+    return { success: true, data };
+  }
+
   let systemPrompt: string;
-  
+
   switch (mode) {
-    case 'history_summary':
-      systemPrompt = `You are Spire AI, a team assistant focused on summarizing conversations.
-Your ONLY task is to summarize the team's chat history provided below.
+    case 'summary':
+      // MODE 1: Chat History Summary Mode
+      systemPrompt = `You are Spire AI, a professional team assistant.
 
-STRICT RULES:
-1. Use ONLY the provided conversation history. Do NOT add external knowledge.
-2. If the user specifies a time range (e.g., "10 AM to 12 PM"), only summarize messages within that range.
-3. Focus on: key discussions, decisions made, action items mentioned, and important updates.
-4. Do NOT answer questions unrelated to the chat history.
-5. If no relevant messages exist in the specified timeframe, say "No messages found in that time range."
-6. Format your summary with clear sections and bullet points.
+Your task: Summarize the team chat history provided below.
 
-Conversation History:
+Response style:
+- Write in clear, natural paragraphs
+- Use simple line breaks for lists, not markdown bullets
+- Keep it concise and professional
+- No bold, italics, or special formatting
+- Sound conversational, like a helpful colleague
+
+If user specifies a time range, only summarize messages in that range.
+If no messages exist, simply say: "No messages found in the specified time range."
+
+If user asks a question instead of requesting a summary, respond: "I'm in Summary mode. Switch to Context or General mode to ask questions."
+
+Chat History:
 ${context}`;
       break;
-      
-    case 'history_question':
-      systemPrompt = `You are Spire AI, a team assistant that answers questions based ONLY on chat history.
 
-STRICT RULES:
-1. Use the provided conversation history as your SOLE source of truth.
-2. If the answer is NOT present in the chat history, you MUST respond:
-   "This information is not discussed in the selected chat history."
-3. Do NOT use general knowledge or external information.
-4. Do NOT make up or infer information that isn't explicitly stated.
-5. Quote relevant messages when answering to show your source.
+    case 'history_answer':
+      // MODE 2: Context-based Q&A Mode
+      systemPrompt = `You are Spire AI, a professional team assistant.
 
-Conversation History:
+Your task: Answer the user's question using ONLY the chat history provided.
+
+Response style:
+- Write naturally, like you're talking to a colleague
+- No bold, italics, or markdown formatting
+- Keep answers direct and clear
+- Quote relevant messages when helpful (use regular quotes, not code blocks)
+
+Important rules:
+- Only use information from the chat history
+- If the answer isn't in the chat, say: "I don't see that information in the chat history."
+- Don't guess or make assumptions
+
+Chat History:
 ${context}`;
       break;
-      
-    case 'general_question':
-      systemPrompt = `You are Spire AI, a helpful assistant answering questions using your general knowledge.
 
-STRICT RULES:
-1. Completely IGNORE the chat history below - it is not relevant to this query.
-2. Answer as a standalone AI assistant using your internal knowledge.
-3. Do NOT reference "missing chat context" or say things like "I don't see that in the history."
-4. Provide helpful, accurate, and comprehensive answers.
-5. If you don't know something, say so honestly.
+    case 'general':
+      // MODE 3: General Knowledge Mode
+      systemPrompt = `You are Spire AI, a helpful and knowledgeable assistant.
 
-(Chat history intentionally ignored for this mode)`;
+Your task: Answer the user's question using your general knowledge.
+
+Response style:
+- Write naturally and conversationally
+- Use plain text, no markdown formatting (no **, *, #, etc.)
+- Break up long responses with simple line breaks
+- Be helpful, accurate, and concise
+- Sound friendly but professional
+
+Important: This is general knowledge mode. The user is asking you a question unrelated to any team chat. Answer as a helpful AI assistant would.`;
       break;
-      
-    case 'history_general':
-      systemPrompt = `You are Spire AI, combining chat context with external reasoning.
 
-STRICT RULES:
-1. First, extract and present relevant points FROM the chat history below.
-2. Then, extend your answer using your general knowledge and reasoning.
-3. CLEARLY SEPARATE your response into two labeled sections:
-   
-   **📋 From Chat History:**
-   [Information found in the conversation]
-   
-   **💡 Additional Suggestions:**
-   [Your external knowledge and recommendations]
-   
-4. If chat history has no relevant info, say so in the first section, then provide suggestions.
-5. Never mix the two sections - keep them distinct.
+    case 'hybrid':
+      // MODE 4: Hybrid Mode
+      systemPrompt = `You are Spire AI, a helpful team assistant.
 
-Conversation History:
+Your task: Answer using both the chat history AND your general knowledge, but keep them clearly separated.
+
+Response format (use this exact structure):
+
+From Chat History:
+[Write what you found in the chat, or say "No relevant information found in the chat."]
+
+Additional Thoughts:
+[Add your analysis, suggestions, or general knowledge here]
+
+Response style:
+- Write naturally in plain text
+- No markdown formatting (no **, *, #, etc.)
+- Keep each section concise
+- Sound like a helpful colleague
+
+Chat History:
 ${context}`;
       break;
-      
+
     default:
-      systemPrompt = `You are Spire AI, a smart assistant for the team.
-Your goal is to help with productivity, answer questions, summarize discussions, and provide insights.
-You have access to the recent conversation history provided below (last 100 messages).
-
-CRITICAL INSTRUCTIONS:
-1. CONTEXT VS KNOWLEDGE: 
-   - IF the user asks about the chat (summaries, "what did X say", "decisions made"), use ONLY the provided "Conversation History". Do NOT invent messages or names.
-   - IF the user asks a general question (e.g. "Who is Elon Musk?", "Write a Python script", "Draft an email"), use your own internal knowledge. You do NOT need the chat history for these.
-
-2. ZERO HALLUCINATION (CHAT): When answering questions about the chat, if the info isn't there, say "I don't see that in the chat history." Do NOT make up team members or conversations.
-
-3. TIMESTAMPS: Use the provided timestamps for time-aware queries (e.g. "summarize today").
-
-4. EMPTY HISTORY: If the history is empty, you can still answer general knowledge questions. But for chat summaries, state that no history is available.
-
-Conversation History:
-${context}`;
+      // Should never happen with TypeScript, but safety fallback
+      throw new Error(`Invalid SpireAI mode: ${mode}`);
   }
 
 
@@ -746,8 +775,8 @@ ${context}`;
   try {
     const apiKey = Deno.env.get('OPENROUTER_API_KEY');
     if (!apiKey) {
-        console.error('[Bot] OPENROUTER_API_KEY is missing');
-        throw new Error('Configuration error: Missing API Key');
+      console.error('[Bot] OPENROUTER_API_KEY is missing');
+      throw new Error('Configuration error: Missing API Key');
     }
     console.log('[Bot] Calling OpenRouter with key length:', apiKey.length);
 
@@ -769,19 +798,19 @@ ${context}`;
     console.log('[Bot] OpenRouter Status:', response.status);
 
     if (!response.ok) {
-        const errText = await response.text();
-        console.error('[Bot] OpenRouter error body:', errText);
-        throw new Error(`OpenRouter API error: ${response.status} - ${errText.substring(0, 100)}`);
+      const errText = await response.text();
+      console.error('[Bot] OpenRouter error body:', errText);
+      throw new Error(`OpenRouter API error: ${response.status} - ${errText.substring(0, 100)} `);
     }
 
     const aiData = await response.json();
     console.log('[Bot] AI Response received');
-    
+
     // Check if we got a valid choice
     const replyContent = aiData.choices?.[0]?.message?.content;
     if (!replyContent) {
-        console.error('[Bot] No content in AI response:', JSON.stringify(aiData));
-        throw new Error('Empty response from AI');
+      console.error('[Bot] No content in AI response:', JSON.stringify(aiData));
+      throw new Error('Empty response from AI');
     }
 
     // 3. Insert Bot Message
@@ -802,12 +831,12 @@ ${context}`;
       })
       .select()
       .single();
-      
+
     if (error) {
-        console.error('[Bot] Insert error:', error);
-        throw error;
+      console.error('[Bot] Insert error:', error);
+      throw error;
     }
-    
+
     console.log('[Bot] Success:', data.id);
     return { success: true, data };
 

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { supabase } from '../../../lib/supabase';
-import type { Message, Attachment, ReactionType, ChannelTab, ChannelTabType, MessageUser } from './types';
+import type { Message, Attachment, ReactionType, ChannelTab, ChannelTabType, MessageUser, SpireAIMode } from './types';
 import { MessageItem } from './MessageItem';
 import { MessageInput } from './MessageInput';
 import { ThreadPanel } from './ThreadPanel';
@@ -501,7 +501,7 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
     }, 100);
   };
 
-  const handleSendMessage = async (content: string, attachments: Attachment[]) => {
+  const handleSendMessage = async (content: string, attachments: Attachment[], spireMode?: SpireAIMode) => {
     // Prevent duplicate sends
     if (isSending) return;
     setIsSending(true);
@@ -562,7 +562,8 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
             action: 'bot_reply',
             team_id: teamId,
             channel_id: channelId,
-            content
+            content,
+            spire_mode: spireMode // Pass the selected mode to the edge function
           }
         }).then(({ error }) => {
           if (error) {

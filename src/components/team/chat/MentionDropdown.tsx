@@ -34,10 +34,10 @@ export const MentionDropdown: React.FC<MentionDropdownProps> = ({
   useEffect(() => {
     const fetchMembers = async () => {
       if (!teamId) return;
-      
+
       try {
         setLoading(true);
-        
+
         // Use the same endpoint as MembersSidebar for consistency
         const { data, error } = await supabase.functions.invoke('team-operations', {
           body: {
@@ -49,7 +49,7 @@ export const MentionDropdown: React.FC<MentionDropdownProps> = ({
         if (error) throw error;
 
         const activeMembers = data?.active_members || [];
-        
+
         const memberList: TeamMember[] = activeMembers.map((m: any) => ({
           id: m.user_id,
           email: m.email,
@@ -104,7 +104,7 @@ export const MentionDropdown: React.FC<MentionDropdownProps> = ({
       switch (e.key) {
         case 'ArrowDown':
           e.preventDefault();
-          setSelectedIndex((prev) => 
+          setSelectedIndex((prev) =>
             prev < filteredMembers.length - 1 ? prev + 1 : prev
           );
           break;
@@ -171,17 +171,18 @@ export const MentionDropdown: React.FC<MentionDropdownProps> = ({
             <button
               key={member.id}
               onClick={() => onSelect(member.username || '')}
-              className={`w-full px-3 py-2.5 flex items-center gap-3 transition-colors ${
-                index === selectedIndex
+              className={`w-full px-3 py-2.5 flex items-center gap-3 transition-colors ${index === selectedIndex
                   ? 'bg-teal-50'
                   : 'hover:bg-gray-50'
-              }`}
+                }`}
             >
               {/* Avatar */}
               {member.id === 'spireai' ? (
-                <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-teal-400 to-teal-600 flex items-center justify-center">
-                  <span className="text-white text-sm">⚡</span>
-                </div>
+                <img
+                  src="/spire-ai-logo.png"
+                  alt="SpireAI"
+                  className="w-8 h-8 rounded-lg object-cover"
+                />
               ) : (
                 <Avatar
                   src={member.avatar_url}

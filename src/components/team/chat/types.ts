@@ -41,21 +41,21 @@ export interface Message {
   mentions: string[];
   created_at: string;
   updated_at: string;
-  
+
   // Threading
   parent_message_id: string | null;
   thread_reply_count: number;
   last_thread_reply_at: string | null;
   thread_participants?: MessageUser[]; // Up to 3 users who replied
-  
+
   // System messages
   is_system_message: boolean;
   system_event_type: string | null;
   system_event_data: Record<string, any> | null;
-  
+
   // Editing
   edited_at: string | null;
-  
+
   // Relations (populated on fetch)
   user?: MessageUser;
   reactions?: MessageReaction[];
@@ -102,7 +102,7 @@ export interface PinnedMessage {
 // SYSTEM MESSAGE TYPES
 // ========================================
 
-export type SystemEventType = 
+export type SystemEventType =
   | 'report_submitted'
   | 'report_generated'
   | 'form_updated'
@@ -302,14 +302,17 @@ export const TAB_CONFIG: Record<ChannelTabType, { label: string; icon: string }>
 };
 
 // ========================================
-// SPIREAI OPERATING MODES (Phase 4)
+// SPIREAI STRICT OPERATING MODES (Phase 4)
 // ========================================
+// IMPORTANT: These modes are STRICTLY ISOLATED.
+// No fallback, no blending, no assumptions.
+// Each mode has exclusive permissions and explicit prohibitions.
 
-export type SpireAIMode = 
-  | 'history_summary' 
-  | 'history_question' 
-  | 'general_question' 
-  | 'history_general';
+export type SpireAIMode =
+  | 'summary'         // Chat History Summary Mode
+  | 'history_answer'  // Chat History Answer Mode
+  | 'general'         // General AI Chat Mode
+  | 'hybrid';         // Hybrid Mode (History + General)
 
 export interface SpireAIModeConfig {
   id: SpireAIMode;
@@ -317,35 +320,56 @@ export interface SpireAIModeConfig {
   shortLabel: string;
   description: string;
   icon: string;
+  color: string;         // Color code for UI
+  allowedSources: string[];
+  forbidden: string[];
 }
 
 export const SPIREAI_MODES: SpireAIModeConfig[] = [
   {
-    id: 'history_summary',
-    label: 'History Summary',
+    id: 'summary',
+    label: 'Chat Summary',
     shortLabel: 'Summary',
-    description: 'Summarize past team conversations',
-    icon: '📋',
+    description: 'Generates concise summaries of team discussions.',
+    icon: '�',
+    color: '#334155', // Slate-700
+    allowedSources: ['Team chat messages only'],
+    forbidden: ['Answering questions', 'Giving advice', 'Using general knowledge', 'Opinions'],
   },
   {
-    id: 'history_question',
-    label: 'History-Based Question',
-    shortLabel: 'History Q',
-    description: 'Answer only from chat history',
-    icon: '💬',
+    id: 'history_answer',
+    label: 'Contextual Q&A',
+    shortLabel: 'Context',
+    description: 'Answers strictly using team conversation history.',
+    icon: '🔍',
+    color: '#1d4ed8', // Blue-700
+    allowedSources: ['Team chat only'],
+    forbidden: ['General knowledge', 'Guessing', 'Advice', 'Filling gaps'],
   },
   {
-    id: 'general_question',
-    label: 'General Question',
+    id: 'general',
+    label: 'General Intelligence',
     shortLabel: 'General',
-    description: 'Answer using general knowledge',
+    description: 'Uses external AI knowledge. Ignores chat context.',
     icon: '🧠',
+    color: '#047857', // Emerald-700
+    allowedSources: ['General world knowledge', 'Reasoning', 'Science', 'Facts'],
+    forbidden: ['Referring to team chat', 'Saying "not in chat"', 'Asking for chat context'],
   },
   {
-    id: 'history_general',
-    label: 'History + General',
-    shortLabel: 'Combined',
-    description: 'Combine chat context with reasoning',
-    icon: '🔗',
+    id: 'hybrid',
+    label: 'Hybrid Reasoning',
+    shortLabel: 'Hybrid',
+    description: 'Combines team context with external intelligence.',
+    icon: '✨',
+    color: '#6d28d9', // Violet-700
+    allowedSources: ['Chat history', 'General knowledge'],
+    forbidden: ['Mixing sections', 'Hiding assumptions'],
   },
 ];
+
+// Get mode config by ID
+export const getSpireAIModeConfig = (mode: SpireAIMode): SpireAIModeConfig | undefined => {
+  return SPIREAI_MODES.find(m => m.id === mode);
+};
+
