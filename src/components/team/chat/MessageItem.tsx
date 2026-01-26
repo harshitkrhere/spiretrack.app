@@ -114,11 +114,11 @@ export const MessageItem: React.FC<MessageItemProps> = ({
   return (
     <div
       className={cn(
-        "group px-6 hover:bg-slate-50/50 transition-colors relative",
+        "group px-6 hover:bg-stone-50/50 transition-colors relative",
         isGrouped ? "py-0.5" : "py-2",
         isInThread && "py-1",
-        // Subtle left border for admin @team messages - green accent
-        isAdminTeamMention && "border-l-[3px] border-l-emerald-500 bg-emerald-50/40"
+        // Subtle accent for admin @team messages
+        isAdminTeamMention && "bg-stone-50"
       )}
       id={`message-${message.id}`}
       onMouseEnter={() => setShowActions(true)}
@@ -130,10 +130,10 @@ export const MessageItem: React.FC<MessageItemProps> = ({
           <div className="flex-shrink-0 mt-0.5">
             <Avatar
               src={message.user?.avatar_url}
-              name={message.user?.full_name}
+              name={message.user?.full_name || (message.user_id ? 'Unknown' : 'Spire AI')}
               email={message.user?.email}
               size="sm"
-              className="rounded-md"
+              className={cn("rounded-md", !message.user_id && !message.is_system_message && "bg-indigo-50 text-indigo-600 ring-1 ring-indigo-100")}
             />
           </div>
         )}
@@ -145,17 +145,26 @@ export const MessageItem: React.FC<MessageItemProps> = ({
         <div className="flex-1 min-w-0">
           {!isGrouped && (
             <div className="flex items-baseline gap-2 mb-1">
-              <span className="font-semibold text-slate-900 text-[15px]">
-                {message.user?.full_name || 'Unknown User'}
+              <span className={cn(
+                "font-medium text-sm", 
+                !message.user_id && !message.is_system_message ? "text-indigo-600 flex items-center gap-1.5" : "text-gray-900"
+              )}>
+                {!message.user_id && !message.is_system_message && (
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-3.5 h-3.5">
+                    <path fillRule="evenodd" d="M9.315 7.584C12.195 3.883 16.695 1.5 21.75 1.5a.75.75 0 01.75.75c0 5.056-2.383 9.555-6.084 12.436A6.75 6.75 0 019.75 22.5a.75.75 0 01-.75-.75v-4.131A15.838 15.838 0 016.382 15H2.25a.75.75 0 01-.75-.75 6.75 6.75 0 017.815-6.666zM15 6.75a2.25 2.25 0 100 4.5 2.25 2.25 0 000-4.5z" clipRule="evenodd" />
+                    <path d="M5.26 17.242a.75.75 0 10-.897-1.203 5.243 5.243 0 00-2.05 5.022.75.75 0 00.625.627 5.243 5.243 0 002.322-.446z" />
+                  </svg>
+                )}
+                {message.user?.full_name || (message.user_id ? 'Unknown User' : 'Spire AI')}
               </span>
-              <span className="text-xs text-slate-400 font-normal">
+              <span className="text-xs text-gray-400">
                 {formatTime(message.created_at)}
               </span>
               {message.edited_at && (
-                <span className="text-[10px] text-slate-400 italic">(edited)</span>
+                <span className="text-xs text-gray-400 italic">(edited)</span>
               )}
               {message.is_pinned && (
-                <MapPinIcon className="w-3 h-3 text-amber-500 rotate-45" />
+                <MapPinIcon className="w-3 h-3 text-gray-400" />
               )}
             </div>
           )}
@@ -165,7 +174,7 @@ export const MessageItem: React.FC<MessageItemProps> = ({
               <textarea
                 value={editContent}
                 onChange={(e) => setEditContent(e.target.value)}
-                className="w-full p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-[15px] min-h-[60px] bg-white text-slate-900"
+                className="w-full p-3 border border-gray-200 rounded-xl focus:ring-1 focus:ring-gray-300 focus:border-gray-300 text-sm min-h-[60px] bg-white text-gray-800"
                 autoFocus
                 onKeyDown={(e) => {
                   if (e.key === 'Enter' && !e.shiftKey) {
@@ -179,28 +188,21 @@ export const MessageItem: React.FC<MessageItemProps> = ({
               <div className="flex justify-end gap-2 mt-2">
                 <button 
                   onClick={handleEditCancel}
-                  className="px-4 py-2 text-sm font-medium text-slate-600 hover:bg-slate-100 rounded-lg transition-colors"
+                  className="px-4 py-2 text-sm text-gray-500 hover:bg-gray-100 rounded-full transition-colors"
                 >
                   Cancel
                 </button>
                 <button 
                   onClick={handleEditSave}
-                  className="px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors"
+                  className="px-4 py-2 text-sm font-medium text-white bg-gray-900 hover:bg-gray-800 rounded-full transition-colors"
                 >
                   Save Changes
                 </button>
               </div>
             </div>
           ) : (
-            /* Message Content */
-            <div className={cn(
-              "text-[15px] leading-relaxed max-w-full break-words",
-              /* Mobile/Bubble style: Me = Blue Bubble, Others = Transparent (Slack style) */
-              /* But user asked for redesign, so let's give distinct look */
-              isOwnMessage 
-                ? "bg-blue-50/80 border border-blue-100 p-3 rounded-lg rounded-tl-none inline-block text-slate-800"
-                : "text-slate-800 py-1"
-            )}>
+            /* Message Content - Clean text, no bubbles */
+            <div className="text-sm text-gray-700 leading-relaxed">
               {renderMentions(message.content)}
             </div>
           )}

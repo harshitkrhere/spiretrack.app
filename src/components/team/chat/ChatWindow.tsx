@@ -52,6 +52,8 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
   const [activeTab, setActiveTab] = useState<ChannelTabType>('messages');
   const [tabsLoading, setTabsLoading] = useState(true);
   const [isSending, setIsSending] = useState(false);
+  // State for bot typing indicator
+  const [isBotTyping, setIsBotTyping] = useState(false);
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -388,15 +390,19 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
 
           if (!message) return;
 
-          const { data: profile } = await supabase
-            .from('users')
-            .select('id, email, full_name, avatar_url')
-            .eq('id', message.user_id)
-            .single();
+          let profile = null;
+          if (message.user_id) {
+            const { data } = await supabase
+              .from('users')
+              .select('id, email, full_name, avatar_url')
+              .eq('id', message.user_id)
+              .single();
+            profile = data;
+          }
 
           const formattedMessage = {
             ...message,
-            user: profile || { id:message.user_id, email: 'Unknown', full_name: 'Unknown User' }
+            user: profile || (message.user_id ? { id: message.user_id, email: 'Unknown', full_name: 'Unknown User' } : { id: 'bot', email: 'ai@spiretrack.app', full_name: 'Spire AI', avatar_url: '/logo.png' })
           };
           
           // Show browser notification for messages from OTHER users
@@ -541,6 +547,34 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
       supabase.functions.invoke('process-notifications').catch(err => {
         console.log('[Notifications] Queue processing triggered', err ? `with warning: ${err.message}` : '');
       });
+
+      // Check for @spireai (or @SpireAI) mention and trigger bot reply
+      if (content.toLowerCase().includes('@spireai')) {
+        setIsBotTyping(true);
+        setTimeout(scrollToBottom, 50); // Scroll to show typing indicator
+
+        supabase.functions.invoke('chat-operations', {
+          body: { 
+            action: 'bot_reply',
+            team_id: teamId,
+            channel_id: channelId,
+            content
+          }
+        }).then(({ error }) => {
+          if (error) {
+            console.error('[Chat] Bot reply function error:', error);
+            setIsBotTyping(false); 
+          } else {
+            // We keep it true until the real time subscription receives the message, 
+            // OR we can set it false here. Since wait time is small between insert and sub, 
+            // setting false here is safer to avoid hanging state.
+            setIsBotTyping(false);
+          }
+        }).catch(err => {
+          console.error('[Chat] Failed to trigger bot reply (exception):', err);
+          setIsBotTyping(false);
+        });
+      }
     }
     
     setIsSending(false);
@@ -560,6 +594,7 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
       }
     }
   };
+
 
   // Phase 1 Feature Handlers
   const handleOpenThread = (messageId: string) => {
@@ -729,22 +764,15 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
   };
 
   return (
-    <div className="flex flex-col h-full bg-white relative overflow-hidden">
+    <div className="flex flex-col h-full bg-stone-50 relative overflow-hidden">
       {/* Header */}
-      <div className="flex flex-col border-b border-slate-200 bg-white z-20 relative">
+      <div className="flex flex-col border-b border-gray-200 bg-white z-20 relative">
         {/* Top Row: Channel Info & Actions */}
         <div className="px-6 h-14 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="flex items-center gap-1 cursor-pointer hover:bg-slate-50 px-2 py-1 rounded-md -ml-2 transition-colors">
-              <span className="text-xl font-bold text-slate-900 leading-none">#</span>
-              <h2 className="text-lg font-bold text-slate-900 leading-none">{channelName || 'Loading...'}</h2>
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4 text-slate-500 mt-0.5">
-                <path fillRule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clipRule="evenodd" />
-              </svg>
-            </div>
-            
-            <div className="flex items-center gap-2 text-sm text-slate-500 border-l border-slate-300 pl-3 h-5">
-              <span className="truncate max-w-sm">Track and coordinate social media</span>
+            <div className="flex items-center gap-1 cursor-pointer hover:bg-gray-50 px-2 py-1 rounded-md -ml-2 transition-colors">
+              <span className="text-lg font-medium text-gray-900 leading-none">#</span>
+              <h2 className="text-lg font-medium text-gray-900 leading-none">{channelName || 'Loading...'}</h2>
             </div>
           </div>
 
@@ -767,29 +795,29 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
                   />
                 ))}
                 {teamMembers.length > 3 && (
-                  <div className="w-7 h-7 rounded-sm border-2 border-white bg-slate-300 flex items-center justify-center text-[10px] font-medium text-slate-600">
+                  <div className="w-7 h-7 rounded-sm border-2 border-white bg-gray-200 flex items-center justify-center text-[10px] font-medium text-gray-600">
                     +{teamMembers.length - 3}
                   </div>
                 )}
               </div>
-              <div className="ml-2 px-2 py-0.5 bg-slate-100 rounded text-xs font-medium text-slate-600">
+              <div className="ml-2 px-2 py-0.5 bg-gray-100 rounded text-xs font-medium text-gray-600">
                 {memberCount}
               </div>
             </button>
 
-            <div className="h-5 border-l border-slate-200 mx-1"></div>
+            <div className="h-5 border-l border-gray-200 mx-1"></div>
 
             <div className="flex items-center gap-1">
               <button 
                 onClick={() => setShowSearch(!showSearch)}
-                className={`p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-50 rounded-md transition-colors ${showSearch ? 'bg-slate-100 text-slate-900' : ''}`}
+                className={`p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-50 rounded-full transition-colors ${showSearch ? 'bg-gray-100 text-gray-900' : ''}`}
                 title="Search messages"
               >
                 <MagnifyingGlassIcon className="w-5 h-5" />
               </button>
               <button 
                 onClick={() => setShowPinned(!showPinned)}
-                className={`p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-50 rounded-md transition-colors ${showPinned ? 'bg-slate-100 text-slate-900' : ''}`}
+                className={`p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-50 rounded-full transition-colors ${showPinned ? 'bg-gray-100 text-gray-900' : ''}`}
                 title="Pinned messages"
               >
                 <MapPinIcon className="w-5 h-5" />
@@ -833,36 +861,36 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
       </div>
 
       {/* Tab Content Area */}
-      <div className="flex-1 bg-white flex flex-col overflow-hidden">
+      <div className="flex-1 bg-stone-50 flex flex-col overflow-hidden">
         {/* Messages Tab */}
         {activeTab === 'messages' && (
           <>
             <div 
               ref={scrollContainerRef}
               onScroll={handleScroll}
-              className="flex-1 overflow-y-auto bg-white"
+              className="flex-1 overflow-y-auto bg-stone-50"
             >
               {loading && page === 0 && (
                 <div className="flex justify-center p-4">
-                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#5D79A0]"></div>
+                  <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-gray-400"></div>
                 </div>
               )}
               
               {hasMore && !loading && (
-                <div className="text-center py-2 text-xs text-slate-400 font-medium uppercase tracking-wider">
+                <div className="text-center py-2 text-xs text-gray-400 font-medium uppercase tracking-wider">
                   Scroll up to load more
                 </div>
               )}
 
               {messages.length === 0 && !loading && (
-                <div className="flex flex-col items-center justify-center h-full text-slate-400">
-                  <div className="bg-slate-50 p-8 rounded-[2rem] mb-6 border border-slate-100">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 text-slate-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <div className="flex flex-col items-center justify-center h-full text-gray-400">
+                  <div className="bg-stone-100 p-8 rounded-2xl mb-6">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
                     </svg>
                   </div>
-                  <p className="text-xl font-bold text-slate-900">No messages yet</p>
-                  <p className="text-sm text-slate-500 mt-2">Start the conversation!</p>
+                  <p className="text-lg font-light text-gray-600">No messages yet</p>
+                  <p className="text-sm text-gray-400 mt-2">Start the conversation!</p>
                 </div>
               )}
 
@@ -891,10 +919,10 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
                     {/* Date Divider */}
                     {showDateDivider && (
                       <div className="flex items-center justify-center my-6 relative">
-                        <div className="absolute inset-0 flex items-center px-4">
-                          <div className="w-full border-t border-slate-200"></div>
+                        <div className="absolute inset-0 flex items-center px-8">
+                          <div className="w-full border-t border-gray-200"></div>
                         </div>
-                        <div className="relative bg-white px-4 py-1 text-xs font-semibold text-slate-500 rounded-full border border-slate-200 shadow-sm z-10">
+                        <div className="relative bg-stone-50 px-4 py-1 text-xs font-medium text-gray-500 z-10">
                           {displayDate}
                         </div>
                       </div>
@@ -917,11 +945,45 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
                   </div>
                 );
               })}
+
+              
+              {/* Bot Typing Indicator */}
+              {isBotTyping && (
+                <div className="flex gap-4 p-4 hover:bg-gray-50 transition-colors animate-pulse">
+                  <div className="flex-shrink-0 pt-1">
+                    <Avatar
+                      src="/logo.png"
+                      name="Spire AI"
+                      email="ai@spiretrack.app"
+                      size="md"
+                      className="ring-2 ring-indigo-50"
+                    />
+                  </div>
+                  <div className="flex flex-col min-w-0 max-w-[85%]">
+                    <div className="flex items-center gap-2 mb-0.5">
+                      <span className="font-semibold text-sm text-gray-900">Spire AI</span>
+                      <span className="bg-indigo-100 text-indigo-700 text-[10px] px-1.5 py-0.5 rounded font-medium border border-indigo-200 uppercase tracking-wider">
+                        BOT
+                      </span>
+                    </div>
+                    <div className="text-gray-900 text-[15px] leading-relaxed break-words whitespace-pre-wrap flex items-center h-6">
+                      <div className="flex space-x-1">
+                        <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce [animation-delay:-0.3s]"></div>
+                        <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce [animation-delay:-0.15s]"></div>
+                        <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+
+
               <div ref={messagesEndRef} />
             </div>
 
             {/* Input Area */}
-            <div className="p-6 bg-white border-t border-slate-100">
+            <div className="p-6 bg-stone-50">
               <MessageInput 
                 teamId={teamId}
                 channelId={channelId}

@@ -95,20 +95,32 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({
         .single();
 
       if (existing) {
-        await supabase
+        // Update existing content
+        const { error: updateError } = await supabase
           .from('channel_tab_content')
-          .update({ content, updated_by: currentUserId })
+          .update({ content, updated_by: currentUserId, updated_at: new Date().toISOString() })
           .eq('tab_id', tabId);
+        
+        if (updateError) {
+          console.error('Update error:', updateError);
+          throw updateError;
+        }
       } else {
-        await supabase
+        // Insert new content
+        const { error: insertError } = await supabase
           .from('channel_tab_content')
           .insert({ tab_id: tabId, content, updated_by: currentUserId });
+        
+        if (insertError) {
+          console.error('Insert error:', insertError);
+          throw insertError;
+        }
       }
 
       setEditing(false);
-    } catch (err) {
+    } catch (err: any) {
       console.error('Error saving overview:', err);
-      alert('Failed to save changes');
+      alert(err.message || 'Failed to save changes');
     } finally {
       setSaving(false);
     }
@@ -159,16 +171,16 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({
   return (
     <div className="p-8 max-w-2xl mx-auto">
       {/* Document Header */}
-      <div className="border-b border-slate-200 pb-6 mb-8">
+      <div className="border-b border-gray-100 pb-8 mb-10">
         <div className="flex items-start justify-between">
           <div>
-            <p className="text-[10px] font-mono text-slate-400 uppercase tracking-widest mb-2">Project Brief</p>
-            <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Overview</h1>
+            <p className="text-xs text-gray-400 tracking-wide mb-3">Project Brief</p>
+            <h1 className="text-3xl font-light text-gray-900 tracking-tight">Overview</h1>
           </div>
           {!editing ? (
             <button
               onClick={() => setEditing(true)}
-              className="text-xs font-medium text-slate-500 hover:text-slate-900 transition-colors"
+              className="text-sm text-gray-400 hover:text-gray-600 transition-colors"
             >
               Edit
             </button>
@@ -176,14 +188,14 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({
             <div className="flex items-center gap-3">
               <button
                 onClick={() => { setEditing(false); fetchContent(); }}
-                className="text-xs font-medium text-slate-500 hover:text-slate-900"
+                className="text-sm text-gray-400 hover:text-gray-600"
               >
                 Cancel
               </button>
               <button
                 onClick={handleSave}
                 disabled={saving}
-                className="text-xs font-medium text-slate-900 bg-slate-100 hover:bg-slate-200 px-3 py-1.5 rounded-sm disabled:opacity-50"
+                className="text-sm font-medium text-white bg-gray-900 hover:bg-gray-800 px-4 py-2 rounded-full disabled:opacity-50 transition-colors"
               >
                 {saving ? 'Saving...' : 'Save'}
               </button>
@@ -192,14 +204,14 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({
         </div>
       </div>
 
-      {/* Status - Text Only, No Badge */}
+      {/* Status */}
       <section className="mb-10">
-        <h2 className="text-[10px] font-mono text-slate-400 uppercase tracking-widest mb-2">Status</h2>
+        <h2 className="text-xs text-gray-400 tracking-wide mb-3">Status</h2>
         {editing ? (
           <select
             value={content.status}
             onChange={(e) => setContent(prev => ({ ...prev, status: e.target.value as OverviewContent['status'] }))}
-            className="px-2 py-1.5 border border-slate-200 rounded-sm text-sm text-slate-800 focus:ring-1 focus:ring-slate-300 focus:border-slate-300"
+            className="px-3 py-2 border border-gray-200 rounded-lg text-sm text-gray-800 focus:ring-1 focus:ring-gray-300 focus:border-gray-300"
           >
             <option value="active">Active</option>
             <option value="on_hold">On Hold</option>
@@ -207,68 +219,73 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({
             <option value="archived">Archived</option>
           </select>
         ) : (
-          <p className="text-slate-800 text-[15px] font-medium">{statusText}</p>
+          <p className="text-gray-800 text-base font-medium">{statusText}</p>
         )}
       </section>
 
-      {/* Purpose - Mission Statement */}
+      {/* Purpose */}
       <section className="mb-10">
-        <h2 className="text-[10px] font-mono text-slate-400 uppercase tracking-widest mb-2">Purpose</h2>
+        <h2 className="text-xs text-gray-400 tracking-wide mb-3">Purpose</h2>
         {editing ? (
           <textarea
             value={content.purpose}
             onChange={(e) => setContent(prev => ({ ...prev, purpose: e.target.value }))}
             placeholder="Describe the purpose of this project..."
-            className="w-full px-3 py-2 border border-slate-200 rounded-sm text-[15px] text-slate-800 focus:ring-1 focus:ring-slate-300 focus:border-slate-300 resize-none leading-relaxed"
+            className="w-full px-4 py-3 border border-gray-200 rounded-xl text-base text-gray-800 focus:ring-1 focus:ring-gray-300 focus:border-gray-300 resize-none leading-relaxed"
             rows={3}
           />
         ) : (
-          <p className="text-slate-700 text-[15px] leading-relaxed max-w-prose">
-            {content.purpose || <span className="text-slate-400 italic">No purpose defined.</span>}
+          <p className="text-gray-600 text-base leading-relaxed max-w-prose">
+            {content.purpose || <span className="text-gray-400 italic">No purpose defined.</span>}
           </p>
         )}
       </section>
 
-      {/* Goals - Numbered List */}
+      {/* Goals */}
       <section className="mb-10">
-        <h2 className="text-[10px] font-mono text-slate-400 uppercase tracking-widest mb-3">Goals</h2>
+        <h2 className="text-xs text-gray-400 tracking-wide mb-4">Goals</h2>
         {content.goals.length > 0 ? (
-          <ol className="space-y-2 list-decimal list-inside">
+          <div className="space-y-3">
             {content.goals.map((goal, idx) => (
-              <li key={idx} className="text-slate-700 text-[15px] leading-relaxed flex items-start gap-2">
-                <span className="text-slate-400 font-mono text-xs mt-0.5">{idx + 1}.</span>
-                <span className="flex-1">{goal}</span>
+              <div key={idx} className="flex items-start gap-3 p-4 bg-gray-50 rounded-xl">
+                <div className="w-6 h-6 rounded-full bg-gray-900 text-white flex items-center justify-center text-xs font-medium flex-shrink-0">
+                  {idx + 1}
+                </div>
+                <span className="flex-1 text-gray-700 text-sm leading-relaxed pt-0.5">{goal}</span>
                 {editing && (
-                  <button onClick={() => removeGoal(idx)} className="text-slate-400 hover:text-red-500 ml-2">
-                    <TrashIcon className="w-3.5 h-3.5" />
+                  <button onClick={() => removeGoal(idx)} className="text-gray-400 hover:text-red-500 transition-colors">
+                    <TrashIcon className="w-4 h-4" />
                   </button>
                 )}
-              </li>
+              </div>
             ))}
-          </ol>
+          </div>
         ) : (
-          <p className="text-slate-400 text-sm italic">No goals defined.</p>
+          <p className="text-gray-400 text-sm">No goals defined.</p>
         )}
         {editing && (
-          <div className="flex items-center gap-2 mt-3">
+          <div className="flex items-center gap-3 mt-4">
             <input
               type="text"
               value={newGoal}
               onChange={(e) => setNewGoal(e.target.value)}
               placeholder="Add a goal..."
-              className="flex-1 px-2 py-1.5 border border-slate-200 rounded-sm text-sm text-slate-800"
+              className="flex-1 px-4 py-2.5 border border-gray-200 rounded-xl text-sm text-gray-800 focus:ring-1 focus:ring-gray-300"
               onKeyDown={(e) => e.key === 'Enter' && addGoal()}
             />
-            <button onClick={addGoal} className="text-slate-500 hover:text-slate-800">
+            <button 
+              onClick={addGoal} 
+              className="p-2.5 bg-gray-900 text-white rounded-full hover:bg-gray-800 transition-colors"
+            >
               <PlusIcon className="w-4 h-4" />
             </button>
           </div>
         )}
       </section>
 
-      {/* Owners - Simple Text List */}
+      {/* Owners */}
       <section className="mb-10">
-        <h2 className="text-[10px] font-mono text-slate-400 uppercase tracking-widest mb-3">Owners</h2>
+        <h2 className="text-xs text-gray-400 tracking-wide mb-4">Owners</h2>
         {editing ? (
           <div className="flex flex-wrap gap-2">
             {teamMembers.map((member) => (
@@ -276,10 +293,10 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({
                 key={member.id}
                 onClick={() => toggleOwner(member.id)}
                 className={cn(
-                  "text-sm px-2 py-1 rounded-sm transition-colors",
+                  "text-sm px-4 py-2 rounded-full transition-colors",
                   content.owners.includes(member.id)
-                    ? "bg-slate-900 text-white"
-                    : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+                    ? "bg-gray-900 text-white"
+                    : "bg-gray-100 text-gray-600 hover:bg-gray-200"
                 )}
               >
                 {member.full_name || member.email}
@@ -287,58 +304,62 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({
             ))}
           </div>
         ) : ownerUsers.length > 0 ? (
-          <ul className="space-y-1">
+          <div className="space-y-2">
             {ownerUsers.map((user) => (
-              <li key={user.id} className="text-slate-700 text-[15px]">
-                {user.full_name || user.email}
-              </li>
+              <div key={user.id} className="flex items-center gap-3">
+                <div className="w-1.5 h-1.5 rounded-full bg-gray-400" />
+                <span className="text-gray-700 text-sm">{user.full_name || user.email}</span>
+              </div>
             ))}
-          </ul>
+          </div>
         ) : (
-          <p className="text-slate-400 text-sm italic">No owners assigned.</p>
+          <p className="text-gray-400 text-sm">No owners assigned.</p>
         )}
       </section>
 
-      {/* Links & Resources - Clean List */}
+      {/* Links & Resources */}
       <section className="mb-10">
-        <h2 className="text-[10px] font-mono text-slate-400 uppercase tracking-widest mb-3">Links & Resources</h2>
+        <h2 className="text-xs text-gray-400 tracking-wide mb-4">Links & Resources</h2>
         {content.links.length > 0 ? (
-          <ul className="space-y-1.5">
+          <div className="space-y-2">
             {content.links.map((link, idx) => (
-              <li key={idx} className="flex items-center gap-2 text-[15px]">
-                <span className="text-slate-400">→</span>
-                <a href={link.url} target="_blank" rel="noopener noreferrer" className="text-slate-700 hover:text-slate-900 hover:underline">
+              <div key={idx} className="flex items-center gap-3 p-3 bg-gray-50 rounded-xl">
+                <LinkIcon className="w-4 h-4 text-gray-400 flex-shrink-0" />
+                <a href={link.url} target="_blank" rel="noopener noreferrer" className="text-gray-700 hover:text-gray-900 text-sm flex-1">
                   {link.label}
                 </a>
                 {editing && (
-                  <button onClick={() => removeLink(idx)} className="text-slate-400 hover:text-red-500 ml-auto">
-                    <TrashIcon className="w-3.5 h-3.5" />
+                  <button onClick={() => removeLink(idx)} className="text-gray-400 hover:text-red-500 transition-colors">
+                    <TrashIcon className="w-4 h-4" />
                   </button>
                 )}
-              </li>
+              </div>
             ))}
-          </ul>
+          </div>
         ) : (
-          <p className="text-slate-400 text-sm italic">No links added.</p>
+          <p className="text-gray-400 text-sm">No links added.</p>
         )}
         {editing && (
-          <div className="flex items-center gap-2 mt-3">
+          <div className="flex items-center gap-3 mt-4">
             <input
               type="text"
               value={newLink.label}
               onChange={(e) => setNewLink(prev => ({ ...prev, label: e.target.value }))}
               placeholder="Label"
-              className="flex-1 px-2 py-1.5 border border-slate-200 rounded-sm text-sm text-slate-800"
+              className="flex-1 px-4 py-2.5 border border-gray-200 rounded-xl text-sm text-gray-800"
             />
             <input
               type="url"
               value={newLink.url}
               onChange={(e) => setNewLink(prev => ({ ...prev, url: e.target.value }))}
               placeholder="URL"
-              className="flex-1 px-2 py-1.5 border border-slate-200 rounded-sm text-sm text-slate-800"
+              className="flex-1 px-4 py-2.5 border border-gray-200 rounded-xl text-sm text-gray-800"
               onKeyDown={(e) => e.key === 'Enter' && addLink()}
             />
-            <button onClick={addLink} className="text-slate-500 hover:text-slate-800">
+            <button 
+              onClick={addLink} 
+              className="p-2.5 bg-gray-900 text-white rounded-full hover:bg-gray-800 transition-colors"
+            >
               <PlusIcon className="w-4 h-4" />
             </button>
           </div>
@@ -346,7 +367,7 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({
       </section>
 
       {/* Footer Meta */}
-      <div className="pt-6 border-t border-slate-100 text-[10px] font-mono text-slate-300 uppercase tracking-widest">
+      <div className="pt-8 border-t border-gray-100 text-xs text-gray-300 tracking-wide">
         Project Overview • Internal Reference
       </div>
     </div>

@@ -21,6 +21,71 @@ export const MessageInput: React.FC<MessageInputProps> = ({
   const [isUploading, setIsUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const [showQuickReplies, setShowQuickReplies] = useState(false);
+  const quickRepliesRef = useRef<HTMLDivElement>(null);
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+  const emojiPickerRef = useRef<HTMLDivElement>(null);
+
+  // Common emojis for quick access - Professional & Expressive
+  const commonEmojis = [
+    // Professional / Status
+    '✅', '❌', '⚠️', 'ℹ️', '🆗', '🟢', '🔴', '🟡',
+    '💼', '📅', '📊', '📈', '🤝', '👀', '👍', '👎',
+    // Reactions / Feedback
+    '👏', '🙌',  '💯', '🧠', '🤔', '🧐', '🫡',
+    // Dynamic / Expressive ("Custom" feel)
+    '🚀', '⚡', '🔥', '✨', '🎯', '💡', '🎨',
+    '🛠️', '📢', '🔒', '🐛', '🏁', '🫂', '⭐'
+  ];
+
+  // Corporate Quick Replies
+  const quickReplies = [
+    "Good morning everyone! ☀️",
+    "Good night team, see you tomorrow! 🌙",
+    "Thanks for the update! 👍",
+    "I'll look into this immediately. 👀",
+    "Can you please review this when you have a chance?",
+    "Let's circle back on this later.",
+    "Great work team! 🚀",
+    "Can we hop on a quick huddle?"
+  ];
+
+  const insertText = (text: string) => {
+    const textarea = textareaRef.current;
+    if (textarea) {
+      const start = textarea.selectionStart;
+      const end = textarea.selectionEnd;
+      const newContent = content.substring(0, start) + text + content.substring(end);
+      setContent(newContent);
+      setTimeout(() => {
+        textarea.focus();
+        textarea.setSelectionRange(start + text.length, start + text.length);
+      }, 0);
+    } else {
+      setContent(prev => prev + text);
+    }
+    setShowQuickReplies(false);
+  };
+
+  const insertEmoji = (emoji: string) => insertText(emoji);
+
+  // Close popups when clicking outside
+  React.useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      // Emoji Picker
+      if (emojiPickerRef.current && !emojiPickerRef.current.contains(e.target as Node)) {
+        setShowEmojiPicker(false);
+      }
+      // Quick Replies
+      if (quickRepliesRef.current && !quickRepliesRef.current.contains(e.target as Node)) {
+        setShowQuickReplies(false);
+      }
+    };
+    if (showEmojiPicker || showQuickReplies) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [showEmojiPicker, showQuickReplies]);
 
   const handleSend = async () => {
     if ((!content.trim() && attachments.length === 0) || isSending) return;
@@ -181,16 +246,16 @@ export const MessageInput: React.FC<MessageInputProps> = ({
   };
 
   return (
-    <div className="bg-white px-4 py-3">
+    <div className="bg-white rounded-2xl border border-gray-200">
       {/* Attachments Preview */}
       {attachments.length > 0 && (
-        <div className="flex flex-wrap gap-2 mb-3">
+        <div className="flex flex-wrap gap-2 px-4 pt-3">
           {attachments.map((att, i) => (
-            <div key={i} className="relative group bg-slate-100 border border-slate-200 rounded-lg px-3 py-2 pr-8 text-sm flex items-center">
-              <span className="truncate max-w-[180px] font-medium text-slate-700">{att.name}</span>
+            <div key={i} className="relative group bg-gray-100 rounded-lg px-3 py-2 pr-8 text-sm flex items-center">
+              <span className="truncate max-w-[180px] font-medium text-gray-700">{att.name}</span>
               <button
                 onClick={() => removeAttachment(i)}
-                className="absolute top-1/2 -translate-y-1/2 right-2 text-slate-400 hover:text-red-500 transition-colors"
+                className="absolute top-1/2 -translate-y-1/2 right-2 text-gray-400 hover:text-red-500 transition-colors"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
                   <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
@@ -201,103 +266,105 @@ export const MessageInput: React.FC<MessageInputProps> = ({
         </div>
       )}
 
-      {/* Main Input Container - Slack Style */}
-      <div className="border border-slate-300 rounded-xl overflow-hidden focus-within:border-blue-500 focus-within:ring-1 focus-within:ring-blue-500 transition-all bg-white">
-        {/* Formatting Toolbar */}
-        <div className="flex items-center gap-1 px-3 py-2 border-b border-slate-200 bg-slate-50">
-          <button 
-            onClick={handleBold}
-            className="p-1.5 text-slate-500 hover:text-slate-700 hover:bg-white rounded transition-colors font-bold text-sm"
-            title="Bold (Ctrl+B)"
-          >
-            B
-          </button>
-          <button 
-            onClick={handleItalic}
-            className="p-1.5 text-slate-500 hover:text-slate-700 hover:bg-white rounded transition-colors italic text-sm"
-            title="Italic (Ctrl+I)"
-          >
-            I
-          </button>
-          <button 
-            onClick={handleStrikethrough}
-            className="p-1.5 text-slate-500 hover:text-slate-700 hover:bg-white rounded transition-colors line-through text-sm"
-            title="Strikethrough"
-          >
-            S
-          </button>
-          <div className="w-px h-4 bg-slate-300 mx-1" />
-          <button 
-            onClick={handleLink}
-            className="p-1.5 text-slate-500 hover:text-slate-700 hover:bg-white rounded transition-colors"
-            title="Add link"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
-            </svg>
-          </button>
-          <button 
-            onClick={handleList}
-            className="p-1.5 text-slate-500 hover:text-slate-700 hover:bg-white rounded transition-colors"
-            title="Bulleted list"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 10h16M4 14h16M4 18h16" />
-            </svg>
-          </button>
-        </div>
+      {/* Main Input - Simple like reference design */}
+      <div className="flex items-center gap-2 px-4 py-3">
+        {/* Attachment Button */}
+        <button
+          onClick={() => fileInputRef.current?.click()}
+          disabled={isUploading}
+          className="p-2 text-gray-400 hover:text-gray-600 rounded-full transition-colors flex-shrink-0"
+          title="Attach file"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" />
+          </svg>
+        </button>
+        <input
+          type="file"
+          ref={fileInputRef}
+          onChange={handleFileSelect}
+          className="hidden"
+          multiple
+        />
 
-        {/* Text Input Row */}
-        <div className="flex items-end gap-2 p-3">
-          {/* Attachment Button */}
-          <button
-            onClick={() => fileInputRef.current?.click()}
-            disabled={isUploading}
-            className="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors flex-shrink-0"
-            title="Attach file"
+        {/* Quick Replies Button */}
+        <div className="relative" ref={quickRepliesRef}>
+          <button 
+            onClick={() => setShowQuickReplies(!showQuickReplies)}
+            className={`p-2 rounded-full transition-colors flex-shrink-0 ${showQuickReplies ? 'text-gray-600 bg-gray-100' : 'text-gray-400 hover:text-gray-600'}`}
+            title="Quick replies"
           >
             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
             </svg>
           </button>
-          <input
-            type="file"
-            ref={fileInputRef}
-            onChange={handleFileSelect}
-            className="hidden"
-            multiple
-          />
+          
+          {/* Quick Replies Dropdown */}
+          {showQuickReplies && (
+            <div className="absolute bottom-12 left-0 bg-white border border-gray-200 rounded-xl shadow-lg p-2 z-50 w-64">
+              <div className="flex flex-col gap-1">
+                {quickReplies.map((reply, i) => (
+                  <button
+                    key={i}
+                    onClick={() => insertText(reply)}
+                    className="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-lg transition-colors truncate"
+                    title={reply}
+                  >
+                    {reply}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
 
-          {/* Text Input */}
-          <textarea
-            ref={textareaRef}
-            value={content}
-            onChange={handleInput}
-            onKeyDown={handleKeyDown}
-            placeholder="Message #team-chat"
-            className="flex-1 bg-transparent border-0 focus:ring-0 focus:outline-none resize-none py-1 text-[15px] max-h-[150px] min-h-[24px] text-slate-800 placeholder:text-slate-400"
-            rows={1}
-          />
-
-          {/* Emoji Button */}
+        {/* Emoji Button with Picker */}
+        <div className="relative" ref={emojiPickerRef}>
           <button 
-            className="p-2 text-slate-400 hover:text-amber-500 hover:bg-amber-50 rounded-lg transition-colors flex-shrink-0"
+            onClick={() => setShowEmojiPicker(!showEmojiPicker)}
+            className={`p-2 rounded-full transition-colors flex-shrink-0 ${showEmojiPicker ? 'text-gray-600 bg-gray-100' : 'text-gray-400 hover:text-gray-600'}`}
             title="Add emoji"
           >
             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
           </button>
+          
+          {/* Emoji Picker Dropdown */}
+          {showEmojiPicker && (
+            <div className="absolute bottom-12 left-0 bg-white border border-gray-200 rounded-xl shadow-lg p-3 z-50 w-64">
+              <div className="grid grid-cols-8 gap-1">
+                {commonEmojis.map((emoji, i) => (
+                  <button
+                    key={i}
+                    onClick={() => insertEmoji(emoji)}
+                    className="w-7 h-7 flex items-center justify-center text-lg hover:bg-gray-100 rounded transition-colors"
+                  >
+                    {emoji}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
 
-          {/* Send Button - Blue Circle */}
+        {/* Text Input */}
+        <textarea
+          ref={textareaRef}
+          value={content}
+          onChange={handleInput}
+          onKeyDown={handleKeyDown}
+          placeholder="Type your message here..."
+          className="flex-1 bg-transparent border-0 focus:ring-0 focus:outline-none resize-none py-1 text-sm max-h-[150px] min-h-[24px] text-gray-800 placeholder:text-gray-400"
+          rows={1}
+        />
+
+        {/* Send on Enter - no visible button, just hint */}
+        {(content.trim() || attachments.length > 0) && (
           <button
             onClick={handleSend}
-            disabled={(!content.trim() && attachments.length === 0) || isSending || isUploading}
-            className={`p-2.5 rounded-full transition-all duration-200 flex-shrink-0 ${
-              (!content.trim() && attachments.length === 0) || isSending
-                ? 'bg-slate-200 text-slate-400 cursor-not-allowed'
-                : 'bg-blue-600 text-white hover:bg-blue-700 shadow-md hover:shadow-lg'
-            }`}
+            disabled={isSending || isUploading}
+            className="p-2 text-gray-900 hover:text-gray-700 rounded-full transition-colors flex-shrink-0"
           >
             {isSending ? (
               <svg className="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -310,12 +377,7 @@ export const MessageInput: React.FC<MessageInputProps> = ({
               </svg>
             )}
           </button>
-        </div>
-      </div>
-
-      {/* Keyboard Hint */}
-      <div className="text-[11px] text-slate-400 mt-2 text-center">
-        <span className="text-slate-500 font-medium">Return</span> to send · <span className="text-slate-500 font-medium">Shift + Return</span> to add a new line
+        )}
       </div>
     </div>
   );

@@ -127,7 +127,7 @@ export const ChatLayout: React.FC = () => {
       <div className={`
         fixed md:relative inset-y-0 left-0 z-40
         w-64 sm:w-72 md:w-64 
-        border-r border-gray-200 bg-gray-50 
+        border-r border-gray-200 bg-stone-50 
         flex flex-col
         transform transition-transform duration-300 ease-in-out
         ${showChannelList ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}

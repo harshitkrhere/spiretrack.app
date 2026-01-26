@@ -214,7 +214,7 @@ export const FilesTab: React.FC<FilesTabProps> = ({
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600" />
+        <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-gray-400" />
       </div>
     );
   }
@@ -223,14 +223,17 @@ export const FilesTab: React.FC<FilesTabProps> = ({
   const unpinnedFiles = files.filter(f => !f.is_pinned);
 
   return (
-    <div className="p-6">
+    <div className="p-8 max-w-4xl mx-auto">
       {/* Header */}
-      <div className="flex items-center justify-between mb-6">
-        <h2 className="text-xl font-bold text-slate-900">Files & Resources</h2>
-        <div className="flex items-center gap-2">
+      <div className="flex items-center justify-between mb-8">
+        <div>
+          <p className="text-xs text-gray-400 tracking-wide mb-2">Resources</p>
+          <h2 className="text-2xl font-light text-gray-900">Files & Resources</h2>
+        </div>
+        <div className="flex items-center gap-3">
           <button
             onClick={() => setShowLinkModal(true)}
-            className="flex items-center gap-2 px-3 py-2 border border-slate-300 text-slate-600 text-sm font-medium rounded-lg hover:bg-slate-50 transition-colors"
+            className="flex items-center gap-2 px-4 py-2.5 border border-gray-200 text-gray-600 text-sm rounded-full hover:bg-gray-50 transition-colors"
           >
             <LinkIcon className="w-4 h-4" />
             Add Link
@@ -245,7 +248,7 @@ export const FilesTab: React.FC<FilesTabProps> = ({
           <button
             onClick={() => fileInputRef.current?.click()}
             disabled={uploading}
-            className="flex items-center gap-2 px-3 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50"
+            className="flex items-center gap-2 px-4 py-2.5 bg-gray-900 text-white text-sm font-medium rounded-full hover:bg-gray-800 transition-colors disabled:opacity-50"
           >
             <ArrowUpTrayIcon className="w-4 h-4" />
             {uploading ? 'Uploading...' : 'Upload File'}
@@ -255,18 +258,18 @@ export const FilesTab: React.FC<FilesTabProps> = ({
 
       {/* Empty State */}
       {files.length === 0 ? (
-        <div className="flex flex-col items-center justify-center h-48 text-slate-400">
-          <FolderIcon className="w-12 h-12 mb-2" />
-          <p className="text-sm font-medium">No files yet</p>
-          <p className="text-xs">Upload files or add external links</p>
+        <div className="flex flex-col items-center justify-center py-16 text-gray-400">
+          <FolderIcon className="w-12 h-12 mb-4" />
+          <p className="text-base font-light text-gray-600 mb-1">No files yet</p>
+          <p className="text-sm text-gray-400">Upload files or add external links</p>
         </div>
       ) : (
         <>
           {/* Pinned Files */}
           {pinnedFiles.length > 0 && (
-            <div className="mb-6">
-              <h3 className="text-sm font-medium text-slate-500 mb-2 flex items-center gap-1">
-                <StarSolidIcon className="w-4 h-4 text-yellow-500" />
+            <div className="mb-8">
+              <h3 className="text-xs text-gray-400 tracking-wide mb-4 flex items-center gap-2">
+                <StarSolidIcon className="w-4 h-4 text-gray-600" />
                 Pinned
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
@@ -286,7 +289,7 @@ export const FilesTab: React.FC<FilesTabProps> = ({
           {/* All Files */}
           <div>
             {pinnedFiles.length > 0 && (
-              <h3 className="text-sm font-medium text-slate-500 mb-2">All Files</h3>
+              <h3 className="text-xs text-gray-400 tracking-wide mb-4">All Files</h3>
             )}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
               {unpinnedFiles.map((file) => (
@@ -305,61 +308,61 @@ export const FilesTab: React.FC<FilesTabProps> = ({
 
       {/* Add Link Modal */}
       {showLinkModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-xl shadow-xl w-full max-w-md p-6">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-bold text-slate-900">Add External Link</h3>
-              <button onClick={() => setShowLinkModal(false)} className="p-1 hover:bg-slate-100 rounded">
-                <XMarkIcon className="w-5 h-5 text-slate-500" />
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+          <div className="bg-white rounded-2xl shadow-xl w-full max-w-md p-6">
+            <div className="flex items-center justify-between mb-6">
+              <h3 className="text-xl font-light text-gray-900">Add External Link</h3>
+              <button onClick={() => setShowLinkModal(false)} className="p-2 hover:bg-gray-100 rounded-full transition-colors">
+                <XMarkIcon className="w-5 h-5 text-gray-400" />
               </button>
             </div>
 
-            <div className="space-y-4">
+            <div className="space-y-5">
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">Name *</label>
+                <label className="block text-xs text-gray-400 tracking-wide mb-2">Name *</label>
                 <input
                   type="text"
                   value={newLink.name}
                   onChange={(e) => setNewLink(prev => ({ ...prev, name: e.target.value }))}
-                  className="w-full px-3 py-2 border border-slate-300 rounded-lg"
+                  className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-1 focus:ring-gray-300 focus:border-gray-300"
                   placeholder="Resource name"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">URL *</label>
+                <label className="block text-xs text-gray-400 tracking-wide mb-2">URL *</label>
                 <input
                   type="url"
                   value={newLink.url}
                   onChange={(e) => setNewLink(prev => ({ ...prev, url: e.target.value }))}
-                  className="w-full px-3 py-2 border border-slate-300 rounded-lg"
+                  className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-1 focus:ring-gray-300 focus:border-gray-300"
                   placeholder="https://..."
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">Description</label>
+                <label className="block text-xs text-gray-400 tracking-wide mb-2">Description</label>
                 <input
                   type="text"
                   value={newLink.description}
                   onChange={(e) => setNewLink(prev => ({ ...prev, description: e.target.value }))}
-                  className="w-full px-3 py-2 border border-slate-300 rounded-lg"
+                  className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-1 focus:ring-gray-300 focus:border-gray-300"
                   placeholder="Optional description"
                 />
               </div>
             </div>
 
-            <div className="flex justify-end gap-2 mt-6">
+            <div className="flex justify-end gap-3 mt-8">
               <button
                 onClick={() => setShowLinkModal(false)}
-                className="px-4 py-2 text-sm font-medium text-slate-600 hover:bg-slate-100 rounded-lg"
+                className="px-5 py-2.5 text-sm text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-full transition-colors"
               >
                 Cancel
               </button>
               <button
                 onClick={handleAddLink}
                 disabled={!newLink.name.trim() || !newLink.url.trim()}
-                className="px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg disabled:opacity-50"
+                className="px-5 py-2.5 text-sm font-medium text-white bg-gray-900 hover:bg-gray-800 rounded-full disabled:opacity-50 transition-colors"
               >
                 Add Link
               </button>
@@ -381,9 +384,9 @@ const FileCard: React.FC<{
   const Icon = file.is_external_link ? GlobeAltIcon : getFileIcon(file.file_type);
 
   return (
-    <div className="flex items-center gap-3 p-3 bg-white border border-slate-200 rounded-lg hover:shadow-sm transition-shadow group">
-      <div className="flex-shrink-0 w-10 h-10 bg-slate-100 rounded-lg flex items-center justify-center">
-        <Icon className="w-5 h-5 text-slate-500" />
+    <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors group">
+      <div className="flex-shrink-0 w-10 h-10 bg-white border border-gray-200 rounded-lg flex items-center justify-center">
+        <Icon className="w-5 h-5 text-gray-500" />
       </div>
 
       <div className="flex-1 min-w-0">
@@ -391,11 +394,11 @@ const FileCard: React.FC<{
           href={file.url} 
           target="_blank" 
           rel="noopener noreferrer"
-          className="font-medium text-slate-900 hover:text-blue-600 truncate block"
+          className="text-sm text-gray-900 hover:text-gray-700 truncate block"
         >
           {file.name}
         </a>
-        <div className="flex items-center gap-2 text-xs text-slate-500">
+        <div className="flex items-center gap-2 text-xs text-gray-400">
           {file.uploader && <span>{file.uploader.full_name || file.uploader.email}</span>}
           {file.size_bytes && <span>• {formatFileSize(file.size_bytes)}</span>}
         </div>
@@ -404,13 +407,13 @@ const FileCard: React.FC<{
       <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
         <button
           onClick={() => onPin(file)}
-          className="p-1.5 hover:bg-slate-100 rounded"
+          className="p-1.5 hover:bg-gray-200 rounded-full transition-colors"
           title={file.is_pinned ? 'Unpin' : 'Pin'}
         >
           {file.is_pinned ? (
-            <StarSolidIcon className="w-4 h-4 text-yellow-500" />
+            <StarSolidIcon className="w-4 h-4 text-gray-600" />
           ) : (
-            <StarIcon className="w-4 h-4 text-slate-400" />
+            <StarIcon className="w-4 h-4 text-gray-400" />
           )}
         </button>
 
@@ -418,20 +421,20 @@ const FileCard: React.FC<{
           <a
             href={file.url}
             download
-            className="p-1.5 hover:bg-slate-100 rounded"
+            className="p-1.5 hover:bg-gray-200 rounded-full transition-colors"
             title="Download"
           >
-            <ArrowDownTrayIcon className="w-4 h-4 text-slate-400" />
+            <ArrowDownTrayIcon className="w-4 h-4 text-gray-400" />
           </a>
         )}
 
         {canEdit && (
           <button
             onClick={() => onDelete(file)}
-            className="p-1.5 hover:bg-red-50 rounded"
+            className="p-1.5 hover:bg-red-50 rounded-full transition-colors"
             title="Delete"
           >
-            <TrashIcon className="w-4 h-4 text-slate-400 hover:text-red-500" />
+            <TrashIcon className="w-4 h-4 text-gray-400 hover:text-red-500" />
           </button>
         )}
       </div>

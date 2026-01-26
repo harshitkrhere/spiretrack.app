@@ -26,17 +26,17 @@ interface TasksTabProps {
 }
 
 const STATUS_CONFIG: Record<TaskStatus, { label: string; color: string; icon: React.FC<{ className?: string }> }> = {
-  todo: { label: 'To Do', color: 'bg-slate-100 text-slate-600', icon: ClockIcon },
-  in_progress: { label: 'In Progress', color: 'bg-blue-100 text-blue-700', icon: ClockIcon },
-  done: { label: 'Done', color: 'bg-green-100 text-green-700', icon: CheckCircleSolidIcon },
-  cancelled: { label: 'Cancelled', color: 'bg-red-100 text-red-600', icon: XMarkIcon },
+  todo: { label: 'To Do', color: 'bg-gray-100 text-gray-600', icon: ClockIcon },
+  in_progress: { label: 'In Progress', color: 'bg-gray-200 text-gray-700', icon: ClockIcon },
+  done: { label: 'Done', color: 'bg-gray-900 text-white', icon: CheckCircleSolidIcon },
+  cancelled: { label: 'Cancelled', color: 'bg-gray-100 text-gray-400', icon: XMarkIcon },
 };
 
 const PRIORITY_CONFIG: Record<TaskPriority, { label: string; color: string }> = {
-  low: { label: 'Low', color: 'text-slate-400' },
-  medium: { label: 'Medium', color: 'text-yellow-500' },
-  high: { label: 'High', color: 'text-orange-500' },
-  urgent: { label: 'Urgent', color: 'text-red-600' },
+  low: { label: 'Low', color: 'text-gray-300' },
+  medium: { label: 'Medium', color: 'text-gray-500' },
+  high: { label: 'High', color: 'text-gray-700' },
+  urgent: { label: 'Urgent', color: 'text-gray-900' },
 };
 
 export const TasksTab: React.FC<TasksTabProps> = ({
@@ -232,24 +232,27 @@ export const TasksTab: React.FC<TasksTabProps> = ({
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600" />
+        <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-gray-400" />
       </div>
     );
   }
 
   return (
-    <div className="p-6">
+    <div className="p-8 max-w-4xl mx-auto">
       {/* Header */}
-      <div className="flex items-center justify-between mb-6">
-        <h2 className="text-xl font-bold text-slate-900">Tasks</h2>
-        <div className="flex items-center gap-2">
+      <div className="flex items-center justify-between mb-8">
+        <div>
+          <p className="text-xs text-gray-400 tracking-wide mb-2">Task Management</p>
+          <h2 className="text-2xl font-light text-gray-900">Tasks</h2>
+        </div>
+        <div className="flex items-center gap-3">
           {/* Filter */}
-          <div className="flex items-center gap-1 px-2 py-1 bg-slate-100 rounded-lg">
-            <FunnelIcon className="w-4 h-4 text-slate-500" />
+          <div className="flex items-center gap-2 px-3 py-2 bg-gray-50 rounded-full">
+            <FunnelIcon className="w-4 h-4 text-gray-400" />
             <select
               value={filterStatus}
               onChange={(e) => setFilterStatus(e.target.value as TaskStatus | 'all')}
-              className="bg-transparent text-sm font-medium text-slate-600 focus:outline-none"
+              className="bg-transparent text-sm text-gray-600 focus:outline-none"
             >
               <option value="all">All</option>
               <option value="todo">To Do</option>
@@ -262,7 +265,7 @@ export const TasksTab: React.FC<TasksTabProps> = ({
           {isAdmin && (
             <button
               onClick={() => setShowAddModal(true)}
-              className="flex items-center gap-2 px-3 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors"
+              className="flex items-center gap-2 px-4 py-2.5 bg-gray-900 text-white text-sm font-medium rounded-full hover:bg-gray-800 transition-colors"
             >
               <PlusIcon className="w-4 h-4" />
               Add Task
@@ -273,20 +276,20 @@ export const TasksTab: React.FC<TasksTabProps> = ({
 
       {/* Task List */}
       {filteredTasks.length === 0 ? (
-        <div className="flex flex-col items-center justify-center h-48 text-slate-400">
-          <CheckCircleIcon className="w-12 h-12 mb-2" />
-          <p className="text-sm font-medium">No tasks yet</p>
-          <p className="text-xs">Create your first task to get started</p>
+        <div className="flex flex-col items-center justify-center py-16 text-gray-400">
+          <CheckCircleIcon className="w-12 h-12 mb-4" />
+          <p className="text-base font-light text-gray-600 mb-1">No tasks yet</p>
+          <p className="text-sm text-gray-400">Create your first task to get started</p>
         </div>
       ) : (
-        <div className="space-y-2">
+        <div className="space-y-3">
           {filteredTasks.map((task) => {
             const StatusIcon = STATUS_CONFIG[task.status].icon;
             return (
               <div
                 key={task.id}
                 onClick={() => setSelectedTask(task)}
-                className="flex items-center gap-4 p-4 bg-white border border-slate-200 rounded-lg hover:shadow-sm transition-shadow cursor-pointer"
+                className="flex items-center gap-4 p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors cursor-pointer"
               >
                 {/* Status Toggle - Only for admins */}
                 {isAdmin ? (
@@ -295,8 +298,8 @@ export const TasksTab: React.FC<TasksTabProps> = ({
                     className={cn(
                       "flex-shrink-0 w-6 h-6 rounded-full border-2 flex items-center justify-center transition-colors",
                       task.status === 'done' 
-                        ? "bg-green-500 border-green-500 text-white"
-                        : "border-slate-300 hover:border-blue-500"
+                        ? "bg-gray-900 border-gray-900 text-white"
+                        : "border-gray-300 hover:border-gray-500"
                     )}
                   >
                     {task.status === 'done' && <CheckCircleSolidIcon className="w-4 h-4" />}
@@ -305,8 +308,8 @@ export const TasksTab: React.FC<TasksTabProps> = ({
                   <div className={cn(
                     "flex-shrink-0 w-6 h-6 rounded-full border-2 flex items-center justify-center",
                     task.status === 'done' 
-                      ? "bg-green-500 border-green-500 text-white"
-                      : "border-slate-300"
+                      ? "bg-gray-900 border-gray-900 text-white"
+                      : "border-gray-300"
                   )}>
                     {task.status === 'done' && <CheckCircleSolidIcon className="w-4 h-4" />}
                   </div>
@@ -315,13 +318,13 @@ export const TasksTab: React.FC<TasksTabProps> = ({
                 {/* Task Content */}
                 <div className="flex-1 min-w-0">
                   <h3 className={cn(
-                    "font-medium",
-                    task.status === 'done' ? "text-slate-400 line-through" : "text-slate-900"
+                    "text-sm",
+                    task.status === 'done' ? "text-gray-400 line-through" : "text-gray-900"
                   )}>
                     {task.title}
                   </h3>
                   {task.description && (
-                    <p className="text-sm text-slate-500 truncate">{task.description}</p>
+                    <p className="text-xs text-gray-500 truncate mt-0.5">{task.description}</p>
                   )}
                 </div>
 
@@ -332,14 +335,14 @@ export const TasksTab: React.FC<TasksTabProps> = ({
 
                   {/* Assignee */}
                   {task.assignee ? (
-                    <span className="text-xs text-slate-500">{task.assignee.full_name || task.assignee.email}</span>
+                    <span className="text-xs text-gray-500">{task.assignee.full_name || task.assignee.email}</span>
                   ) : (
-                    <UserCircleIcon className="w-5 h-5 text-slate-300" />
+                    <UserCircleIcon className="w-5 h-5 text-gray-300" />
                   )}
 
                   {/* Due Date */}
                   {task.due_date && (
-                    <span className="text-xs text-slate-500 flex items-center gap-1">
+                    <span className="text-xs text-gray-400 flex items-center gap-1">
                       <CalendarIcon className="w-3 h-3" />
                       {new Date(task.due_date).toLocaleDateString()}
                     </span>
@@ -357,7 +360,7 @@ export const TasksTab: React.FC<TasksTabProps> = ({
                   {isAdmin && (
                     <button
                       onClick={(e) => { e.stopPropagation(); handleDeleteTask(task.id); }}
-                      className="p-1 text-slate-400 hover:text-red-500 transition-colors"
+                      className="p-1 text-gray-300 hover:text-red-500 transition-colors"
                     >
                       <TrashIcon className="w-4 h-4" />
                     </button>
@@ -371,33 +374,33 @@ export const TasksTab: React.FC<TasksTabProps> = ({
 
       {/* Add Task Modal */}
       {showAddModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-xl shadow-xl w-full max-w-md p-6">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-bold text-slate-900">New Task</h3>
-              <button onClick={() => setShowAddModal(false)} className="p-1 hover:bg-slate-100 rounded">
-                <XMarkIcon className="w-5 h-5 text-slate-500" />
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+          <div className="bg-white rounded-2xl shadow-xl w-full max-w-md p-6">
+            <div className="flex items-center justify-between mb-6">
+              <h3 className="text-xl font-light text-gray-900">New Task</h3>
+              <button onClick={() => setShowAddModal(false)} className="p-2 hover:bg-gray-100 rounded-full transition-colors">
+                <XMarkIcon className="w-5 h-5 text-gray-400" />
               </button>
             </div>
 
-            <div className="space-y-4">
+            <div className="space-y-5">
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">Title *</label>
+                <label className="block text-xs text-gray-400 tracking-wide mb-2">Title *</label>
                 <input
                   type="text"
                   value={newTask.title}
                   onChange={(e) => setNewTask(prev => ({ ...prev, title: e.target.value }))}
-                  className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-1 focus:ring-gray-300 focus:border-gray-300"
                   placeholder="Task title"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">Description</label>
+                <label className="block text-xs text-gray-400 tracking-wide mb-2">Description</label>
                 <textarea
                   value={newTask.description}
                   onChange={(e) => setNewTask(prev => ({ ...prev, description: e.target.value }))}
-                  className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-1 focus:ring-gray-300 focus:border-gray-300"
                   placeholder="Optional description"
                   rows={2}
                 />
@@ -405,11 +408,11 @@ export const TasksTab: React.FC<TasksTabProps> = ({
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">Priority</label>
+                  <label className="block text-xs text-gray-400 tracking-wide mb-2">Priority</label>
                   <select
                     value={newTask.priority}
                     onChange={(e) => setNewTask(prev => ({ ...prev, priority: e.target.value as TaskPriority }))}
-                    className="w-full px-3 py-2 border border-slate-300 rounded-lg"
+                    className="w-full px-4 py-3 border border-gray-200 rounded-xl"
                   >
                     <option value="low">Low</option>
                     <option value="medium">Medium</option>
@@ -419,23 +422,23 @@ export const TasksTab: React.FC<TasksTabProps> = ({
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">Due Date</label>
+                  <label className="block text-xs text-gray-400 tracking-wide mb-2">Due Date</label>
                   <input
                     type="date"
                     value={newTask.due_date}
                     onChange={(e) => setNewTask(prev => ({ ...prev, due_date: e.target.value }))}
-                    className="w-full px-3 py-2 border border-slate-300 rounded-lg"
+                    className="w-full px-4 py-3 border border-gray-200 rounded-xl"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">Assign To</label>
+                <label className="block text-xs text-gray-400 tracking-wide mb-2">Assign To</label>
                 <div className="relative">
                   <button
                     type="button"
                     onClick={() => setAssigneeDropdownOpen(!assigneeDropdownOpen)}
-                    className="w-full px-3 py-2 border border-slate-300 rounded-lg text-left bg-white hover:border-slate-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 flex items-center justify-between"
+                    className="w-full px-4 py-3 border border-gray-200 rounded-xl text-left bg-white hover:border-gray-300 focus:ring-1 focus:ring-gray-300 focus:border-gray-300 flex items-center justify-between"
                   >
                     {newTask.assigned_to ? (() => {
                       const member = teamMembers.find(m => m.id === newTask.assigned_to);
@@ -443,44 +446,44 @@ export const TasksTab: React.FC<TasksTabProps> = ({
                         <div className="flex items-center gap-2 flex-1 min-w-0">
                           <Avatar src={member.avatar_url} name={member.full_name || member.email} size="xs" />
                           <div className="flex-1 min-w-0">
-                            <div className="text-sm font-medium text-slate-900 truncate">{member.full_name || 'Unknown'}</div>
-                            <div className="text-xs text-slate-500 truncate">@{member.email?.split('@')[0]}</div>
+                            <div className="text-sm text-gray-900 truncate">{member.full_name || 'Unknown'}</div>
+                            <div className="text-xs text-gray-400 truncate">@{member.email?.split('@')[0]}</div>
                           </div>
                         </div>
-                      ) : <span className="text-slate-500">Unassigned</span>;
+                      ) : <span className="text-gray-400">Unassigned</span>;
                     })() : (
-                      <span className="text-slate-500">Unassigned</span>
+                      <span className="text-gray-400">Unassigned</span>
                     )}
-                    <svg className={cn("w-4 h-4 text-slate-400 transition-transform", assigneeDropdownOpen && "rotate-180")} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className={cn("w-4 h-4 text-gray-400 transition-transform", assigneeDropdownOpen && "rotate-180")} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                     </svg>
                   </button>
                   
                   {/* Dropdown menu */}
                   {assigneeDropdownOpen && (
-                    <div className="absolute z-10 w-full mt-1 bg-white border border-slate-200 rounded-lg shadow-lg max-h-48 overflow-y-auto">
+                    <div className="absolute z-10 w-full mt-2 bg-white border border-gray-200 rounded-xl shadow-lg max-h-48 overflow-y-auto">
                       <div
                         onClick={() => { setNewTask(prev => ({ ...prev, assigned_to: '' })); setAssigneeDropdownOpen(false); }}
                         className={cn(
-                          "px-3 py-2 cursor-pointer hover:bg-slate-50",
-                          !newTask.assigned_to && "bg-blue-50"
+                          "px-4 py-3 cursor-pointer hover:bg-gray-50",
+                          !newTask.assigned_to && "bg-gray-50"
                         )}
                       >
-                        <span className="text-sm text-slate-500">Unassigned</span>
+                        <span className="text-sm text-gray-400">Unassigned</span>
                       </div>
                       {teamMembers.map((member) => (
                         <div
                           key={member.id}
                           onClick={() => { setNewTask(prev => ({ ...prev, assigned_to: member.id })); setAssigneeDropdownOpen(false); }}
                           className={cn(
-                            "px-3 py-2 cursor-pointer hover:bg-slate-50 flex items-center gap-2",
-                            newTask.assigned_to === member.id && "bg-blue-50"
+                            "px-4 py-3 cursor-pointer hover:bg-gray-50 flex items-center gap-3",
+                            newTask.assigned_to === member.id && "bg-gray-50"
                           )}
                         >
                           <Avatar src={member.avatar_url} name={member.full_name || member.email} size="sm" />
                           <div className="flex-1 min-w-0">
-                            <div className="text-sm font-medium text-slate-900 truncate">{member.full_name || 'Unknown'}</div>
-                            <div className="text-xs text-slate-500 truncate">@{member.email?.split('@')[0]}</div>
+                            <div className="text-sm text-gray-900 truncate">{member.full_name || 'Unknown'}</div>
+                            <div className="text-xs text-gray-400 truncate">@{member.email?.split('@')[0]}</div>
                           </div>
                         </div>
                       ))}
@@ -490,17 +493,17 @@ export const TasksTab: React.FC<TasksTabProps> = ({
               </div>
             </div>
 
-            <div className="flex justify-end gap-2 mt-6">
+            <div className="flex justify-end gap-3 mt-8">
               <button
                 onClick={() => setShowAddModal(false)}
-                className="px-4 py-2 text-sm font-medium text-slate-600 hover:bg-slate-100 rounded-lg"
+                className="px-5 py-2.5 text-sm text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-full transition-colors"
               >
                 Cancel
               </button>
               <button
                 onClick={handleCreateTask}
                 disabled={!newTask.title.trim()}
-                className="px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg disabled:opacity-50"
+                className="px-5 py-2.5 text-sm font-medium text-white bg-gray-900 hover:bg-gray-800 rounded-full disabled:opacity-50 transition-colors"
               >
                 Create Task
               </button>

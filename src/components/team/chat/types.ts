@@ -284,10 +284,9 @@ export const DEFAULT_CHANNEL_TABS: Omit<ChannelTab, 'id' | 'channel_id' | 'team_
   { type: 'overview', position: 1, is_default: false, is_removable: true },
   { type: 'tasks', position: 2, is_default: false, is_removable: true },
   { type: 'files', position: 3, is_default: false, is_removable: true },
-  { type: 'reports', position: 4, is_default: false, is_removable: true },
-  { type: 'execution', position: 5, is_default: false, is_removable: true },
-  { type: 'decisions', position: 6, is_default: false, is_removable: true },
-  { type: 'announcements', position: 7, is_default: false, is_removable: true },
+  { type: 'execution', position: 4, is_default: false, is_removable: true },
+  { type: 'decisions', position: 5, is_default: false, is_removable: true },
+  { type: 'announcements', position: 6, is_default: false, is_removable: true },
 ];
 
 // Tab display configuration

@@ -85,10 +85,10 @@ export const AppSidebar = () => {
   }, [teamId]);
 
   const navItemClass = ({ isActive }: { isActive: boolean }) => `
-    flex items-center gap-2 px-4 py-1.5 text-[15px] rounded-md transition-colors mx-2
+    flex items-center gap-2 px-4 py-2 text-sm rounded-lg transition-colors mx-2
     ${isActive 
-      ? 'bg-app-sidebarActive text-white' 
-      : 'text-app-sidebarText hover:bg-app-sidebarHover hover:text-white'
+      ? 'bg-white text-gray-900 font-medium shadow-sm' 
+      : 'text-gray-600 hover:bg-white/50 hover:text-gray-900'
     }
   `;
 
@@ -140,20 +140,28 @@ export const AppSidebar = () => {
             </div>
         </div>
 
-        {/* Channels Sidebar Panel */}
-        <div className="w-full md:w-[260px] bg-app-sidebar flex flex-col h-full border-r border-white/10 flex-shrink-0">
+        {/* Channels Sidebar Panel - Light Theme like Reference */}
+        <div className="w-full md:w-[260px] bg-stone-50 flex flex-col h-full border-r border-gray-200 flex-shrink-0">
         
         {/* Workspace Header */}
-        <div className="h-12 px-4 flex items-center justify-between border-b border-app-sidebarHover hover:bg-app-sidebarHover cursor-pointer transition-colors shadow-sm">
-            <h1 className="text-white font-bold text-lg truncate pr-2">
-                {activeTeam ? activeTeam.name : 'SpireTrack'}
+        <div className="h-14 px-4 flex items-center justify-between border-b border-gray-100">
+            <h1 className="text-gray-900 font-semibold text-lg truncate pr-2">
+                {activeTeam ? activeTeam.name : 'Conversations'}
             </h1>
-            <div className="w-8 h-8 rounded-full bg-white text-app-sidebar flex items-center justify-center font-bold text-xs border-2 border-app-sidebar">
-                {user?.email?.charAt(0).toUpperCase()}
-            </div>
         </div>
 
-        {/* Quick Navigation / Scroll area */}
+        {/* Search Bar */}
+        {teamId && (
+            <div className="px-4 py-3">
+                <div className="flex items-center gap-2 px-3 py-2 bg-white border border-gray-200 rounded-lg text-gray-400 text-sm cursor-pointer hover:border-gray-300 transition-colors">
+                    <MagnifyingGlassIcon className="h-4 w-4" />
+                    <span>Search</span>
+                    <span className="ml-auto text-xs text-gray-300 bg-gray-100 px-1.5 py-0.5 rounded">⌘K</span>
+                </div>
+            </div>
+        )}
+
+        {/* Navigation / Scroll area */}
         <div className="py-2 flex-1 overflow-y-auto custom-scrollbar">
             
             {/* If in Home Mode (No Team Selected) */}
@@ -174,11 +182,11 @@ export const AppSidebar = () => {
             {!teamId && (
                  <div className="mb-4">
                     <div 
-                        className="px-4 py-1 flex items-center gap-1 text-app-sidebarText hover:text-white cursor-pointer"
+                        className="px-4 py-1 flex items-center gap-1 text-gray-400 hover:text-gray-600 cursor-pointer"
                         onClick={() => setAppsOpen(!appsOpen)}
                     >
                         <ChevronDownIcon className={`h-3 w-3 transition-transform ${!appsOpen ? '-rotate-90' : ''}`} />
-                        <span className="text-[13px] font-medium opacity-90">Apps</span>
+                        <span className="text-xs font-medium uppercase tracking-wide">Apps</span>
                     </div>
                 
                     {appsOpen && (
@@ -204,7 +212,7 @@ export const AppSidebar = () => {
                  </div>
             )}
 
-            {/* Channels Section (Only if Team Selected) */}
+            {/* Groups Section (Only if Team Selected) */}
             {teamId && (
                 <div className="mb-4">
                     <NavLink to={`/app/team/${teamId}`} end className={navItemClass}>
@@ -212,16 +220,17 @@ export const AppSidebar = () => {
                         <span>Overview</span>
                     </NavLink>
                 
+                    {/* Groups Header */}
                     <div 
-                        className="px-4 py-1 mt-4 flex items-center justify-between text-app-sidebarText hover:text-white cursor-pointer group"
+                        className="px-4 py-2 mt-4 flex items-center justify-between text-gray-400 hover:text-gray-600 cursor-pointer group"
                         onClick={() => setChannelsOpen(!channelsOpen)}
                     >
                         <div className="flex items-center gap-1">
                         <ChevronDownIcon className={`h-3 w-3 transition-transform ${!channelsOpen ? '-rotate-90' : ''}`} />
-                        <span className="text-[13px] font-medium opacity-90">Channels</span>
+                        <span className="text-xs font-medium uppercase tracking-wide">Groups</span>
                         </div>
                         <PlusIcon 
-                            className="h-4 w-4 opacity-0 group-hover:opacity-100 p-0.5 hover:bg-slate-600/50 rounded" 
+                            className="h-4 w-4 opacity-0 group-hover:opacity-100 p-0.5 hover:bg-gray-200 rounded transition-opacity" 
                             title="Create Channel"
                             onClick={(e) => {
                                 e.stopPropagation();
@@ -231,31 +240,31 @@ export const AppSidebar = () => {
                     </div>
                     
                     {channelsOpen && (
-                        <div className="mt-1 space-y-0.5">
+                        <div className="mt-1 space-y-1">
                              {channels.length === 0 && (
-                                <div className="px-6 py-1 text-sm text-app-sidebarText/50 italic">No channels found</div>
+                                <div className="px-6 py-1 text-sm text-gray-400 italic">No channels yet</div>
                              )}
                              {channels.map(channel => (
                                 <NavLink 
                                     key={channel.id} 
                                     to={`/app/team/${teamId}/channel/${channel.id}`}
                                     className={({ isActive }) => `
-                                        flex items-center gap-2 px-4 py-1 text-[15px] transition-colors mx-2 rounded
+                                        flex items-center gap-2 px-4 py-2 text-sm transition-colors mx-2 rounded-lg
                                         ${isActive 
-                                            ? 'bg-app-sidebarActive text-white' 
-                                            : 'text-app-sidebarText hover:bg-app-sidebarHover hover:text-white'
+                                            ? 'bg-white text-gray-900 font-medium shadow-sm' 
+                                            : 'text-gray-600 hover:bg-white/50 hover:text-gray-900'
                                         }
                                     `}
                                 >
-                                    {channel.is_private ? <LockClosedIcon className="h-3.5 w-3.5 opacity-70" /> : <HashtagIcon className="h-3.5 w-3.5 opacity-70" />}
+                                    <HashtagIcon className="h-4 w-4 text-gray-400" />
                                     <span className="truncate">{channel.name}</span>
                                 </NavLink>
                              ))}
                              <div 
                                 onClick={() => navigate(`/app/team/${teamId}/chat`)}
-                                className="flex items-center gap-2 px-4 py-1 text-[13px] text-app-sidebarText/70 hover:text-white mx-2 mt-2 cursor-pointer"
+                                className="flex items-center gap-2 px-4 py-2 text-sm text-gray-400 hover:text-gray-600 mx-2 mt-2 cursor-pointer rounded-lg hover:bg-white/30 transition-colors"
                              >
-                                <div className="w-4 h-4 flex items-center justify-center bg-app-sidebarHover rounded">
+                                <div className="w-5 h-5 flex items-center justify-center bg-gray-200 rounded">
                                     <PlusIcon className="h-3 w-3" />
                                 </div>
                                 <span>Add Channel</span>

@@ -99,16 +99,32 @@ export const ChannelList: React.FC<ChannelListProps> = ({
     }
   };
 
-  if (loading) return <div className="p-4 text-slate-400 text-sm">Loading channels...</div>;
+  if (loading) return <div className="p-4 text-gray-400 text-sm">Loading channels...</div>;
 
   return (
-    <div className="flex flex-col h-full bg-gray-50">
-      <div className="p-4 flex justify-between items-center">
-        <h3 className="text-xs font-bold text-gray-500 uppercase tracking-wider">Channels</h3>
+    <div className="flex flex-col h-full bg-stone-50">
+      {/* Header */}
+      <div className="px-4 pt-4 pb-2">
+        <h2 className="text-lg font-semibold text-gray-900">Conversations</h2>
+      </div>
+
+      {/* Search Bar */}
+      <div className="px-3 pb-3">
+        <div className="flex items-center gap-2 px-3 py-2 bg-white border border-gray-200 rounded-lg text-gray-400 text-sm cursor-pointer hover:border-gray-300 transition-colors">
+          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          </svg>
+          <span>Search</span>
+        </div>
+      </div>
+
+      {/* Groups Section Header */}
+      <div className="px-4 py-2 flex justify-between items-center">
+        <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wider">Groups</h3>
         {isAdmin && (
           <button 
             onClick={() => setIsCreating(true)}
-            className="text-gray-400 hover:text-brand-600 transition-colors p-1 hover:bg-gray-200 rounded"
+            className="text-gray-400 hover:text-gray-600 transition-colors p-1 hover:bg-gray-200 rounded"
             title="Create Channel"
           >
             <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
@@ -119,26 +135,26 @@ export const ChannelList: React.FC<ChannelListProps> = ({
       </div>
 
       {isCreating && (
-        <form onSubmit={handleCreateChannel} className="px-3 pb-2">
+        <form onSubmit={handleCreateChannel} className="px-3 pb-3">
           <input
             type="text"
             value={newChannelName}
             onChange={(e) => setNewChannelName(e.target.value)}
             placeholder="Channel name..."
-            className="w-full px-3 py-1.5 text-sm bg-white border border-gray-200 rounded-md focus:ring-2 focus:ring-brand-100 focus:border-brand-500 outline-none transition-all"
+            className="w-full px-3 py-2 text-sm bg-white border border-gray-200 rounded-lg focus:ring-1 focus:ring-gray-300 focus:border-gray-300 outline-none transition-all"
             autoFocus
           />
           <div className="flex justify-end space-x-2 mt-2">
             <button 
               type="button" 
               onClick={() => setIsCreating(false)}
-              className="text-xs text-gray-500 hover:text-gray-700 font-medium px-2 py-1 rounded hover:bg-gray-200"
+              className="text-xs text-gray-500 hover:text-gray-700 font-medium px-3 py-1.5 rounded-full hover:bg-gray-200 transition-colors"
             >
               Cancel
             </button>
             <button 
               type="submit"
-              className="text-xs bg-brand-600 text-white font-medium px-2 py-1 rounded hover:bg-brand-700 transition-colors"
+              className="text-xs bg-gray-900 text-white font-medium px-3 py-1.5 rounded-full hover:bg-gray-800 transition-colors"
             >
               Create
             </button>
@@ -148,21 +164,21 @@ export const ChannelList: React.FC<ChannelListProps> = ({
 
       <div className="flex-1 overflow-y-auto px-2 pb-2">
         {channels.length === 0 ? (
-          <div className="px-4 py-2 text-sm text-gray-400 italic">No channels yet</div>
+          <div className="px-4 py-3 text-sm text-gray-400 italic">No channels yet</div>
         ) : (
-          <ul className="space-y-0.5">
+          <ul className="space-y-1">
             {channels.map(channel => (
               <li key={channel.id}>
                 <button
                   onClick={() => onChannelSelect(channel.id)}
-                  className={`w-full px-3 py-2 text-left text-sm flex items-center justify-between group rounded-md transition-all duration-200 ${
+                  className={`w-full px-3 py-2.5 text-left text-sm flex items-center justify-between group rounded-lg transition-all duration-200 ${
                     activeChannelId === channel.id 
-                      ? 'bg-white text-brand-700 font-semibold shadow-sm ring-1 ring-gray-200' 
-                      : 'text-gray-600 hover:bg-gray-200/50 hover:text-gray-900'
+                      ? 'bg-white text-gray-900 font-medium shadow-sm' 
+                      : 'text-gray-600 hover:bg-white/50 hover:text-gray-900'
                   }`}
                 >
                   <span className="truncate flex items-center gap-2">
-                    <span className={`text-xs ${activeChannelId === channel.id ? 'text-brand-400' : 'text-gray-400'}`}>#</span> 
+                    <span className="text-gray-400">#</span> 
                     {channel.name}
                   </span>
                   
@@ -173,7 +189,7 @@ export const ChannelList: React.FC<ChannelListProps> = ({
                         className="text-gray-400 hover:text-red-500 p-1 rounded hover:bg-gray-100"
                         title="Delete Channel"
                       >
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3" viewBox="0 0 20 20" fill="currentColor">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor">
                           <path fillRule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clipRule="evenodd" />
                         </svg>
                       </span>

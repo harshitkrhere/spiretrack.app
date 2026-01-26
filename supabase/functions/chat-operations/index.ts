@@ -29,6 +29,9 @@ interface ChatOperationRequest {
     include_threads?: boolean;
     include_system?: boolean;
   };
+  // For tab content operations
+  tab_id?: string;
+  tab_content?: any;
 }
 
 serve(async (req) => {
@@ -39,18 +42,34 @@ serve(async (req) => {
   try {
     const authHeader = req.headers.get('Authorization');
     console.log('Auth header present:', !!authHeader);
+
+    if (!authHeader) {
+      return new Response(JSON.stringify({ error: 'Missing Authorization header' }), {
+        status: 401,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
     
     const supabaseClient = createClient(
       Deno.env.get('SUPABASE_URL') ?? '',
       Deno.env.get('SUPABASE_ANON_KEY') ?? '',
       {
         global: {
-          headers: authHeader ? { Authorization: authHeader } : {},
+          headers: { Authorization: authHeader },
         },
       }
     );
 
-    const { data: { user }, error: authError } = await supabaseClient.auth.getUser();
+    // Admin client for bypassing RLS
+    const adminClient = createClient(
+      Deno.env.get('SUPABASE_URL') ?? '',
+      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
+    );
+
+    // Extract token to be safe and pass directly if needed, though global headers should work.
+    // However, some versions of supabase-js behave differently in Deno.
+    const token = authHeader.replace('Bearer ', '');
+    const { data: { user }, error: authError } = await supabaseClient.auth.getUser(token);
     
     if (authError) {
       console.error('Auth error:', authError);
@@ -110,6 +129,14 @@ serve(async (req) => {
       
       case 'edit_message':
         result = await editMessage(supabaseClient, body, user.id);
+        break;
+      
+      case 'save_tab_content':
+        result = await saveTabContent(adminClient, body, user.id);
+        break;
+
+      case 'bot_reply':
+        result = await botReply(supabaseClient, body, user.id);
         break;
       
       default:
@@ -466,4 +493,232 @@ async function editMessage(supabaseClient: any, body: ChatOperationRequest, user
   }
 
   return { success: true, data };
+}
+
+// ========================================
+// TAB CONTENT OPERATIONS (OVERVIEW SAVE)
+// ========================================
+
+async function saveTabContent(adminClient: any, body: ChatOperationRequest, userId: string) {
+  const { tab_id, tab_content, team_id } = body;
+
+  if (!tab_id || !tab_content || !team_id) {
+    throw new Error('tab_id, tab_content, and team_id required');
+  }
+
+  // Verify user is admin or owner of this team
+  const { data: memberData, error: memberError } = await adminClient
+    .from('team_members')
+    .select('role')
+    .eq('team_id', team_id)
+    .eq('user_id', userId)
+    .single();
+
+  if (memberError || !memberData) {
+    throw new Error('You are not a member of this team');
+  }
+
+  // Check if user has admin role via team_member_roles
+  const { data: roleData } = await adminClient
+    .from('team_member_roles')
+    .select('team_roles(is_admin)')
+    .eq('team_id', team_id)
+    .eq('user_id', userId);
+
+  const hasAdminRole = roleData?.some((r: any) => r.team_roles?.is_admin) || false;
+  const isOwnerOrAdmin = memberData.role === 'owner' || memberData.role === 'admin' || hasAdminRole;
+
+  if (!isOwnerOrAdmin) {
+    throw new Error('Only team admins and owners can edit Overview content');
+  }
+
+  // Check if content exists
+  const { data: existing } = await adminClient
+    .from('channel_tab_content')
+    .select('id')
+    .eq('tab_id', tab_id)
+    .single();
+
+  let result;
+  
+  if (existing) {
+    // Update existing
+    const { data, error } = await adminClient
+      .from('channel_tab_content')
+      .update({ 
+        content: tab_content, 
+        updated_by: userId, 
+        updated_at: new Date().toISOString() 
+      })
+      .eq('tab_id', tab_id)
+      .select()
+      .single();
+
+    if (error) {
+      console.error('Update tab content error:', error);
+      throw error;
+    }
+    result = data;
+  } else {
+    // Insert new
+    const { data, error } = await adminClient
+      .from('channel_tab_content')
+      .insert({ 
+        tab_id, 
+        content: tab_content, 
+        updated_by: userId 
+      })
+      .select()
+      .single();
+
+    if (error) {
+      console.error('Insert tab content error:', error);
+      throw error;
+    }
+    result = data;
+  }
+
+  return { success: true, data: result };
+}
+
+// ========================================
+// BOT OPERATIONS
+// ========================================
+
+async function botReply(supabaseClient: any, body: ChatOperationRequest, userId: string) {
+  const { team_id, channel_id, content } = body;
+  
+  if (!team_id || !channel_id || !content) {
+    throw new Error('team_id, channel_id, and content required');
+  }
+
+  // 1. Fetch recent context
+  const { data: messages, error: contextError } = await supabaseClient
+    .from('team_messages')
+    .select(`
+      content,
+      user_id,
+      created_at,
+      user:users(full_name)
+    `)
+    .eq('channel_id', channel_id)
+    .order('created_at', { ascending: false })
+    .limit(100);
+    
+  if (contextError) {
+    console.error('[Bot] Context fetch error:', contextError);
+    // Proceed without context if fail
+  }
+
+  let context = (messages || [])
+    .filter((m: any) => m.user_id !== null) // Exclude bot messages
+    .reverse()
+    .map((m: any) => {
+      const sender = m.user?.full_name || 'Unknown User';
+      const time = new Date(m.created_at).toLocaleString('en-US', { 
+        weekday: 'short', 
+        hour: 'numeric', 
+        minute: 'numeric',
+        hour12: true 
+      });
+      return `[${time}] ${sender}: ${m.content}`;
+    })
+    .join('\n');
+
+  if (!context.trim()) {
+    context = "(No conversation history found in the last 100 messages)";
+  }
+
+  const systemPrompt = `You are Spire AI, a smart assistant for the team.
+Your goal is to help with productivity, answer questions, summarize discussions, and provide insights.
+You have access to the recent conversation history provided below (last 100 messages).
+
+CRITICAL INSTRUCTIONS:
+1. CONTEXT VS KNOWLEDGE: 
+   - IF the user asks about the chat (summaries, "what did X say", "decisions made"), use ONLY the provided "Conversation History". Do NOT invent messages or names.
+   - IF the user asks a general question (e.g. "Who is Elon Musk?", "Write a Python script", "Draft an email"), use your own internal knowledge. You do NOT need the chat history for these.
+
+2. ZERO HALLUCINATION (CHAT): When answering questions about the chat, if the info isn't there, say "I don't see that in the chat history." Do NOT make up team members or conversations.
+
+3. TIMESTAMPS: Use the provided timestamps for time-aware queries (e.g. "summarize today").
+
+4. EMPTY HISTORY: If the history is empty, you can still answer general knowledge questions. But for chat summaries, state that no history is available.
+
+Conversation History:
+${context}
+`;
+
+  // 2. Call OpenRouter
+  try {
+    const apiKey = Deno.env.get('OPENROUTER_API_KEY');
+    if (!apiKey) {
+        console.error('[Bot] OPENROUTER_API_KEY is missing');
+        throw new Error('Configuration error: Missing API Key');
+    }
+    console.log('[Bot] Calling OpenRouter with key length:', apiKey.length);
+
+    const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${apiKey}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        model: 'openai/gpt-oss-20b:free',
+        messages: [
+          { role: 'system', content: systemPrompt },
+          { role: 'user', content }
+        ]
+      })
+    });
+
+    console.log('[Bot] OpenRouter Status:', response.status);
+
+    if (!response.ok) {
+        const errText = await response.text();
+        console.error('[Bot] OpenRouter error body:', errText);
+        throw new Error(`OpenRouter API error: ${response.status} - ${errText.substring(0, 100)}`);
+    }
+
+    const aiData = await response.json();
+    console.log('[Bot] AI Response received');
+    
+    // Check if we got a valid choice
+    const replyContent = aiData.choices?.[0]?.message?.content;
+    if (!replyContent) {
+        console.error('[Bot] No content in AI response:', JSON.stringify(aiData));
+        throw new Error('Empty response from AI');
+    }
+
+    // 3. Insert Bot Message
+    console.log('[Bot] Inserting message...');
+    const adminClient = createClient(
+      Deno.env.get('SUPABASE_URL') ?? '',
+      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
+    );
+
+    const { data, error } = await adminClient
+      .from('team_messages')
+      .insert({
+        team_id,
+        channel_id,
+        user_id: null,
+        content: replyContent,
+        is_system_message: false
+      })
+      .select()
+      .single();
+      
+    if (error) {
+        console.error('[Bot] Insert error:', error);
+        throw error;
+    }
+    
+    console.log('[Bot] Success:', data.id);
+    return { success: true, data };
+
+  } catch (err) {
+    console.error('[Bot] Process error:', err);
+    throw err;
+  }
 }
