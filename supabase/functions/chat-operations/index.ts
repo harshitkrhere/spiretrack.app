@@ -771,77 +771,98 @@ ${context}`;
   }
 
 
-  // 2. Call OpenRouter
-  try {
-    const apiKey = Deno.env.get('OPENROUTER_API_KEY');
-    if (!apiKey) {
-      console.error('[Bot] OPENROUTER_API_KEY is missing');
-      throw new Error('Configuration error: Missing API Key');
-    }
-    console.log('[Bot] Calling OpenRouter with key length:', apiKey.length);
-
-    const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${apiKey}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        model: 'openai/gpt-oss-20b:free',
-        messages: [
-          { role: 'system', content: systemPrompt },
-          { role: 'user', content }
-        ]
-      })
-    });
-
-    console.log('[Bot] OpenRouter Status:', response.status);
-
-    if (!response.ok) {
-      const errText = await response.text();
-      console.error('[Bot] OpenRouter error body:', errText);
-      throw new Error(`OpenRouter API error: ${response.status} - ${errText.substring(0, 100)} `);
-    }
-
-    const aiData = await response.json();
-    console.log('[Bot] AI Response received');
-
-    // Check if we got a valid choice
-    const replyContent = aiData.choices?.[0]?.message?.content;
-    if (!replyContent) {
-      console.error('[Bot] No content in AI response:', JSON.stringify(aiData));
-      throw new Error('Empty response from AI');
-    }
-
-    // 3. Insert Bot Message
-    console.log('[Bot] Inserting message...');
-    const adminClient = createClient(
-      Deno.env.get('SUPABASE_URL') ?? '',
-      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
-    );
-
-    const { data, error } = await adminClient
-      .from('team_messages')
-      .insert({
-        team_id,
-        channel_id,
-        user_id: null,
-        content: replyContent,
-        is_system_message: false
-      })
-      .select()
-      .single();
-
-    if (error) {
-      console.error('[Bot] Insert error:', error);
-      throw error;
-    }
-
-    console.log('[Bot] Success:', data.id);
-    return { success: true, data };
-
-  } catch (err) {
-    console.error('[Bot] Process error:', err);
-    throw err;
+  // 2. Call OpenRouter with retry + fallback
+  const apiKey = Deno.env.get('OPENROUTER_API_KEY');
+  if (!apiKey) {
+    console.error('[Bot] OPENROUTER_API_KEY is missing');
+    throw new Error('Configuration error: Missing API Key');
   }
+
+  const models = [
+    'openai/gpt-oss-20b:free',
+    'openai/gpt-oss-20b:free',           // retry same model once
+    'google/gemini-2.0-flash-exp:free',   // fallback model
+  ];
+
+  let lastError: Error | null = null;
+
+  for (const model of models) {
+    try {
+      console.log(`[Bot] Trying model: ${model}`);
+
+      const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${apiKey}`,
+          'Content-Type': 'application/json',
+          'HTTP-Referer': 'https://spiretrack.app',
+          'X-Title': 'SpireTrack',
+        },
+        body: JSON.stringify({
+          model,
+          messages: [
+            { role: 'system', content: systemPrompt },
+            { role: 'user', content }
+          ]
+        })
+      });
+
+      console.log('[Bot] OpenRouter Status:', response.status);
+
+      if (!response.ok) {
+        const errText = await response.text();
+        console.error(`[Bot] OpenRouter error (${model}):`, errText);
+        lastError = new Error(`OpenRouter API error: ${response.status}`);
+        // Wait briefly before retry
+        await new Promise(r => setTimeout(r, 1000));
+        continue;
+      }
+
+      const aiData = await response.json();
+
+      const replyContent = aiData.choices?.[0]?.message?.content;
+      if (!replyContent) {
+        console.error('[Bot] Empty response from', model, JSON.stringify(aiData));
+        lastError = new Error('Empty response from AI');
+        continue;
+      }
+
+      // Success - insert bot message
+      console.log(`[Bot] Got response from ${model}`);
+      const adminClient = createClient(
+        Deno.env.get('SUPABASE_URL') ?? '',
+        Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
+      );
+
+      const { data, error } = await adminClient
+        .from('team_messages')
+        .insert({
+          team_id,
+          channel_id,
+          user_id: null,
+          content: replyContent,
+          is_system_message: false
+        })
+        .select()
+        .single();
+
+      if (error) {
+        console.error('[Bot] Insert error:', error);
+        throw error;
+      }
+
+      console.log('[Bot] Success:', data.id);
+      return { success: true, data };
+
+    } catch (err) {
+      console.error(`[Bot] Error with ${model}:`, err);
+      lastError = err instanceof Error ? err : new Error(String(err));
+      await new Promise(r => setTimeout(r, 1000));
+    }
+  }
+
+  // All models failed
+  console.error('[Bot] All models failed. Last error:', lastError);
+  throw lastError || new Error('All AI models failed');
 }
+
