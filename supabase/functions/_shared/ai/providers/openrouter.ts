@@ -1,12 +1,12 @@
 /**
  * OpenRouter AI Provider
- * Implementation for OpenRouter API using openai/gpt-oss-20b model.
+ * Implementation for OpenRouter API using openai/gpt-oss-20b:free model.
  */
 
 import type { GenerateTextOptions } from '../aiClient.ts';
 
 const OPENROUTER_BASE_URL = 'https://openrouter.ai/api/v1/chat/completions';
-const MODEL = 'openai/gpt-oss-20b';
+const MODEL = 'openai/gpt-oss-20b:free';
 const TIMEOUT_MS = 90000;
 const MAX_RETRIES = 2;
 const INITIAL_RETRY_DELAY_MS = 1000;

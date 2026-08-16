@@ -508,82 +508,147 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
     if (isSending) return;
     setIsSending(true);
     
-    const tempId = 'temp-' + Date.now();
-    const optimisticMessage: Message = {
-      id: tempId,
-      team_id: teamId,
-      channel_id: channelId,
-      user_id: currentUserId,
-      content,
-      attachments,
-      mentions: [],
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
-      parent_message_id: null,
-      thread_reply_count: 0,
-      last_thread_reply_at: null,
-      is_system_message: false,
-      system_event_type: null,
-      system_event_data: null,
-      edited_at: null,
-      user: currentUserProfile || { id: currentUserId, email: 'You', full_name: 'You' }
-    };
-
-    setMessages(prev => [...prev, optimisticMessage]);
-    scrollToBottom();
-
-    // Insert directly into database (RLS handles permissions)
-    const { error } = await supabase
-      .from('team_messages')
-      .insert({
+    try {
+      const tempId = 'temp-' + Date.now();
+      const optimisticMessage: Message = {
+        id: tempId,
         team_id: teamId,
         channel_id: channelId,
         user_id: currentUserId,
         content,
         attachments,
         mentions: [],
-      });
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+        parent_message_id: null,
+        thread_reply_count: 0,
+        last_thread_reply_at: null,
+        is_system_message: false,
+        system_event_type: null,
+        system_event_data: null,
+        edited_at: null,
+        user: currentUserProfile || { id: currentUserId, email: 'You', full_name: 'You' }
+      };
 
-    if (error) {
-      console.error('Failed to send message:', error);
-      setMessages(prev => prev.filter(m => m.id !== tempId));
-      alert('Failed to send message: ' + error.message);
-    } else {
-      // Trigger notification processing (fire and forget)
-      supabase.functions.invoke('process-notifications').catch(err => {
-        console.log('[Notifications] Queue processing triggered', err ? `with warning: ${err.message}` : '');
-      });
+      setMessages(prev => [...prev, optimisticMessage]);
+      scrollToBottom();
 
-      // Check for @spireai (or @SpireAI) mention and trigger bot reply
-      if (content.toLowerCase().includes('@spireai')) {
-        setIsBotTyping(true);
-        setTimeout(scrollToBottom, 50); // Scroll to show typing indicator
-
-        supabase.functions.invoke('chat-operations', {
-          body: { 
-            action: 'bot_reply',
-            team_id: teamId,
-            channel_id: channelId,
-            content,
-            spire_mode: spireMode // Pass the selected mode to the edge function
-          }
-        }).then(({ error }) => {
-          if (error) {
-            console.error('[Chat] Bot reply function error:', error);
-            setIsBotTyping(false); 
-          } else {
-            // Clear typing indicator immediately on success to prevent it from getting stuck
-            // The real-time message will appear shortly via subscription
-            setIsBotTyping(false);
-          }
-        }).catch(err => {
-          console.error('[Chat] Failed to trigger bot reply (exception):', err);
-          setIsBotTyping(false);
+      // Insert directly into database (RLS handles permissions)
+      const { error } = await supabase
+        .from('team_messages')
+        .insert({
+          team_id: teamId,
+          channel_id: channelId,
+          user_id: currentUserId,
+          content,
+          attachments,
+          mentions: [],
         });
+
+      if (error) {
+        console.error('Failed to send message:', error);
+        setMessages(prev => prev.filter(m => m.id !== tempId));
+        alert('Failed to send message: ' + error.message);
+      } else {
+        // Trigger notification processing (fire and forget)
+        supabase.functions.invoke('process-notifications').catch(err => {
+          console.log('[Notifications] Queue processing triggered', err ? `with warning: ${err.message}` : '');
+        });
+
+        // Check for @spireai (or @SpireAI) mention and trigger bot reply
+        if (content.toLowerCase().includes('@spireai')) {
+          setIsBotTyping(true);
+          setTimeout(scrollToBottom, 50); // Scroll to show typing indicator
+
+          supabase.functions.invoke('chat-operations', {
+            body: { 
+              action: 'bot_reply',
+              team_id: teamId,
+              channel_id: channelId,
+              content,
+              spire_mode: spireMode // Pass the selected mode to the edge function
+            }
+          }).then(({ data, error }) => {
+            if (error) {
+              console.error('[Chat] Bot reply function error:', error);
+              // Show visible error message in chat so user knows the bot failed
+              const errorMessage: Message = {
+                id: 'bot-error-' + Date.now(),
+                team_id: teamId,
+                channel_id: channelId,
+                user_id: null,
+                content: '⚠️ SpireAI encountered an error and could not respond. Please try again.',
+                attachments: [],
+                mentions: [],
+                created_at: new Date().toISOString(),
+                updated_at: new Date().toISOString(),
+                parent_message_id: null,
+                thread_reply_count: 0,
+                last_thread_reply_at: null,
+                is_system_message: false,
+                system_event_type: null,
+                system_event_data: null,
+                edited_at: null,
+                user: { id: 'bot', email: 'ai@spiretrack.app', full_name: 'Spire AI', avatar_url: '/logo.png' }
+              };
+              setMessages(prev => [...prev, errorMessage]);
+              scrollToBottom();
+            } else if (data?.error) {
+              console.error('[Chat] Bot reply returned error in data:', data.error);
+              const errorMessage: Message = {
+                id: 'bot-error-' + Date.now(),
+                team_id: teamId,
+                channel_id: channelId,
+                user_id: null,
+                content: '⚠️ SpireAI encountered an error: ' + (data.error || 'Unknown error. Please try again.'),
+                attachments: [],
+                mentions: [],
+                created_at: new Date().toISOString(),
+                updated_at: new Date().toISOString(),
+                parent_message_id: null,
+                thread_reply_count: 0,
+                last_thread_reply_at: null,
+                is_system_message: false,
+                system_event_type: null,
+                system_event_data: null,
+                edited_at: null,
+                user: { id: 'bot', email: 'ai@spiretrack.app', full_name: 'Spire AI', avatar_url: '/logo.png' }
+              };
+              setMessages(prev => [...prev, errorMessage]);
+              scrollToBottom();
+            }
+            setIsBotTyping(false);
+          }).catch(err => {
+            console.error('[Chat] Failed to trigger bot reply (exception):', err);
+            // Show visible error message in chat
+            const errorMessage: Message = {
+              id: 'bot-error-' + Date.now(),
+              team_id: teamId,
+              channel_id: channelId,
+              user_id: null,
+              content: '⚠️ SpireAI is currently unavailable. Please try again later.',
+              attachments: [],
+              mentions: [],
+              created_at: new Date().toISOString(),
+              updated_at: new Date().toISOString(),
+              parent_message_id: null,
+              thread_reply_count: 0,
+              last_thread_reply_at: null,
+              is_system_message: false,
+              system_event_type: null,
+              system_event_data: null,
+              edited_at: null,
+              user: { id: 'bot', email: 'ai@spiretrack.app', full_name: 'Spire AI', avatar_url: '/logo.png' }
+            };
+            setMessages(prev => [...prev, errorMessage]);
+            scrollToBottom();
+            setIsBotTyping(false);
+          });
+        }
       }
+    } finally {
+      setIsSending(false);
     }
-    
-    setIsSending(false);
   };
 
   const handleScroll = () => {
@@ -954,29 +1019,23 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
               
               {/* Bot Typing Indicator */}
               {isBotTyping && (
-                <div className="flex gap-4 p-4 hover:bg-gray-50 transition-colors animate-pulse">
-                  <div className="flex-shrink-0 pt-1">
-                    <Avatar
-                      src="/logo.png"
-                      name="Spire AI"
-                      email="ai@spiretrack.app"
-                      size="md"
-                      className="ring-2 ring-indigo-50"
+                <div className="flex items-start gap-3 px-6 py-2">
+                  <div className="flex-shrink-0 mt-0.5">
+                    <img
+                      src="/spire-ai-logo.png"
+                      alt="Spire AI"
+                      className="w-9 h-9 rounded-md object-cover ring-1 ring-gray-200"
                     />
                   </div>
-                  <div className="flex flex-col min-w-0 max-w-[85%]">
-                    <div className="flex items-center gap-2 mb-0.5">
-                      <span className="font-semibold text-sm text-gray-900">Spire AI</span>
-                      <span className="bg-indigo-100 text-indigo-700 text-[10px] px-1.5 py-0.5 rounded font-medium border border-indigo-200 uppercase tracking-wider">
-                        BOT
-                      </span>
+                  <div className="flex flex-col min-w-0">
+                    <div className="flex items-baseline gap-2 mb-1">
+                      <span className="font-medium text-sm text-gray-900">Spire AI</span>
+                      <span className="text-[10px] font-medium tracking-wide uppercase text-gray-400 bg-gray-100 px-1.5 py-0.5 rounded">AI</span>
                     </div>
-                    <div className="text-gray-900 text-[15px] leading-relaxed break-words whitespace-pre-wrap flex items-center h-6">
-                      <div className="flex space-x-1">
-                        <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce [animation-delay:-0.3s]"></div>
-                        <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce [animation-delay:-0.15s]"></div>
-                        <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
-                      </div>
+                    <div className="flex items-center gap-1 h-5">
+                      <span className="w-1.5 h-1.5 rounded-full bg-gray-400 animate-bounce [animation-delay:-0.3s]"></span>
+                      <span className="w-1.5 h-1.5 rounded-full bg-gray-300 animate-bounce [animation-delay:-0.15s]"></span>
+                      <span className="w-1.5 h-1.5 rounded-full bg-gray-200 animate-bounce"></span>
                     </div>
                   </div>
                 </div>

@@ -204,7 +204,7 @@ export const MentionDropdown: React.FC<MentionDropdownProps> = ({
 
               {/* SpireAI badge */}
               {member.id === 'spireai' && (
-                <span className="px-2 py-0.5 bg-teal-100 text-teal-700 text-[10px] font-semibold rounded-full">
+                <span className="px-2 py-0.5 bg-gray-100 text-gray-500 text-[10px] font-medium tracking-wide uppercase rounded">
                   AI
                 </span>
               )}

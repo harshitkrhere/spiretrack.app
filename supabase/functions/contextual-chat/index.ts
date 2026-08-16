@@ -147,7 +147,7 @@ Respond as a helpful advisor who genuinely wants this team to succeed:`
                 'X-Title': 'SpireTrack'
             },
             body: JSON.stringify({
-                model: 'openai/gpt-oss-20b',
+                model: 'openai/gpt-oss-20b:free',
                 messages: [
                     { role: 'system', content: systemPrompt },
                     { role: 'user', content: message }

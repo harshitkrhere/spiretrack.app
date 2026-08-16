@@ -162,7 +162,7 @@ Return ONLY valid JSON. No markdown. No explanations.`
                 'X-Title': 'SpireTrack'
             },
             body: JSON.stringify({
-                model: 'openai/gpt-oss-20b',
+                model: 'openai/gpt-oss-20b:free',
                 messages: [{ role: 'user', content: prompt }],
                 temperature: 0.3,
                 max_tokens: 1500,
