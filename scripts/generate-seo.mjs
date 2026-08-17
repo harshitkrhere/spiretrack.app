@@ -74,153 +74,211 @@ function generateHTML({ title, description, canonical, breadcrumbs, content, rel
 
   <style>
     :root {
-      --gray-50: #fafafa;
-      --gray-100: #f5f5f5;
-      --gray-200: #e5e5e5;
-      --gray-300: #d4d4d4;
-      --gray-400: #a3a3a3;
-      --gray-500: #737373;
-      --gray-600: #525252;
-      --gray-700: #404040;
-      --gray-800: #262626;
-      --gray-900: #171717;
-      --primary: var(--gray-900);
-      --font-sans: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      --gray-50: #fafaf9; --gray-100: #f5f5f4; --gray-200: #e7e5e4;
+      --gray-300: #d6d3d1; --gray-400: #a8a29e; --gray-500: #78716c;
+      --gray-600: #57534e; --gray-700: #44403c; --gray-800: #292524;
+      --gray-900: #1c1917;
+      --emerald-50: #ecfdf5; --emerald-100: #d1fae5; --emerald-400: #34d399;
+      --emerald-500: #10b981; --emerald-600: #059669;
+      --teal-500: #14b8a6; --cyan-500: #06b6d4;
+      --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", system-ui, sans-serif;
     }
-    
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    
     body {
-      font-family: var(--font-sans);
-      color: var(--gray-800);
-      line-height: 1.6;
-      background-color: var(--gray-50);
-      -webkit-font-smoothing: antialiased;
+      font-family: var(--font-sans); color: var(--gray-800);
+      line-height: 1.7; background: white;
+      -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
     }
-    
-    a { color: var(--primary); text-decoration: none; }
-    a:hover { text-decoration: underline; }
-    
-    .container {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 0 2rem;
-    }
-    
+    a { color: var(--emerald-600); text-decoration: none; transition: color 0.2s; }
+    a:hover { color: var(--emerald-500); }
+
+    .container { max-width: 1100px; margin: 0 auto; padding: 0 1.5rem; }
+
+    /* — Header — */
     header {
-      background: white;
+      background: rgba(255,255,255,0.85); backdrop-filter: blur(12px);
       border-bottom: 1px solid var(--gray-200);
-      position: sticky;
-      top: 0;
-      z-index: 100;
+      position: sticky; top: 0; z-index: 100;
     }
-    
     .header-nav {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      height: 4rem;
+      display: flex; justify-content: space-between; align-items: center; height: 4rem;
     }
-    
     .logo {
-      font-weight: 700;
-      font-size: 1.25rem;
-      color: var(--gray-900);
+      font-weight: 700; font-size: 1.25rem; color: var(--gray-900);
+      letter-spacing: -0.02em;
     }
-    
-    .nav-links { display: flex; gap: 2rem; }
-    .nav-links a { color: var(--gray-600); font-weight: 500; font-size: 0.95rem; }
+    .logo:hover { color: var(--gray-900); text-decoration: none; }
+    .nav-links { display: flex; gap: 2rem; align-items: center; }
+    .nav-links a { color: var(--gray-500); font-weight: 400; font-size: 0.9rem; }
     .nav-links a:hover { color: var(--gray-900); text-decoration: none; }
-    
+    .nav-actions { display: flex; gap: 0.75rem; align-items: center; }
+
     .btn {
-      display: inline-block;
-      padding: 0.5rem 1rem;
-      border-radius: 0.375rem;
-      font-weight: 500;
-      text-align: center;
-      transition: all 0.2s;
+      display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;
+      font-weight: 500; font-size: 0.9rem; transition: all 0.2s; cursor: pointer;
+      text-decoration: none !important; border: none;
     }
-    .btn-primary { background: var(--gray-900); color: white; }
-    .btn-primary:hover { background: var(--gray-800); text-decoration: none; color: white; }
-    .btn-outline { border: 1px solid var(--gray-300); color: var(--gray-700); }
-    .btn-outline:hover { background: var(--gray-50); text-decoration: none; }
-    
+    .btn-primary {
+      background: var(--gray-900); color: white !important;
+      padding: 0.6rem 1.5rem; border-radius: 9999px;
+    }
+    .btn-primary:hover { background: var(--gray-800); transform: translateY(-1px); }
+    .btn-ghost { color: var(--gray-600) !important; padding: 0.6rem 1rem; border-radius: 9999px; }
+    .btn-ghost:hover { color: var(--gray-900) !important; background: var(--gray-100); }
+    .btn-cta {
+      background: var(--gray-900); color: white !important;
+      padding: 1rem 2.5rem; border-radius: 9999px; font-size: 1.05rem; font-weight: 500;
+    }
+    .btn-cta:hover { background: var(--gray-800); transform: translateY(-1px); box-shadow: 0 10px 25px rgba(0,0,0,0.15); }
+    .btn-cta-light {
+      background: white; color: var(--gray-900) !important;
+      padding: 1rem 2.5rem; border-radius: 9999px; font-size: 1.05rem; font-weight: 500;
+    }
+    .btn-cta-light:hover { background: var(--gray-100); transform: translateY(-1px); }
+
+    /* — Breadcrumbs — */
     .breadcrumbs {
-      padding: 1.5rem 0;
-      font-size: 0.875rem;
-      color: var(--gray-500);
+      padding: 1.25rem 0; font-size: 0.8rem; color: var(--gray-400);
+      letter-spacing: 0.02em; text-transform: uppercase;
     }
-    .breadcrumbs a { color: var(--gray-600); }
-    .breadcrumbs span { margin: 0 0.5rem; }
-    
-    main { min-height: 60vh; padding-bottom: 4rem; }
-    
+    .breadcrumbs a { color: var(--gray-500); }
+    .breadcrumbs a:hover { color: var(--gray-900); }
+    .breadcrumbs .sep { margin: 0 0.5rem; color: var(--gray-300); }
+
+    /* — Hero — */
     .hero {
-      padding: 4rem 0;
-      text-align: center;
-      background: white;
-      border-bottom: 1px solid var(--gray-200);
-      margin-bottom: 3rem;
+      padding: 5rem 0 4rem; text-align: center; position: relative; overflow: hidden;
     }
-    .hero h1 { font-size: 3rem; font-weight: 800; color: var(--gray-900); margin-bottom: 1rem; line-height: 1.2; }
-    .hero p { font-size: 1.25rem; color: var(--gray-600); max-width: 800px; margin: 0 auto; }
-    
+    .hero::before {
+      content: ''; position: absolute; top: -100px; right: -100px;
+      width: 500px; height: 500px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(16,185,129,0.06) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero::after {
+      content: ''; position: absolute; bottom: -80px; left: -80px;
+      width: 400px; height: 400px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(20,184,166,0.05) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero .badge {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      padding: 0.4rem 1rem; border-radius: 9999px; font-size: 0.75rem;
+      font-weight: 500; text-transform: uppercase; letter-spacing: 0.08em;
+      background: var(--emerald-50); color: var(--emerald-600);
+      border: 1px solid var(--emerald-100); margin-bottom: 2rem;
+    }
+    .hero .badge::before {
+      content: ''; width: 6px; height: 6px; border-radius: 50%;
+      background: var(--emerald-500); display: inline-block;
+    }
+    .hero h1 {
+      font-size: clamp(2.2rem, 5vw, 3.5rem); font-weight: 300; color: var(--gray-900);
+      line-height: 1.15; letter-spacing: -0.03em; margin-bottom: 1.25rem;
+      position: relative; z-index: 1;
+    }
+    .hero .gradient-text {
+      background: linear-gradient(135deg, var(--emerald-500), var(--teal-500), var(--cyan-500));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero p {
+      font-size: 1.15rem; color: var(--gray-500); max-width: 640px;
+      margin: 0 auto 2.5rem; font-weight: 300; line-height: 1.7;
+      position: relative; z-index: 1;
+    }
+
+    /* — Content — */
+    main { min-height: 60vh; padding-bottom: 2rem; }
+
     .content-section {
-      background: white;
-      border-radius: 0.5rem;
-      padding: 3rem;
-      margin-bottom: 2rem;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-      border: 1px solid var(--gray-200);
+      background: white; border-radius: 1rem; padding: 3rem;
+      margin-bottom: 1.5rem; border: 1px solid var(--gray-200);
     }
-    
-    .content-section h2 { font-size: 2rem; margin-bottom: 1.5rem; color: var(--gray-900); }
-    .content-section h3 { font-size: 1.5rem; margin: 1.5rem 0 1rem; color: var(--gray-800); }
-    .content-section p { margin-bottom: 1rem; }
-    .content-section ul { margin: 0 0 1.5rem 2rem; }
-    .content-section li { margin-bottom: 0.5rem; }
-    
-    table { width: 100%; border-collapse: collapse; margin: 2rem 0; }
-    th, td { padding: 1rem; text-align: left; border-bottom: 1px solid var(--gray-200); }
-    th { background: var(--gray-50); font-weight: 600; color: var(--gray-900); }
-    
+    .content-section h2 {
+      font-size: 1.75rem; font-weight: 300; color: var(--gray-900);
+      margin-bottom: 1.25rem; letter-spacing: -0.02em;
+    }
+    .content-section h3 {
+      font-size: 1.25rem; font-weight: 500; color: var(--gray-800);
+      margin: 1.5rem 0 0.75rem;
+    }
+    .content-section p { margin-bottom: 1rem; color: var(--gray-600); font-weight: 300; }
+    .content-section ul { margin: 0 0 1.5rem 1.5rem; color: var(--gray-600); }
+    .content-section li { margin-bottom: 0.5rem; font-weight: 300; }
+    .content-section strong { color: var(--gray-800); font-weight: 500; }
+
+    /* — Table — */
+    table { width: 100%; border-collapse: collapse; margin: 2rem 0; font-size: 0.95rem; }
+    th, td { padding: 1rem 1.25rem; text-align: left; border-bottom: 1px solid var(--gray-100); }
+    th { background: var(--gray-50); font-weight: 500; color: var(--gray-900); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.04em; }
+    td { color: var(--gray-600); font-weight: 300; }
+    .check { color: var(--emerald-500); font-weight: 600; }
+    .cross { color: var(--gray-300); }
+
+    /* — CTA Section — */
     .cta-section {
-      text-align: center;
-      padding: 5rem 0;
-      background: var(--gray-900);
-      color: white;
-      margin-top: 4rem;
+      text-align: center; padding: 5rem 2rem;
+      background: var(--gray-900); color: white;
+      margin-top: 4rem; border-radius: 1.5rem;
+      position: relative; overflow: hidden;
     }
-    .cta-section h2 { font-size: 2.5rem; margin-bottom: 1rem; color: white; }
-    .cta-section p { font-size: 1.25rem; color: var(--gray-300); margin-bottom: 2rem; }
-    .cta-section .btn-primary { background: white; color: var(--gray-900); font-size: 1.125rem; padding: 0.75rem 2rem; }
-    .cta-section .btn-primary:hover { background: var(--gray-100); }
-    
-    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; }
+    .cta-section::before {
+      content: ''; position: absolute; top: -60px; right: -60px;
+      width: 300px; height: 300px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(16,185,129,0.15) 0%, transparent 70%);
+    }
+    .cta-section h2 {
+      font-size: clamp(1.8rem, 4vw, 2.5rem); font-weight: 300;
+      margin-bottom: 1rem; letter-spacing: -0.02em; position: relative; z-index: 1;
+    }
+    .cta-section p {
+      font-size: 1.1rem; color: var(--gray-400); margin-bottom: 2.5rem;
+      max-width: 500px; margin-left: auto; margin-right: auto; font-weight: 300;
+      position: relative; z-index: 1;
+    }
+
+    /* — Related Pages — */
+    .related-pages { padding: 3rem 0; }
+    .related-pages h2 { font-size: 1.5rem; font-weight: 300; color: var(--gray-900); margin-bottom: 1.5rem; letter-spacing: -0.02em; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.25rem; }
     .card {
-      background: white; padding: 1.5rem; border-radius: 0.5rem; border: 1px solid var(--gray-200);
-      transition: box-shadow 0.2s, transform 0.2s;
-      display: block; color: inherit;
+      background: white; padding: 1.5rem; border-radius: 0.75rem;
+      border: 1px solid var(--gray-200); transition: all 0.25s ease; display: block; color: inherit;
     }
-    .card:hover { box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); transform: translateY(-2px); text-decoration: none; }
-    .card h3 { font-size: 1.25rem; color: var(--gray-900); margin-bottom: 0.5rem; }
-    .card p { color: var(--gray-600); font-size: 0.95rem; margin: 0; }
-    
+    .card:hover {
+      border-color: var(--gray-300); box-shadow: 0 8px 30px rgba(0,0,0,0.06);
+      transform: translateY(-3px); text-decoration: none;
+    }
+    .card h3 { font-size: 1rem; font-weight: 500; color: var(--gray-900); margin-bottom: 0.4rem; }
+    .card p { color: var(--gray-500); font-size: 0.875rem; margin: 0; font-weight: 300; line-height: 1.5; }
+
+    /* — FAQ — */
+    .faq-item { border-bottom: 1px solid var(--gray-100); padding: 1.5rem 0; }
+    .faq-item h3 { font-size: 1.1rem; font-weight: 500; color: var(--gray-900); margin-bottom: 0.5rem; }
+    .faq-item p { color: var(--gray-500); font-weight: 300; margin: 0; }
+
+    /* — Footer — */
     footer {
-      background: white; padding: 4rem 0 2rem; border-top: 1px solid var(--gray-200); margin-top: 4rem;
+      background: var(--gray-50); padding: 4rem 0 2rem; border-top: 1px solid var(--gray-200);
+      margin-top: 0;
     }
     .footer-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2rem; margin-bottom: 3rem; }
-    .footer-col h4 { font-weight: 600; margin-bottom: 1.5rem; color: var(--gray-900); }
+    .footer-col h4 { font-weight: 500; margin-bottom: 1.25rem; color: var(--gray-900); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.06em; }
     .footer-col ul { list-style: none; margin: 0; padding: 0; }
-    .footer-col li { margin-bottom: 0.75rem; }
-    .footer-col a { color: var(--gray-500); }
+    .footer-col li { margin-bottom: 0.6rem; }
+    .footer-col a { color: var(--gray-500); font-size: 0.9rem; font-weight: 300; }
     .footer-col a:hover { color: var(--gray-900); }
-    
+    .footer-bottom { text-align: center; padding-top: 2rem; border-top: 1px solid var(--gray-200); color: var(--gray-400); font-size: 0.8rem; font-weight: 300; }
+
     @media (max-width: 768px) {
-      .nav-links { display: none; }
+      .nav-links, .nav-actions { display: none; }
       .hero h1 { font-size: 2rem; }
+      .content-section { padding: 1.5rem; border-radius: 0.75rem; }
       .footer-grid { grid-template-columns: 1fr 1fr; }
-      .content-section { padding: 1.5rem; }
+      .cta-section { padding: 3rem 1.5rem; border-radius: 1rem; }
+      table { font-size: 0.85rem; }
+      th, td { padding: 0.75rem; }
     }
   </style>
 </head>
@@ -230,13 +288,14 @@ function generateHTML({ title, description, canonical, breadcrumbs, content, rel
       <a href="/" class="logo">SpireTrack</a>
       <nav class="nav-links">
         <a href="/features">Features</a>
+        <a href="/how-it-works">How It Works</a>
         <a href="/pricing">Pricing</a>
         <a href="/templates">Templates</a>
         <a href="/alternatives">Compare</a>
       </nav>
-      <div style="display: flex; gap: 1rem;">
-        <a href="/login" class="btn btn-outline">Login</a>
-        <a href="/signup" class="btn btn-primary">Sign Up</a>
+      <div class="nav-actions">
+        <a href="/login" class="btn btn-ghost">Log in</a>
+        <a href="/signup" class="btn btn-primary">Get Started Free</a>
       </div>
     </div>
   </header>
@@ -245,7 +304,7 @@ function generateHTML({ title, description, canonical, breadcrumbs, content, rel
     <nav class="breadcrumbs">
       ${breadcrumbs.map((b, i) => i === breadcrumbs.length - 1 ? 
         `<span>${b.name}</span>` : 
-        `<a href="${b.url}">${b.name}</a> <span>/</span>`
+        `<a href="${b.url}">${b.name}</a><span class="sep">›</span>`
       ).join('')}
     </nav>
   </div>
@@ -256,13 +315,15 @@ function generateHTML({ title, description, canonical, breadcrumbs, content, rel
   
   ${relatedHtml}
 
-  <section class="cta-section">
-    <div class="container">
-      <h2>Ready to streamline your team updates?</h2>
-      <p>Join thousands of teams using SpireTrack for asynchronous standups and status reports.</p>
-      <a href="/signup" class="btn btn-primary">Try SpireTrack Free</a>
-    </div>
-  </section>
+  <div class="container">
+    <section class="cta-section">
+      <h2>Weekly check-ins that take<br>5 minutes, not 50.</h2>
+      <p>Replace status meetings with async reviews. Know what your team is working on—without the endless meetings.</p>
+      <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; position: relative; z-index: 1;">
+        <a href="/signup" class="btn-cta-light">Start Free Trial →</a>
+      </div>
+    </section>
+  </div>
 
   <footer>
     <div class="container">
@@ -271,36 +332,38 @@ function generateHTML({ title, description, canonical, breadcrumbs, content, rel
           <h4>Product</h4>
           <ul>
             <li><a href="/features">Features</a></li>
+            <li><a href="/how-it-works">How It Works</a></li>
             <li><a href="/pricing">Pricing</a></li>
-            <li><a href="/integrations">Integrations</a></li>
+            <li><a href="/for-teams">For Teams</a></li>
           </ul>
         </div>
         <div class="footer-col">
           <h4>Resources</h4>
           <ul>
             <li><a href="/templates">Templates</a></li>
-            <li><a href="/blog">Blog</a></li>
-            <li><a href="/help">Help Center</a></li>
+            <li><a href="/best-async-standup-tools">Best Standup Tools</a></li>
+            <li><a href="/about">About</a></li>
           </ul>
         </div>
         <div class="footer-col">
           <h4>Compare</h4>
           <ul>
-            <li><a href="/alternatives/geekbot">Geekbot Alternative</a></li>
-            <li><a href="/alternatives/standuply">Standuply Alternative</a></li>
-            <li><a href="/alternatives/status-hero">Status Hero Alternative</a></li>
+            <li><a href="/alternatives/geekbot">vs Geekbot</a></li>
+            <li><a href="/alternatives/slack">vs Slack</a></li>
+            <li><a href="/alternatives/monday">vs Monday</a></li>
+            <li><a href="/alternatives/standuply">vs Standuply</a></li>
           </ul>
         </div>
         <div class="footer-col">
           <h4>Company</h4>
           <ul>
             <li><a href="/about">About Us</a></li>
-            <li><a href="/contact">Contact</a></li>
             <li><a href="/privacy">Privacy Policy</a></li>
+            <li><a href="/terms">Terms of Service</a></li>
           </ul>
         </div>
       </div>
-      <div style="text-align: center; color: var(--gray-500); font-size: 0.875rem;">
+      <div class="footer-bottom">
         &copy; ${new Date().getFullYear()} SpireTrack. All rights reserved.
       </div>
     </div>
@@ -313,8 +376,9 @@ function generateAlternativePage(competitor) {
   const content = `
     <div class="hero">
       <div class="container">
-        <h1>Best ${competitor.name} Alternative for Team Standups</h1>
-        <p>Looking for a ${competitor.name} alternative? Discover why fast-moving teams choose SpireTrack for asynchronous standups, clear reporting, and better team visibility.</p>
+        <div class="badge">Alternative</div>
+        <h1>The <span class="gradient-text">${competitor.name} alternative</span><br>built for modern teams</h1>
+        <p>Looking for a ${competitor.name} alternative? Discover why fast-moving teams choose SpireTrack for async standups, clear reporting, and better team visibility.</p>
       </div>
     </div>
     
@@ -381,16 +445,22 @@ function generateAlternativePage(competitor) {
       <div class="content-section">
         <h2>Frequently Asked Questions</h2>
         <div itemscope itemtype="https://schema.org/FAQPage">
-          <div itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+          <div class="faq-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
             <h3 itemprop="name">Is SpireTrack cheaper than ${competitor.name}?</h3>
             <div itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
               <p itemprop="text">Yes, for most teams, SpireTrack offers a more cost-effective solution with transparent, flat-rate pricing plans.</p>
             </div>
           </div>
-          <div itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+          <div class="faq-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
             <h3 itemprop="name">Can I use SpireTrack with Slack?</h3>
             <div itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
               <p itemprop="text">Absolutely. SpireTrack integrates deeply with Slack, Microsoft Teams, and email to ensure your team can post updates where they already work.</p>
+            </div>
+          </div>
+          <div class="faq-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+            <h3 itemprop="name">How long does it take to switch from ${competitor.name}?</h3>
+            <div itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+              <p itemprop="text">Most teams are fully set up in under 5 minutes. Import your team, customize your check-in template, and you're ready to go.</p>
             </div>
           </div>
         </div>
@@ -404,8 +474,9 @@ function generateComparisonPage(toolA, toolB) {
   const content = `
     <div class="hero">
       <div class="container">
-        <h1>${toolA.name} vs ${toolB.name}: Which Is Better for Your Team?</h1>
-        <p>An in-depth comparison of ${toolA.name} and ${toolB.name} for team standups and asynchronous reporting.</p>
+        <div class="badge">Comparison</div>
+        <h1><span class="gradient-text">${toolA.name}</span> vs <span class="gradient-text">${toolB.name}</span></h1>
+        <p>An in-depth comparison to help you pick the right tool for your team's standups and async reporting.</p>
       </div>
     </div>
     
@@ -474,7 +545,8 @@ function generateTemplatePage(template, variant = null) {
   const content = `
     <div class="hero">
       <div class="container">
-        <h1>${pageTitle}</h1>
+        <div class="badge">Template</div>
+        <h1><span class="gradient-text">${pageTitle}</span></h1>
         <p>Streamline your workflow with our battle-tested ${template.name.toLowerCase()} format. Ready to use in SpireTrack.</p>
       </div>
     </div>
@@ -485,10 +557,10 @@ function generateTemplatePage(template, variant = null) {
         <p>${contextText} teams capture essential updates asynchronously without interrupting deep work. By standardizing the questions asked, you ensure consistent, actionable reporting.</p>
         
         <h3>Template Preview:</h3>
-        <div style="background: var(--gray-50); padding: 1.5rem; border-radius: 0.5rem; border: 1px solid var(--gray-200); margin: 1.5rem 0;">
+        <div style="background: linear-gradient(135deg, #1e293b, #0f172a); padding: 2rem; border-radius: 1rem; border: 1px solid #334155; margin: 1.5rem 0;">
           <ul style="list-style: none; margin: 0; padding: 0;">
             ${(template.questions || ['What did you do yesterday?', 'What will you do today?', 'Any blockers?']).map(q => `
-              <li style="margin-bottom: 1rem; font-weight: 500;">
+              <li style="margin-bottom: 1rem; font-weight: 400; color: #e2e8f0; padding: 0.75rem 1rem; background: rgba(255,255,255,0.05); border-radius: 0.5rem; border-left: 3px solid #10b981;">
                 <span style="color: var(--gray-500); margin-right: 0.5rem;">Q:</span> ${q}
               </li>
             `).join('')}
@@ -519,7 +591,8 @@ function generateIndustryPage(industry) {
   const content = `
     <div class="hero">
       <div class="container">
-        <h1>SpireTrack for ${industry.name}</h1>
+        <div class="badge">Industry</div>
+        <h1>Async standups for<br><span class="gradient-text">${industry.name}</span></h1>
         <p>Purpose-built asynchronous status updates and standups for ${industry.name.toLowerCase()} teams.</p>
       </div>
     </div>
@@ -565,7 +638,8 @@ function generateRolePage(role) {
   const content = `
     <div class="hero">
       <div class="container">
-        <h1>SpireTrack for ${role.name}s</h1>
+        <div class="badge">Role</div>
+        <h1>Built for<br><span class="gradient-text">${role.name}s</span></h1>
         <p>Equip your ${role.name.toLowerCase()} teams with the best tools for asynchronous communication and project tracking.</p>
       </div>
     </div>
