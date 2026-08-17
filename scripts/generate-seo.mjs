@@ -373,94 +373,120 @@ function generateHTML({ title, description, canonical, breadcrumbs, content, rel
 }
 
 function generateAlternativePage(competitor) {
+  const cons = (competitor.cons || []).map(c => `<li>${c}</li>`).join('');
+  const missing = (competitor.missing_vs_spiretrack || []).map(m => `<li><strong>${m}:</strong> Built into SpireTrack from day one.</li>`).join('');
+  
   const content = `
     <div class="hero">
       <div class="container">
         <div class="badge">Alternative</div>
         <h1>The <span class="gradient-text">${competitor.name} alternative</span><br>built for modern teams</h1>
-        <p>Looking for a ${competitor.name} alternative? Discover why fast-moving teams choose SpireTrack for async standups, clear reporting, and better team visibility.</p>
+        <p>${competitor.tagline ? `${competitor.name} — "${competitor.tagline}." ` : ''}Looking for something better? Discover why teams switch to SpireTrack for async standups, team chat, and OKR tracking.</p>
       </div>
     </div>
     
     <div class="container">
       <div class="content-section">
-        <h2>Why look for a ${competitor.name} alternative?</h2>
-        <p>While ${competitor.name} is a popular tool for team updates, many teams outgrow it as they scale. Common challenges include complex pricing, cluttered interfaces, or a lack of deeper analytics.</p>
-        <p>SpireTrack was built from the ground up to solve these exact pain points. We provide a clean, focused experience that makes async communication seamless for engineering, product, and remote teams.</p>
-        
-        <h3>Why teams switch to SpireTrack:</h3>
+        <h2>Why teams look for a ${competitor.name} alternative</h2>
+        <p>${competitor.name} is ${competitor.ideal_for ? `ideal for ${competitor.ideal_for.toLowerCase()}` : 'a popular tool'}. But as teams grow, they run into real limitations:</p>
         <ul>
-          <li><strong>Simpler Interface:</strong> No more fighting with clunky bots. Our web dashboard and Slack/Teams integrations are intuitive and fast.</li>
-          <li><strong>Transparent Pricing:</strong> Simple, predictable pricing without hidden fees for essential features.</li>
-          <li><strong>Better Analytics:</strong> Track team blockers and sentiment over time with robust reporting.</li>
-          <li><strong>Customizable Templates:</strong> Go beyond standard standups with versatile templates for 1-on-1s, retro, and project check-ins.</li>
+          ${cons}
+        </ul>
+        <p>${competitor.spiretrack_advantage || `SpireTrack was built to solve these exact pain points with a clean, all-in-one platform.`}</p>
+      </div>
+
+      <div class="content-section">
+        <h2>What ${competitor.name} is missing</h2>
+        <p>Features that SpireTrack includes out of the box, but ${competitor.name} doesn't:</p>
+        <ul>
+          ${missing}
         </ul>
       </div>
       
       <div class="content-section">
-        <h2>SpireTrack vs ${competitor.name} Comparison</h2>
+        <h2>SpireTrack vs ${competitor.name} — full comparison</h2>
         <table>
           <thead>
             <tr>
-              <th>Feature</th>
+              <th>Capability</th>
               <th>SpireTrack</th>
               <th>${competitor.name}</th>
             </tr>
           </thead>
           <tbody>
             <tr>
-              <td>Asynchronous Standups</td>
-              <td>✅ Yes</td>
-              <td>✅ Yes</td>
+              <td>Async Weekly Standups</td>
+              <td><span class="check">✓ Built-in</span></td>
+              <td>${competitor.category === 'async-standup' ? '<span class="check">✓ Yes</span>' : '<span class="cross">✗ Not native</span>'}</td>
             </tr>
             <tr>
-              <td>Blocker Tracking & Analytics</td>
-              <td>✅ Advanced</td>
-              <td>⚠️ Basic</td>
+              <td>Real-time Team Chat</td>
+              <td><span class="check">✓ Built-in</span></td>
+              <td>${['chat','project-management'].includes(competitor.category) ? '⚠️ Partial' : '<span class="cross">✗ No</span>'}</td>
             </tr>
             <tr>
-              <td>Custom Workflows</td>
-              <td>✅ Unlimited</td>
-              <td>⚠️ Limited by tier</td>
+              <td>OKR / Goal Tracking</td>
+              <td><span class="check">✓ Full tree view</span></td>
+              <td>${(competitor.features || []).some(f => f.toLowerCase().includes('goal')) ? '⚠️ Basic' : '<span class="cross">✗ No</span>'}</td>
             </tr>
             <tr>
-              <td>Interface</td>
-              <td>Modern, Clean Web & App</td>
-              <td>Chat-focused</td>
+              <td>AI-Powered Insights</td>
+              <td><span class="check">✓ SpireAI</span></td>
+              <td><span class="cross">✗ No</span></td>
             </tr>
             <tr>
               <td>Pricing</td>
-              <td>Flat-rate, predictable</td>
-              <td>Per-user, complex</td>
+              <td>Free to start</td>
+              <td>${competitor.pricing || 'Varies'}</td>
+            </tr>
+            <tr>
+              <td>Standalone (no Slack required)</td>
+              <td><span class="check">✓ Yes</span></td>
+              <td>${competitor.category === 'async-standup' ? '<span class="cross">✗ Requires Slack/Teams</span>' : '<span class="check">✓ Yes</span>'}</td>
             </tr>
           </tbody>
         </table>
       </div>
 
       <div class="content-section">
-        <h2>Effortless Migration</h2>
-        <p>Switching from ${competitor.name} to SpireTrack takes less than 5 minutes. Import your existing team roster, set up your preferred schedules, and start running better standups today.</p>
+        <h2>${competitor.name}'s strengths</h2>
+        <p>To be fair, ${competitor.name} does some things well:</p>
+        <ul>
+          ${(competitor.pros || []).map(p => `<li><strong>${p}</strong></li>`).join('')}
+        </ul>
+        <p>But if you need async standups, team chat, and OKR tracking in one place — SpireTrack is the better fit.</p>
+      </div>
+
+      <div class="content-section">
+        <h2>Switching from ${competitor.name} is easy</h2>
+        <p>Most teams are fully set up in under 5 minutes:</p>
+        <ul>
+          <li><strong>Step 1:</strong> Create your SpireTrack workspace (free).</li>
+          <li><strong>Step 2:</strong> Invite your team via email or link.</li>
+          <li><strong>Step 3:</strong> Pick a standup template and set your schedule.</li>
+          <li><strong>Step 4:</strong> Your first async check-in goes out automatically.</li>
+        </ul>
       </div>
 
       <div class="content-section">
         <h2>Frequently Asked Questions</h2>
         <div itemscope itemtype="https://schema.org/FAQPage">
           <div class="faq-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+            <h3 itemprop="name">How is SpireTrack different from ${competitor.name}?</h3>
+            <div itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+              <p itemprop="text">${competitor.spiretrack_advantage || `SpireTrack combines async standups, real-time team chat, and OKR tracking in a single platform, while ${competitor.name} focuses on ${competitor.category.replace(/-/g, ' ')}.`}</p>
+            </div>
+          </div>
+          <div class="faq-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
             <h3 itemprop="name">Is SpireTrack cheaper than ${competitor.name}?</h3>
             <div itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
-              <p itemprop="text">Yes, for most teams, SpireTrack offers a more cost-effective solution with transparent, flat-rate pricing plans.</p>
+              <p itemprop="text">SpireTrack is free to start with generous limits. ${competitor.name} starts at ${competitor.pricing || 'a paid tier'}. For most teams, SpireTrack provides more value per dollar.</p>
             </div>
           </div>
           <div class="faq-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
-            <h3 itemprop="name">Can I use SpireTrack with Slack?</h3>
+            <h3 itemprop="name">Can I use SpireTrack alongside ${competitor.name}?</h3>
             <div itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
-              <p itemprop="text">Absolutely. SpireTrack integrates deeply with Slack, Microsoft Teams, and email to ensure your team can post updates where they already work.</p>
-            </div>
-          </div>
-          <div class="faq-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
-            <h3 itemprop="name">How long does it take to switch from ${competitor.name}?</h3>
-            <div itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
-              <p itemprop="text">Most teams are fully set up in under 5 minutes. Import your team, customize your check-in template, and you're ready to go.</p>
+              <p itemprop="text">Yes. Many teams start by running SpireTrack in parallel. Once they see the improvement in team visibility, they typically consolidate into SpireTrack full-time.</p>
             </div>
           </div>
         </div>
@@ -476,62 +502,80 @@ function generateComparisonPage(toolA, toolB) {
       <div class="container">
         <div class="badge">Comparison</div>
         <h1><span class="gradient-text">${toolA.name}</span> vs <span class="gradient-text">${toolB.name}</span></h1>
-        <p>An in-depth comparison to help you pick the right tool for your team's standups and async reporting.</p>
+        <p>${toolA.tagline ? `${toolA.name}: "${toolA.tagline}." ` : ''}${toolB.tagline ? `${toolB.name}: "${toolB.tagline}." ` : ''}Which one fits your team?</p>
       </div>
     </div>
     
     <div class="container">
       <div class="content-section">
-        <h2>Overview: ${toolA.name} vs ${toolB.name}</h2>
-        <p>Choosing the right tool for asynchronous team updates is crucial for productivity. Both ${toolA.name} and ${toolB.name} offer robust features, but they cater to slightly different workflows.</p>
-        
+        <h2>Quick comparison</h2>
         <table>
           <thead>
             <tr>
-              <th>Feature Area</th>
+              <th></th>
               <th>${toolA.name}</th>
               <th>${toolB.name}</th>
+              <th>SpireTrack</th>
             </tr>
           </thead>
           <tbody>
             <tr>
-              <td>Ease of Use</td>
-              <td>High</td>
-              <td>Moderate</td>
+              <td>Category</td>
+              <td>${(toolA.category || '').replace(/-/g, ' ')}</td>
+              <td>${(toolB.category || '').replace(/-/g, ' ')}</td>
+              <td>All-in-one team OS</td>
             </tr>
             <tr>
-              <td>Integrations</td>
-              <td>Extensive</td>
-              <td>Focused</td>
+              <td>Pricing</td>
+              <td>${toolA.pricing || 'Varies'}</td>
+              <td>${toolB.pricing || 'Varies'}</td>
+              <td>Free to start</td>
             </tr>
             <tr>
-              <td>Pricing Model</td>
-              <td>Per User</td>
-              <td>Tiered</td>
+              <td>Best for</td>
+              <td>${toolA.ideal_for || 'General teams'}</td>
+              <td>${toolB.ideal_for || 'General teams'}</td>
+              <td>Teams wanting everything in one place</td>
             </tr>
           </tbody>
         </table>
       </div>
       
       <div class="content-section">
-        <h2>Detailed Feature Breakdown</h2>
-        <h3>Standup Formats</h3>
-        <p>When comparing ${toolA.name} and ${toolB.name}, consider how flexible their reporting formats are. ${toolA.name} tends to focus on rapid check-ins, while ${toolB.name} provides more structured survey options.</p>
-        
-        <h3>Reporting and Analytics</h3>
-        <p>Understanding team health is vital. ${toolA.name} provides solid basic reporting, whereas ${toolB.name} might offer more granular data exports depending on your pricing tier.</p>
+        <h2>${toolA.name} — strengths and weaknesses</h2>
+        <h3>What ${toolA.name} does well</h3>
+        <ul>
+          ${(toolA.pros || []).map(p => `<li><strong>${p}</strong></li>`).join('')}
+        </ul>
+        <h3>Where ${toolA.name} falls short</h3>
+        <ul>
+          ${(toolA.cons || []).map(c => `<li>${c}</li>`).join('')}
+        </ul>
       </div>
 
-      <div class="content-section" style="background: var(--gray-100); border-color: var(--gray-300);">
-        <h2>Consider a Third Option: SpireTrack</h2>
-        <p>Still undecided between ${toolA.name} and ${toolB.name}? <strong>SpireTrack</strong> combines the best of both worlds with an intuitive interface, powerful analytics, and transparent pricing.</p>
+      <div class="content-section">
+        <h2>${toolB.name} — strengths and weaknesses</h2>
+        <h3>What ${toolB.name} does well</h3>
         <ul>
-          <li>Setup in minutes</li>
-          <li>Deeper insights into team blockers</li>
-          <li>Cost-effective for scaling teams</li>
+          ${(toolB.pros || []).map(p => `<li><strong>${p}</strong></li>`).join('')}
+        </ul>
+        <h3>Where ${toolB.name} falls short</h3>
+        <ul>
+          ${(toolB.cons || []).map(c => `<li>${c}</li>`).join('')}
+        </ul>
+      </div>
+
+      <div class="content-section" style="background: var(--emerald-50); border-color: var(--emerald-100);">
+        <h2>Consider SpireTrack instead</h2>
+        <p>If neither ${toolA.name} nor ${toolB.name} ticks all the boxes, <strong>SpireTrack</strong> might be what you need. It combines async weekly standups, real-time team chat, OKR tracking, and AI insights in one platform.</p>
+        <ul>
+          <li><strong>No Slack dependency</strong> — works as a standalone app</li>
+          <li><strong>Built-in OKR trees</strong> — align goals from company to individual</li>
+          <li><strong>SpireAI</strong> — get automated team health insights</li>
+          <li><strong>Free to start</strong> — no credit card required</li>
         </ul>
         <br>
-        <a href="/signup" class="btn btn-primary">Try SpireTrack Free</a>
+        <a href="/signup" class="btn btn-cta" style="display: inline-flex;">Start Free Trial →</a>
       </div>
     </div>
   `;
@@ -540,28 +584,33 @@ function generateComparisonPage(toolA, toolB) {
 
 function generateTemplatePage(template, variant = null) {
   const pageTitle = variant ? `${template.name} for ${variant.name}` : `${template.name} Template`;
-  const contextText = variant ? `Tailored specifically for ${variant.name}s, this template helps` : `This versatile template helps`;
+  const variantPainPoints = variant && variant.pain_points ? 
+    `<h3>Why ${variant.name} teams need this</h3><ul>${variant.pain_points.map(p => `<li>${p}</li>`).join('')}</ul><p>${variant.key_benefit || ''}</p>` : '';
+  const variantContext = variant ? 
+    `Tailored for <strong>${variant.name}</strong> teams. ${variant.description || ''}` : 
+    `${template.description || 'A versatile template for async team updates.'}`;
   
   const content = `
     <div class="hero">
       <div class="container">
-        <div class="badge">Template</div>
+        <div class="badge">${template.category || 'Template'}</div>
         <h1><span class="gradient-text">${pageTitle}</span></h1>
-        <p>Streamline your workflow with our battle-tested ${template.name.toLowerCase()} format. Ready to use in SpireTrack.</p>
+        <p>${template.best_for ? `Best for: ${template.best_for}.` : ''} ${template.frequency ? `Recommended frequency: ${template.frequency}.` : ''}</p>
       </div>
     </div>
     
     <div class="container">
       <div class="content-section">
         <h2>About this template</h2>
-        <p>${contextText} teams capture essential updates asynchronously without interrupting deep work. By standardizing the questions asked, you ensure consistent, actionable reporting.</p>
+        <p>${variantContext}</p>
+        ${variantPainPoints}
         
-        <h3>Template Preview:</h3>
+        <h3>Template Preview</h3>
         <div style="background: linear-gradient(135deg, #1e293b, #0f172a); padding: 2rem; border-radius: 1rem; border: 1px solid #334155; margin: 1.5rem 0;">
           <ul style="list-style: none; margin: 0; padding: 0;">
-            ${(template.questions || ['What did you do yesterday?', 'What will you do today?', 'Any blockers?']).map(q => `
+            ${(template.questions || ['What did you do?', 'What will you do next?', 'Any blockers?']).map(q => `
               <li style="margin-bottom: 1rem; font-weight: 400; color: #e2e8f0; padding: 0.75rem 1rem; background: rgba(255,255,255,0.05); border-radius: 0.5rem; border-left: 3px solid #10b981;">
-                <span style="color: var(--gray-500); margin-right: 0.5rem;">Q:</span> ${q}
+                <span style="color: #94a3b8; margin-right: 0.5rem;">Q:</span> ${q}
               </li>
             `).join('')}
           </ul>
@@ -569,18 +618,21 @@ function generateTemplatePage(template, variant = null) {
       </div>
       
       <div class="content-section">
-        <h2>When to use this template</h2>
-        <p>Use the ${template.name} template when you need clear visibility into progress without scheduling a meeting. It is ideal for distributed teams spanning multiple time zones, or hybrid teams balancing office and remote work.</p>
+        <h2>When to use ${template.name.toLowerCase()}</h2>
+        <p>Use this template when you need clear visibility into progress without scheduling a meeting. It's ideal for distributed teams spanning multiple time zones.</p>
         
         <h3>Best Practices</h3>
         <ul>
-          <li><strong>Keep it concise:</strong> Encourage brief, bulleted answers.</li>
-          <li><strong>Highlight blockers early:</strong> Ensure the team reviews blockers immediately.</li>
-          <li><strong>Be consistent:</strong> Schedule this update at the same time regularly.</li>
+          <li><strong>Keep it concise:</strong> Encourage brief, bulleted answers to keep updates scannable.</li>
+          <li><strong>Highlight blockers early:</strong> Make sure the team reviews blockers immediately so nothing stalls.</li>
+          <li><strong>Be consistent:</strong> Schedule this at the same cadence${template.frequency ? ` (${template.frequency.toLowerCase()})` : ''} for best results.</li>
+          ${variant ? `<li><strong>Customize for ${variant.name}:</strong> Adjust the questions to match your team's specific workflow and terminology.</li>` : ''}
         </ul>
         
         <br>
-        <a href="/signup?template=${template.slug}" class="btn btn-primary">Use this template in SpireTrack</a>
+        <a href="/signup?template=${template.slug}" class="btn btn-cta" style="display: inline-flex;">Use this template free →</a>
+      </div>
+    </div>
       </div>
     </div>
   `;
