@@ -1,0 +1,362 @@
+[
+  {
+    "slug": "saas-startups",
+    "name": "SaaS Startups",
+    "description": "Fast-moving SaaS teams shipping product weekly",
+    "pain_points": [
+      "Rapid growth chaos",
+      "Cross-team visibility gaps",
+      "Meeting overload"
+    ],
+    "team_size": "5-50",
+    "key_benefit": "Ship faster with async weekly reviews instead of daily standups"
+  },
+  {
+    "slug": "marketing-agencies",
+    "name": "Marketing Agencies",
+    "description": "Creative agencies handling multiple client accounts",
+    "pain_points": [
+      "Client reporting overhead",
+      "Creative burnout",
+      "Juggling multiple projects"
+    ],
+    "team_size": "10-100",
+    "key_benefit": "Centralize client project updates and reduce internal syncs"
+  },
+  {
+    "slug": "healthcare",
+    "name": "Healthcare",
+    "description": "Medical organizations and healthtech companies",
+    "pain_points": [
+      "Strict compliance needs",
+      "Shift work coordination",
+      "High stress environments"
+    ],
+    "team_size": "50-500",
+    "key_benefit": "Secure, asynchronous communication for distributed care teams"
+  },
+  {
+    "slug": "fintech",
+    "name": "FinTech",
+    "description": "Financial technology companies",
+    "pain_points": [
+      "Complex regulatory environments",
+      "Fast go-to-market pressure",
+      "Security concerns"
+    ],
+    "team_size": "20-200",
+    "key_benefit": "Align engineering and compliance teams with structured OKR tracking"
+  },
+  {
+    "slug": "edtech",
+    "name": "EdTech",
+    "description": "Educational technology and e-learning platforms",
+    "pain_points": [
+      "Seasonal product cycles",
+      "Remote team alignment",
+      "Cross-functional silos"
+    ],
+    "team_size": "15-150",
+    "key_benefit": "Keep product, content, and engineering teams perfectly synced"
+  },
+  {
+    "slug": "e-commerce",
+    "name": "E-Commerce",
+    "description": "Online retailers and direct-to-consumer brands",
+    "pain_points": [
+      "Inventory and marketing alignment",
+      "Peak season stress",
+      "Fast-paced execution"
+    ],
+    "team_size": "10-250",
+    "key_benefit": "Streamline operations with weekly async check-ins across departments"
+  },
+  {
+    "slug": "consulting",
+    "name": "Consulting",
+    "description": "Professional services and consulting firms",
+    "pain_points": [
+      "Consultants always at client sites",
+      "Knowledge sharing",
+      "Billable utilization"
+    ],
+    "team_size": "20-300",
+    "key_benefit": "Async updates that do not eat into billable client hours"
+  },
+  {
+    "slug": "legal",
+    "name": "Legal",
+    "description": "Law firms and legal tech companies",
+    "pain_points": [
+      "Case management complexity",
+      "High meeting volume",
+      "Document collaboration"
+    ],
+    "team_size": "10-100",
+    "key_benefit": "Efficiently track case progress asynchronously without extra meetings"
+  },
+  {
+    "slug": "real-estate",
+    "name": "Real Estate",
+    "description": "Brokerages and property management firms",
+    "pain_points": [
+      "Agents always on the go",
+      "Fragmented communication",
+      "Deal tracking"
+    ],
+    "team_size": "10-200",
+    "key_benefit": "Keep mobile agents connected with easy weekly mobile updates"
+  },
+  {
+    "slug": "construction",
+    "name": "Construction",
+    "description": "Builders, contractors, and engineering firms",
+    "pain_points": [
+      "Field vs office divide",
+      "Project delays",
+      "Safety reporting"
+    ],
+    "team_size": "20-500",
+    "key_benefit": "Bridge the gap between the construction site and back office"
+  },
+  {
+    "slug": "manufacturing",
+    "name": "Manufacturing",
+    "description": "Production and supply chain companies",
+    "pain_points": [
+      "Shift handovers",
+      "Supply chain disruptions",
+      "Quality control tracking"
+    ],
+    "team_size": "50-1000",
+    "key_benefit": "Streamline shift updates and production goals asynchronously"
+  },
+  {
+    "slug": "nonprofits",
+    "name": "Nonprofits",
+    "description": "NGOs and charitable organizations",
+    "pain_points": [
+      "Resource constraints",
+      "Volunteer coordination",
+      "Grant reporting"
+    ],
+    "team_size": "5-100",
+    "key_benefit": "Align volunteers and staff cost-effectively with clear weekly goals"
+  },
+  {
+    "slug": "government",
+    "name": "Government",
+    "description": "Public sector and municipal agencies",
+    "pain_points": [
+      "Bureaucratic silos",
+      "Slow communication",
+      "Public reporting requirements"
+    ],
+    "team_size": "50-1000",
+    "key_benefit": "Break down inter-departmental silos with transparent OKR tracking"
+  },
+  {
+    "slug": "media",
+    "name": "Media",
+    "description": "Publishers, broadcasters, and media companies",
+    "pain_points": [
+      "Tight publishing deadlines",
+      "Editorial calendar alignment",
+      "Remote contributor coordination"
+    ],
+    "team_size": "20-300",
+    "key_benefit": "Async editorial standups to keep content pipelines flowing"
+  },
+  {
+    "slug": "gaming",
+    "name": "Gaming",
+    "description": "Video game development studios",
+    "pain_points": [
+      "Crunch time burnout",
+      "Art and engineering sync",
+      "Complex milestones"
+    ],
+    "team_size": "15-500",
+    "key_benefit": "Replace daily standups to give developers more uninterrupted coding time"
+  },
+  {
+    "slug": "logistics",
+    "name": "Logistics",
+    "description": "Transportation and supply chain management",
+    "pain_points": [
+      "24/7 operations",
+      "Distributed fleets",
+      "Incident management"
+    ],
+    "team_size": "50-1000",
+    "key_benefit": "Async operational updates that fit any timezone or shift"
+  },
+  {
+    "slug": "insurance",
+    "name": "Insurance",
+    "description": "Insurance carriers and tech platforms",
+    "pain_points": [
+      "Legacy system modernization",
+      "Claims processing speed",
+      "Actuarial and tech alignment"
+    ],
+    "team_size": "100-2000",
+    "key_benefit": "Align modernization initiatives with clear weekly OKR check-ins"
+  },
+  {
+    "slug": "retail",
+    "name": "Retail",
+    "description": "Brick-and-mortar and omnichannel retailers",
+    "pain_points": [
+      "Store vs corporate communication",
+      "Campaign rollouts",
+      "Feedback loops"
+    ],
+    "team_size": "50-5000",
+    "key_benefit": "Gather async weekly feedback from store managers to HQ"
+  },
+  {
+    "slug": "hospitality",
+    "name": "Hospitality",
+    "description": "Hotels, restaurants, and travel companies",
+    "pain_points": [
+      "High turnover",
+      "Shift communication",
+      "Customer experience tracking"
+    ],
+    "team_size": "20-1000",
+    "key_benefit": "Improve staff alignment with simple async weekly reviews"
+  },
+  {
+    "slug": "automotive",
+    "name": "Automotive",
+    "description": "Auto manufacturers and dealership networks",
+    "pain_points": [
+      "R&D cycle times",
+      "Dealership coordination",
+      "Sales targets"
+    ],
+    "team_size": "100-5000",
+    "key_benefit": "Track regional sales OKRs and R&D progress in one platform"
+  },
+  {
+    "slug": "aerospace",
+    "name": "Aerospace",
+    "description": "Aviation and aerospace engineering",
+    "pain_points": [
+      "Long project lifecycles",
+      "Strict safety standards",
+      "Complex engineering dependencies"
+    ],
+    "team_size": "200-5000",
+    "key_benefit": "Maintain clear visibility over multi-year engineering OKRs"
+  },
+  {
+    "slug": "energy",
+    "name": "Energy",
+    "description": "Renewable and traditional energy companies",
+    "pain_points": [
+      "Field operations",
+      "Regulatory compliance",
+      "Infrastructure projects"
+    ],
+    "team_size": "100-2000",
+    "key_benefit": "Connect remote field engineers with corporate strategy async"
+  },
+  {
+    "slug": "telecom",
+    "name": "Telecom",
+    "description": "Telecommunications providers",
+    "pain_points": [
+      "Network deployment tracking",
+      "Customer support volume",
+      "Cross-functional alignment"
+    ],
+    "team_size": "200-10000",
+    "key_benefit": "Align massive cross-functional teams around central company OKRs"
+  },
+  {
+    "slug": "pharma",
+    "name": "Pharma",
+    "description": "Pharmaceutical and biotech companies",
+    "pain_points": [
+      "Clinical trial tracking",
+      "Research data silos",
+      "Time to market"
+    ],
+    "team_size": "100-5000",
+    "key_benefit": "Accelerate R&D by replacing status meetings with structured async updates"
+  },
+  {
+    "slug": "agriculture",
+    "name": "Agriculture",
+    "description": "AgTech and large-scale farming operations",
+    "pain_points": [
+      "Seasonal planning",
+      "Remote locations",
+      "Supply chain integration"
+    ],
+    "team_size": "20-500",
+    "key_benefit": "Keep remote agricultural teams synced without requiring high-bandwidth video calls"
+  },
+  {
+    "slug": "architecture",
+    "name": "Architecture",
+    "description": "Architecture and urban design firms",
+    "pain_points": [
+      "Design phase coordination",
+      "Client revisions",
+      "Contractor alignment"
+    ],
+    "team_size": "10-200",
+    "key_benefit": "Asynchronous design reviews and project milestone tracking"
+  },
+  {
+    "slug": "hr-recruiting",
+    "name": "HR & Recruiting",
+    "description": "Staffing agencies and internal talent teams",
+    "pain_points": [
+      "Hiring pipeline visibility",
+      "Hiring manager alignment",
+      "Candidate feedback delays"
+    ],
+    "team_size": "5-100",
+    "key_benefit": "Track weekly hiring goals and async syncs with hiring managers"
+  },
+  {
+    "slug": "cybersecurity",
+    "name": "Cybersecurity",
+    "description": "InfoSec teams and security vendors",
+    "pain_points": [
+      "Incident response fatigue",
+      "Threat intelligence sharing",
+      "Compliance tracking"
+    ],
+    "team_size": "20-500",
+    "key_benefit": "Reduce meeting fatigue to focus on critical threat resolution"
+  },
+  {
+    "slug": "ai-ml-teams",
+    "name": "AI/ML Teams",
+    "description": "Artificial intelligence and data science groups",
+    "pain_points": [
+      "Unpredictable research timelines",
+      "Compute resource tracking",
+      "Model deployment bottlenecks"
+    ],
+    "team_size": "10-200",
+    "key_benefit": "Track long-term AI research progress effectively via weekly OKR reviews"
+  },
+  {
+    "slug": "devops-teams",
+    "name": "DevOps Teams",
+    "description": "Infrastructure, reliability, and platform engineering",
+    "pain_points": [
+      "On-call burnout",
+      "Alert fatigue",
+      "Infrastructure project visibility"
+    ],
+    "team_size": "5-100",
+    "key_benefit": "Keep the wider engineering org updated on platform stability asynchronously"
+  }
+]

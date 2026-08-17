@@ -1,0 +1,222 @@
+[
+  {
+    "slug": "engineering-managers",
+    "name": "Engineering Managers",
+    "description": "Leading software engineering teams",
+    "pain_points": [
+      "No visibility into blockers",
+      "Too many status meetings",
+      "Context switching between tools"
+    ],
+    "key_benefit": "Get weekly team pulse without interrupting deep work"
+  },
+  {
+    "slug": "product-managers",
+    "name": "Product Managers",
+    "description": "Guiding product strategy and execution",
+    "pain_points": [
+      "Misaligned roadmaps",
+      "Siloed feature updates",
+      "Lack of engineering transparency"
+    ],
+    "key_benefit": "Align product goals with async weekly check-ins"
+  },
+  {
+    "slug": "scrum-masters",
+    "name": "Scrum Masters",
+    "description": "Facilitating agile development processes",
+    "pain_points": [
+      "Dull daily standups",
+      "Team burnout from meetings",
+      "Inconsistent tracking"
+    ],
+    "key_benefit": "Automate async standups and focus meetings on real blockers"
+  },
+  {
+    "slug": "tech-leads",
+    "name": "Tech Leads",
+    "description": "Driving technical architecture and team delivery",
+    "pain_points": [
+      "Code reviews taking too long",
+      "Developers interrupted constantly",
+      "Unclear sprint progress"
+    ],
+    "key_benefit": "Keep developers in the flow state while staying updated"
+  },
+  {
+    "slug": "ctos",
+    "name": "CTOs",
+    "description": "Chief Technology Officers scaling engineering",
+    "pain_points": [
+      "Strategic disconnect with execution",
+      "Scaling communication across teams",
+      "High meeting overhead costs"
+    ],
+    "key_benefit": "Global visibility into engineering health without micromanagement"
+  },
+  {
+    "slug": "startup-founders",
+    "name": "Startup Founders",
+    "description": "Building companies from the ground up",
+    "pain_points": [
+      "Wearing too many hats",
+      "Losing track of team priorities",
+      "Remote team alignment"
+    ],
+    "key_benefit": "All-in-one platform for team updates, chat, and goals"
+  },
+  {
+    "slug": "agency-owners",
+    "name": "Agency Owners",
+    "description": "Managing client projects and creative teams",
+    "pain_points": [
+      "Tracking billable work progress",
+      "Client reporting delays",
+      "Team coordination across accounts"
+    ],
+    "key_benefit": "Streamlined async updates for multiple client projects"
+  },
+  {
+    "slug": "team-leads",
+    "name": "Team Leads",
+    "description": "Direct supervisors of functional teams",
+    "pain_points": [
+      "Micromanagement complaints",
+      "Inconsistent 1-on-1s",
+      "Hard to track individual achievements"
+    ],
+    "key_benefit": "Structured weekly reviews that build a continuous feedback loop"
+  },
+  {
+    "slug": "vps-of-engineering",
+    "name": "VPs of Engineering",
+    "description": "Executives leading multiple engineering departments",
+    "pain_points": [
+      "Lack of cross-team synergy",
+      "Slower release cycles",
+      "Opaque OKR progress"
+    ],
+    "key_benefit": "Tie team updates directly to high-level OKRs automatically"
+  },
+  {
+    "slug": "project-managers",
+    "name": "Project Managers",
+    "description": "Ensuring projects stay on time and on budget",
+    "pain_points": [
+      "Chasing people for updates",
+      "Outdated project dashboards",
+      "Scope creep visibility"
+    ],
+    "key_benefit": "Automated weekly status reports without nagging the team"
+  },
+  {
+    "slug": "program-managers",
+    "name": "Program Managers",
+    "description": "Coordinating complex inter-departmental programs",
+    "pain_points": [
+      "Information silos",
+      "Uncoordinated dependencies",
+      "Status reporting overhead"
+    ],
+    "key_benefit": "Centralized async reporting across all program workstreams"
+  },
+  {
+    "slug": "design-leads",
+    "name": "Design Leads",
+    "description": "Leading product design and UX teams",
+    "pain_points": [
+      "Lengthy design critique meetings",
+      "Lost feedback in chat",
+      "Unclear sprint goals"
+    ],
+    "key_benefit": "Share design progress asynchronously and gather structured feedback"
+  },
+  {
+    "slug": "marketing-managers",
+    "name": "Marketing Managers",
+    "description": "Driving growth and campaign execution",
+    "pain_points": [
+      "Disjointed campaign updates",
+      "Cross-channel visibility",
+      "Measuring marketing OKRs"
+    ],
+    "key_benefit": "Track weekly marketing wins and campaign metrics in one place"
+  },
+  {
+    "slug": "sales-managers",
+    "name": "Sales Managers",
+    "description": "Leading quota-carrying sales reps",
+    "pain_points": [
+      "Endless pipeline review meetings",
+      "Lack of peer learning",
+      "Forecasting blindspots"
+    ],
+    "key_benefit": "Async weekly deal reviews that save time for selling"
+  },
+  {
+    "slug": "operations-managers",
+    "name": "Operations Managers",
+    "description": "Optimizing internal company processes",
+    "pain_points": [
+      "Inefficient workflows",
+      "Bottleneck identification",
+      "Process compliance"
+    ],
+    "key_benefit": "Streamline team check-ins to identify operational friction points"
+  },
+  {
+    "slug": "hr-managers",
+    "name": "HR Managers",
+    "description": "Overseeing talent, culture, and engagement",
+    "pain_points": [
+      "Low employee engagement visibility",
+      "Poor onboarding tracking",
+      "Irregular feedback cycles"
+    ],
+    "key_benefit": "Foster culture with weekly pulse checks and transparent goals"
+  },
+  {
+    "slug": "department-heads",
+    "name": "Department Heads",
+    "description": "Leaders of major business units",
+    "pain_points": [
+      "Departmental silos",
+      "Misaligned cross-functional goals",
+      "Reporting fatigue"
+    ],
+    "key_benefit": "Easily digest cross-departmental progress via AI summaries"
+  },
+  {
+    "slug": "coos",
+    "name": "COOs",
+    "description": "Chief Operating Officers scaling the business",
+    "pain_points": [
+      "Operational blindspots",
+      "Inefficient meeting cultures",
+      "Goal tracking fragmentation"
+    ],
+    "key_benefit": "Drive organizational efficiency by replacing status meetings with async tools"
+  },
+  {
+    "slug": "directors-of-engineering",
+    "name": "Directors of Engineering",
+    "description": "Mid-level engineering executives",
+    "pain_points": [
+      "Bridging strategy and tactics",
+      "Engineering metric tracking",
+      "Manager 1-on-1 prep"
+    ],
+    "key_benefit": "Gain deep insights into squad performance with AI-powered async reviews"
+  },
+  {
+    "slug": "delivery-managers",
+    "name": "Delivery Managers",
+    "description": "Ensuring successful software delivery",
+    "pain_points": [
+      "Release bottlenecks",
+      "Unclear sprint status",
+      "Cross-team dependencies"
+    ],
+    "key_benefit": "Identify delivery risks early through automated weekly check-ins"
+  }
+]
