@@ -758,13 +758,21 @@ function generateGlossaryPage(termData) {
   return content;
 }
 
-function generateIntegrationPage(integration) {
+function generateIntegrationPage(integration, variant = null) {
+  const pageLabel = variant ? `${integration.name} for ${variant.name}` : integration.name;
+  const variantSection = variant ? `
+      <div class="content-section">
+        <h2>Why ${variant.name} teams need ${integration.name} + SpireTrack</h2>
+        ${variant.pain_points ? `<p>${variant.name} teams face specific challenges:</p><ul>${variant.pain_points.map(p => `<li>${p}</li>`).join('')}</ul>` : ''}
+        <p>${variant.key_benefit || `By connecting ${integration.name} with SpireTrack, ${variant.name} teams get async updates without leaving their existing workflow.`}</p>
+      </div>` : '';
+  
   const content = `
     <div class="hero">
       <div class="container">
-        <div class="badge">Integration</div>
-        <h1>SpireTrack + <span class="gradient-text">${integration.name}</span></h1>
-        <p>${integration.description || `Connect SpireTrack with ${integration.name} to streamline your workflow.`}</p>
+        <div class="badge">${variant ? variant.name + ' Integration' : 'Integration'}</div>
+        <h1>SpireTrack + <span class="gradient-text">${pageLabel}</span></h1>
+        <p>${integration.description || `Connect SpireTrack with ${integration.name} to streamline your workflow.`}${variant ? ` Optimized for ${variant.name.toLowerCase()} teams.` : ''}</p>
       </div>
     </div>
     
@@ -774,26 +782,29 @@ function generateIntegrationPage(integration) {
         <p>${integration.how_it_works || `The ${integration.name} integration automatically syncs your data, keeping your team aligned without context switching.`}</p>
       </div>
       
+      ${variantSection}
+      
       <div class="content-section">
         <h2>Key Benefits</h2>
         <ul>
           ${(integration.benefits || ['Save time', 'Reduce context switching', 'Stay aligned']).map(b => `<li>${b}</li>`).join('')}
+          ${variant ? `<li>Tailored workflows for ${variant.name} teams</li>` : ''}
         </ul>
       </div>
       
       <div class="content-section">
-        <h2>Setup Instructions</h2>
-        <p>Setting up the ${integration.name} integration takes less than 2 minutes:</p>
+        <h2>Setup in 2 minutes</h2>
         <ul>
-          <li><strong>Step 1:</strong> Log in to your SpireTrack workspace.</li>
-          <li><strong>Step 2:</strong> Navigate to Settings > Integrations.</li>
-          <li><strong>Step 3:</strong> Click "Connect" next to ${integration.name} and follow the prompts.</li>
+          <li><strong>Step 1:</strong> Create your SpireTrack workspace (free).</li>
+          <li><strong>Step 2:</strong> Go to Settings → Integrations → ${integration.name}.</li>
+          <li><strong>Step 3:</strong> Click "Connect" and authorize access.</li>
+          ${variant ? `<li><strong>Step 4:</strong> Choose a ${variant.name}-optimized standup template.</li>` : ''}
         </ul>
       </div>
       
       <div class="content-section" style="text-align: center; background: var(--emerald-50); border-color: var(--emerald-100);">
         <h2>Ready to connect ${integration.name}?</h2>
-        <p>Start your free trial today and integrate your favorite tools.</p>
+        <p>Start your free trial and integrate your tools in minutes.</p>
         <br>
         <a href="/signup" class="btn btn-cta" style="display: inline-flex;">Get Started Free →</a>
       </div>
@@ -802,13 +813,17 @@ function generateIntegrationPage(integration) {
   return content;
 }
 
-function generateUseCasePage(useCase) {
+function generateUseCasePage(useCase, variant = null) {
+  const pageLabel = variant ? `${useCase.name} for ${variant.name}` : useCase.name;
+  const variantContext = variant ? 
+    `<p>For <strong>${variant.name}</strong> teams specifically, this problem is magnified. ${variant.description || ''} ${variant.pain_points ? variant.pain_points[0] + '.' : ''}</p>` : '';
+  
   const content = `
     <div class="hero">
       <div class="container">
-        <div class="badge">Solution</div>
-        <h1><span class="gradient-text">${useCase.name}</span></h1>
-        <p>${useCase.problem ? useCase.problem.substring(0, 100) + '...' : `Solve ${useCase.name.toLowerCase()} with SpireTrack.`}</p>
+        <div class="badge">${variant ? variant.name + ' Solution' : 'Solution'}</div>
+        <h1><span class="gradient-text">${pageLabel}</span></h1>
+        <p>${useCase.problem ? useCase.problem.substring(0, 120) + '...' : `Solve ${useCase.name.toLowerCase()} with SpireTrack.`}</p>
       </div>
     </div>
     
@@ -816,14 +831,16 @@ function generateUseCasePage(useCase) {
       <div class="content-section">
         <h2>The Problem</h2>
         <p>${useCase.problem || 'Modern teams struggle with maintaining alignment without overwhelming everyone with meetings and pings.'}</p>
+        ${variantContext}
       </div>
       
       <div class="content-section">
-        <h2>How SpireTrack Solves It</h2>
+        <h2>How SpireTrack Solves It${variant ? ` for ${variant.name}` : ''}</h2>
         <p>${useCase.solution || 'SpireTrack provides async standups, goal tracking, and clear updates so everyone knows what is happening without the noise.'}</p>
+        ${variant && variant.key_benefit ? `<p><strong>Key benefit for ${variant.name}:</strong> ${variant.key_benefit}</p>` : ''}
       </div>
       
-      <div class="content-section" style="background: var(--gray-900); color: white; border: none;">
+      <div class="content-section" style="background: var(--gray-900); color: white; border: none; border-radius: 1rem;">
         <h2 style="color: white; text-align: center; font-size: 2rem;">${useCase.stats || '85% of teams save 4+ hours a week'}</h2>
         <p style="text-align: center; color: var(--gray-400);">reported by SpireTrack users after switching to async updates.</p>
       </div>
@@ -832,11 +849,12 @@ function generateUseCasePage(useCase) {
         <h2>Who is this for?</h2>
         <ul>
           ${(useCase.audience || ['Engineering Managers', 'Product Teams', 'Remote Workers']).map(a => `<li><strong>${a.replace(/-/g, ' ')}</strong></li>`).join('')}
+          ${variant ? `<li><strong>${variant.name} teams</strong> (you're in the right place)</li>` : ''}
         </ul>
       </div>
       
       <div class="content-section" style="text-align: center; background: var(--emerald-50); border-color: var(--emerald-100);">
-        <h2>Overcome ${useCase.name} today</h2>
+        <h2>Overcome ${useCase.name.toLowerCase()} today</h2>
         <p>Join thousands of teams working better, together.</p>
         <br>
         <a href="/signup" class="btn btn-cta" style="display: inline-flex;">Start Free Trial →</a>
@@ -1131,6 +1149,90 @@ async function main() {
       content: generateUseCasePage(useCase)
     });
     await writePage(url, html);
+  }
+
+  // 10. Solutions × Industries
+  console.log('Generating Solutions × Industries...');
+  for (const useCase of useCases) {
+    for (const ind of industries) {
+      const url = `/solutions/${useCase.slug}/${ind.slug}`;
+      const html = generateHTML({
+        title: `${useCase.name} for ${ind.name} | SpireTrack`,
+        description: `How ${ind.name} teams solve ${useCase.name.toLowerCase()} with SpireTrack.`,
+        canonical: `${SITE_URL}${url}`,
+        breadcrumbs: [
+          {name: 'Home', url: '/'},
+          {name: 'Solutions', url: '/solutions'},
+          {name: useCase.name, url: `/solutions/${useCase.slug}`},
+          {name: ind.name, url}
+        ],
+        content: generateUseCasePage(useCase, ind)
+      });
+      await writePage(url, html);
+    }
+  }
+
+  // 11. Solutions × Roles
+  console.log('Generating Solutions × Roles...');
+  for (const useCase of useCases) {
+    for (const role of roles) {
+      const url = `/solutions/${useCase.slug}/${role.slug}`;
+      const html = generateHTML({
+        title: `${useCase.name} for ${role.name}s | SpireTrack`,
+        description: `How ${role.name}s solve ${useCase.name.toLowerCase()} with SpireTrack.`,
+        canonical: `${SITE_URL}${url}`,
+        breadcrumbs: [
+          {name: 'Home', url: '/'},
+          {name: 'Solutions', url: '/solutions'},
+          {name: useCase.name, url: `/solutions/${useCase.slug}`},
+          {name: role.name, url}
+        ],
+        content: generateUseCasePage(useCase, role)
+      });
+      await writePage(url, html);
+    }
+  }
+
+  // 12. Integrations × Industries
+  console.log('Generating Integrations × Industries...');
+  for (const integration of integrations) {
+    for (const ind of industries) {
+      const url = `/integrations/${integration.slug}/${ind.slug}`;
+      const html = generateHTML({
+        title: `${integration.name} + SpireTrack for ${ind.name} | Integration`,
+        description: `How ${ind.name} teams use ${integration.name} with SpireTrack for async standups.`,
+        canonical: `${SITE_URL}${url}`,
+        breadcrumbs: [
+          {name: 'Home', url: '/'},
+          {name: 'Integrations', url: '/integrations'},
+          {name: integration.name, url: `/integrations/${integration.slug}`},
+          {name: ind.name, url}
+        ],
+        content: generateIntegrationPage(integration, ind)
+      });
+      await writePage(url, html);
+    }
+  }
+
+  // 13. Integrations × Roles  
+  console.log('Generating Integrations × Roles...');
+  for (const integration of integrations) {
+    for (const role of roles) {
+      const url = `/integrations/${integration.slug}/${role.slug}`;
+      const html = generateHTML({
+        title: `${integration.name} + SpireTrack for ${role.name}s | Integration`,
+        description: `How ${role.name}s use ${integration.name} with SpireTrack.`,
+        canonical: `${SITE_URL}${url}`,
+        breadcrumbs: [
+          {name: 'Home', url: '/'},
+          {name: 'Integrations', url: '/integrations'},
+          {name: integration.name, url: `/integrations/${integration.slug}`},
+          {name: role.name, url}
+        ],
+        content: generateIntegrationPage(integration, role)
+      });
+      await writePage(url, html);
+    }
   }
 
   await generateSitemap();
