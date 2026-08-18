@@ -1,0 +1,1202 @@
+[
+  {
+    "slug": "slack",
+    "name": "Slack",
+    "category": "communication",
+    "description": "The most popular workplace messaging platform",
+    "how_it_works": "Post SpireTrack check-in reminders and summaries directly to Slack channels. Team members can submit updates from Slack without leaving their workflow.",
+    "benefits": [
+      "No context switching",
+      "Automatic standup reminders",
+      "Summary posts to team channels"
+    ]
+  },
+  {
+    "slug": "github",
+    "name": "GitHub",
+    "category": "engineering",
+    "description": "The world's leading software development platform",
+    "how_it_works": "Automatically pull in PRs, commits, and issues assigned to team members to prepopulate their daily standup updates.",
+    "benefits": [
+      "Automated updates",
+      "Visibility into code changes",
+      "Less manual typing"
+    ]
+  },
+  {
+    "slug": "jira",
+    "name": "Jira",
+    "category": "project-management",
+    "description": "The #1 software development tool used by agile teams",
+    "how_it_works": "Sync Jira issues to SpireTrack. Team members can reference and update Jira issue statuses directly from their check-ins.",
+    "benefits": [
+      "Keeps Jira up to date",
+      "Links work to updates",
+      "Improves agile tracking"
+    ]
+  },
+  {
+    "slug": "notion",
+    "name": "Notion",
+    "category": "documentation",
+    "description": "The all-in-one workspace for your notes and tasks",
+    "how_it_works": "Export team standup summaries to Notion databases to maintain an easily searchable history of team updates and progress.",
+    "benefits": [
+      "Permanent record of standups",
+      "Easily searchable history",
+      "Knowledge base integration"
+    ]
+  },
+  {
+    "slug": "linear",
+    "name": "Linear",
+    "category": "project-management",
+    "description": "The issue tracking tool you'll enjoy using",
+    "how_it_works": "Seamlessly link Linear issues in SpireTrack updates. Completing a task in SpireTrack can optionally update the Linear ticket.",
+    "benefits": [
+      "Developer-friendly",
+      "Syncs status automatically",
+      "Rich ticket previews"
+    ]
+  },
+  {
+    "slug": "figma",
+    "name": "Figma",
+    "category": "analytics",
+    "description": "Seamless integration with Figma to boost your team's productivity.",
+    "how_it_works": "Connect your SpireTrack workspace to Figma to automatically sync data, events, and notifications. Reduce manual work and keep your systems aligned.",
+    "benefits": [
+      "Saves time",
+      "Improves data accuracy",
+      "Enhances team visibility"
+    ]
+  },
+  {
+    "slug": "figma",
+    "name": "Figma",
+    "category": "hr",
+    "description": "Seamless integration with Figma to boost your team's productivity.",
+    "how_it_works": "Connect your SpireTrack workspace to Figma to automatically sync data, events, and notifications. Reduce manual work and keep your systems aligned.",
+    "benefits": [
+      "Saves time",
+      "Improves data accuracy",
+      "Enhances team visibility"
+    ]
+  },
+  {
+    "slug": "figma",
+    "name": "Figma",
+    "category": "marketing",
+    "description": "Seamless integration with Figma to boost your team's productivity.",
+    "how_it_works": "Connect your SpireTrack workspace to Figma to automatically sync data, events, and notifications. Reduce manual work and keep your systems aligned.",
+    "benefits": [
+      "Saves time",
+      "Improves data accuracy",
+      "Enhances team visibility"
+    ]
+  },
+  {
+    "slug": "figma",
+    "name": "Figma",
+    "category": "communication",
+    "description": "Seamless integration with Figma to boost your team's productivity.",
+    "how_it_works": "Connect your SpireTrack workspace to Figma to automatically sync data, events, and notifications. Reduce manual work and keep your systems aligned.",
+    "benefits": [
+      "Saves time",
+      "Improves data accuracy",
+      "Enhances team visibility"
+    ]
+  },
+  {
+    "slug": "figma",
+    "name": "Figma",
+    "category": "engineering",
+    "description": "Seamless integration with Figma to boost your team's productivity.",
+    "how_it_works": "Connect your SpireTrack workspace to Figma to automatically sync data, events, and notifications. Reduce manual work and keep your systems aligned.",
+    "benefits": [
+      "Saves time",
+      "Improves data accuracy",
+      "Enhances team visibility"
+    ]
+  },
+  {
+    "slug": "figma",
+    "name": "Figma",
+    "category": "design",
+    "description": "Seamless integration with Figma to boost your team's productivity.",
+    "how_it_works": "Connect your SpireTrack workspace to Figma to automatically sync data, events, and notifications. Reduce manual work and keep your systems aligned.",
+    "benefits": [
+      "Saves time",
+      "Improves data accuracy",
+      "Enhances team visibility"
+    ]
+  },
+  {
+    "slug": "figma",
+    "name": "Figma",
+    "category": "project-management",
+    "description": "Seamless integration with Figma to boost your team's productivity.",
+    "how_it_works": "Connect your SpireTrack workspace to Figma to automatically sync data, events, and notifications. Reduce manual work and keep your systems aligned.",
+    "benefits": [
+      "Saves time",
+      "Improves data accuracy",
+      "Enhances team visibility"
+    ]
+  },
+  {
+    "slug": "figma",
+    "name": "Figma",
+    "category": "documentation",
+    "description": "Seamless integration with Figma to boost your team's productivity.",
+    "how_it_works": "Connect your SpireTrack workspace to Figma to automatically sync data, events, and notifications. Reduce manual work and keep your systems aligned.",
+    "benefits": [
+      "Saves time",
+      "Improves data accuracy",
+      "Enhances team visibility"
+    ]
+  },
+  {
+    "slug": "figma",
+    "name": "Figma",
+    "category": "analytics",
+    "description": "Seamless integration with Figma to boost your team's productivity.",
+    "how_it_works": "Connect your SpireTrack workspace to Figma to automatically sync data, events, and notifications. Reduce manual work and keep your systems aligned.",
+    "benefits": [
+      "Saves time",
+      "Improves data accuracy",
+      "Enhances team visibility"
+    ]
+  },
+  {
+    "slug": "figma",
+    "name": "Figma",
+    "category": "hr",
+    "description": "Seamless integration with Figma to boost your team's productivity.",
+    "how_it_works": "Connect your SpireTrack workspace to Figma to automatically sync data, events, and notifications. Reduce manual work and keep your systems aligned.",
+    "benefits": [
+      "Saves time",
+      "Improves data accuracy",
+      "Enhances team visibility"
+    ]
+  },
+  {
+    "slug": "figma",
+    "name": "Figma",
+    "category": "marketing",
+    "description": "Seamless integration with Figma to boost your team's productivity.",
+    "how_it_works": "Connect your SpireTrack workspace to Figma to automatically sync data, events, and notifications. Reduce manual work and keep your systems aligned.",
+    "benefits": [
+      "Saves time",
+      "Improves data accuracy",
+      "Enhances team visibility"
+    ]
+  },
+  {
+    "slug": "figma",
+    "name": "Figma",
+    "category": "communication",
+    "description": "Seamless integration with Figma to boost your team's productivity.",
+    "how_it_works": "Connect your SpireTrack workspace to Figma to automatically sync data, events, and notifications. Reduce manual work and keep your systems aligned.",
+    "benefits": [
+      "Saves time",
+      "Improves data accuracy",
+      "Enhances team visibility"
+    ]
+  },
+  {
+    "slug": "figma",
+    "name": "Figma",
+    "category": "engineering",
+    "description": "Seamless integration with Figma to boost your team's productivity.",
+    "how_it_works": "Connect your SpireTrack workspace to Figma to automatically sync data, events, and notifications. Reduce manual work and keep your systems aligned.",
+    "benefits": [
+      "Saves time",
+      "Improves data accuracy",
+      "Enhances team visibility"
+    ]
+  },
+  {
+    "slug": "figma",
+    "name": "Figma",
+    "category": "design",
+    "description": "Seamless integration with Figma to boost your team's productivity.",
+    "how_it_works": "Connect your SpireTrack workspace to Figma to automatically sync data, events, and notifications. Reduce manual work and keep your systems aligned.",
+    "benefits": [
+      "Saves time",
+      "Improves data accuracy",
+      "Enhances team visibility"
+    ]
+  },
+  {
+    "slug": "figma",
+    "name": "Figma",
+    "category": "project-management",
+    "description": "Seamless integration with Figma to boost your team's productivity.",
+    "how_it_works": "Connect your SpireTrack workspace to Figma to automatically sync data, events, and notifications. Reduce manual work and keep your systems aligned.",
+    "benefits": [
+      "Saves time",
+      "Improves data accuracy",
+      "Enhances team visibility"
+    ]
+  },
+  {
+    "slug": "figma",
+    "name": "Figma",
+    "category": "documentation",
+    "description": "Seamless integration with Figma to boost your team's productivity.",
+    "how_it_works": "Connect your SpireTrack workspace to Figma to automatically sync data, events, and notifications. Reduce manual work and keep your systems aligned.",
+    "benefits": [
+      "Saves time",
+      "Improves data accuracy",
+      "Enhances team visibility"
+    ]
+  },
+  {
+    "slug": "figma",
+    "name": "Figma",
+    "category": "analytics",
+    "description": "Seamless integration with Figma to boost your team's productivity.",
+    "how_it_works": "Connect your SpireTrack workspace to Figma to automatically sync data, events, and notifications. Reduce manual work and keep your systems aligned.",
+    "benefits": [
+      "Saves time",
+      "Improves data accuracy",
+      "Enhances team visibility"
+    ]
+  },
+  {
+    "slug": "figma",
+    "name": "Figma",
+    "category": "hr",
+    "description": "Seamless integration with Figma to boost your team's productivity.",
+    "how_it_works": "Connect your SpireTrack workspace to Figma to automatically sync data, events, and notifications. Reduce manual work and keep your systems aligned.",
+    "benefits": [
+      "Saves time",
+      "Improves data accuracy",
+      "Enhances team visibility"
+    ]
+  },
+  {
+    "slug": "figma",
+    "name": "Figma",
+    "category": "marketing",
+    "description": "Seamless integration with Figma to boost your team's productivity.",
+    "how_it_works": "Connect your SpireTrack workspace to Figma to automatically sync data, events, and notifications. Reduce manual work and keep your systems aligned.",
+    "benefits": [
+      "Saves time",
+      "Improves data accuracy",
+      "Enhances team visibility"
+    ]
+  },
+  {
+    "slug": "figma",
+    "name": "Figma",
+    "category": "communication",
+    "description": "Seamless integration with Figma to boost your team's productivity.",
+    "how_it_works": "Connect your SpireTrack workspace to Figma to automatically sync data, events, and notifications. Reduce manual work and keep your systems aligned.",
+    "benefits": [
+      "Saves time",
+      "Improves data accuracy",
+      "Enhances team visibility"
+    ]
+  },
+  {
+    "slug": "figma",
+    "name": "Figma",
+    "category": "engineering",
+    "description": "Seamless integration with Figma to boost your team's productivity.",
+    "how_it_works": "Connect your SpireTrack workspace to Figma to automatically sync data, events, and notifications. Reduce manual work and keep your systems aligned.",
+    "benefits": [
+      "Saves time",
+      "Improves data accuracy",
+      "Enhances team visibility"
+    ]
+  },
+  {
+    "slug": "figma",
+    "name": "Figma",
+    "category": "design",
+    "description": "Seamless integration with Figma to boost your team's productivity.",
+    "how_it_works": "Connect your SpireTrack workspace to Figma to automatically sync data, events, and notifications. Reduce manual work and keep your systems aligned.",
+    "benefits": [
+      "Saves time",
+      "Improves data accuracy",
+      "Enhances team visibility"
+    ]
+  },
+  {
+    "slug": "figma",
+    "name": "Figma",
+    "category": "project-management",
+    "description": "Seamless integration with Figma to boost your team's productivity.",
+    "how_it_works": "Connect your SpireTrack workspace to Figma to automatically sync data, events, and notifications. Reduce manual work and keep your systems aligned.",
+    "benefits": [
+      "Saves time",
+      "Improves data accuracy",
+      "Enhances team visibility"
+    ]
+  },
+  {
+    "slug": "figma",
+    "name": "Figma",
+    "category": "documentation",
+    "description": "Seamless integration with Figma to boost your team's productivity.",
+    "how_it_works": "Connect your SpireTrack workspace to Figma to automatically sync data, events, and notifications. Reduce manual work and keep your systems aligned.",
+    "benefits": [
+      "Saves time",
+      "Improves data accuracy",
+      "Enhances team visibility"
+    ]
+  },
+  {
+    "slug": "figma",
+    "name": "Figma",
+    "category": "analytics",
+    "description": "Seamless integration with Figma to boost your team's productivity.",
+    "how_it_works": "Connect your SpireTrack workspace to Figma to automatically sync data, events, and notifications. Reduce manual work and keep your systems aligned.",
+    "benefits": [
+      "Saves time",
+      "Improves data accuracy",
+      "Enhances team visibility"
+    ]
+  },
+  {
+    "slug": "figma",
+    "name": "Figma",
+    "category": "hr",
+    "description": "Seamless integration with Figma to boost your team's productivity.",
+    "how_it_works": "Connect your SpireTrack workspace to Figma to automatically sync data, events, and notifications. Reduce manual work and keep your systems aligned.",
+    "benefits": [
+      "Saves time",
+      "Improves data accuracy",
+      "Enhances team visibility"
+    ]
+  },
+  {
+    "slug": "figma",
+    "name": "Figma",
+    "category": "marketing",
+    "description": "Seamless integration with Figma to boost your team's productivity.",
+    "how_it_works": "Connect your SpireTrack workspace to Figma to automatically sync data, events, and notifications. Reduce manual work and keep your systems aligned.",
+    "benefits": [
+      "Saves time",
+      "Improves data accuracy",
+      "Enhances team visibility"
+    ]
+  },
+  {
+    "slug": "figma",
+    "name": "Figma",
+    "category": "communication",
+    "description": "Seamless integration with Figma to boost your team's productivity.",
+    "how_it_works": "Connect your SpireTrack workspace to Figma to automatically sync data, events, and notifications. Reduce manual work and keep your systems aligned.",
+    "benefits": [
+      "Saves time",
+      "Improves data accuracy",
+      "Enhances team visibility"
+    ]
+  },
+  {
+    "slug": "figma",
+    "name": "Figma",
+    "category": "engineering",
+    "description": "Seamless integration with Figma to boost your team's productivity.",
+    "how_it_works": "Connect your SpireTrack workspace to Figma to automatically sync data, events, and notifications. Reduce manual work and keep your systems aligned.",
+    "benefits": [
+      "Saves time",
+      "Improves data accuracy",
+      "Enhances team visibility"
+    ]
+  },
+  {
+    "slug": "figma",
+    "name": "Figma",
+    "category": "design",
+    "description": "Seamless integration with Figma to boost your team's productivity.",
+    "how_it_works": "Connect your SpireTrack workspace to Figma to automatically sync data, events, and notifications. Reduce manual work and keep your systems aligned.",
+    "benefits": [
+      "Saves time",
+      "Improves data accuracy",
+      "Enhances team visibility"
+    ]
+  },
+  {
+    "slug": "figma",
+    "name": "Figma",
+    "category": "project-management",
+    "description": "Seamless integration with Figma to boost your team's productivity.",
+    "how_it_works": "Connect your SpireTrack workspace to Figma to automatically sync data, events, and notifications. Reduce manual work and keep your systems aligned.",
+    "benefits": [
+      "Saves time",
+      "Improves data accuracy",
+      "Enhances team visibility"
+    ]
+  },
+  {
+    "slug": "figma",
+    "name": "Figma",
+    "category": "documentation",
+    "description": "Seamless integration with Figma to boost your team's productivity.",
+    "how_it_works": "Connect your SpireTrack workspace to Figma to automatically sync data, events, and notifications. Reduce manual work and keep your systems aligned.",
+    "benefits": [
+      "Saves time",
+      "Improves data accuracy",
+      "Enhances team visibility"
+    ]
+  },
+  {
+    "slug": "figma",
+    "name": "Figma",
+    "category": "analytics",
+    "description": "Seamless integration with Figma to boost your team's productivity.",
+    "how_it_works": "Connect your SpireTrack workspace to Figma to automatically sync data, events, and notifications. Reduce manual work and keep your systems aligned.",
+    "benefits": [
+      "Saves time",
+      "Improves data accuracy",
+      "Enhances team visibility"
+    ]
+  },
+  {
+    "slug": "figma",
+    "name": "Figma",
+    "category": "hr",
+    "description": "Seamless integration with Figma to boost your team's productivity.",
+    "how_it_works": "Connect your SpireTrack workspace to Figma to automatically sync data, events, and notifications. Reduce manual work and keep your systems aligned.",
+    "benefits": [
+      "Saves time",
+      "Improves data accuracy",
+      "Enhances team visibility"
+    ]
+  },
+  {
+    "slug": "figma",
+    "name": "Figma",
+    "category": "marketing",
+    "description": "Seamless integration with Figma to boost your team's productivity.",
+    "how_it_works": "Connect your SpireTrack workspace to Figma to automatically sync data, events, and notifications. Reduce manual work and keep your systems aligned.",
+    "benefits": [
+      "Saves time",
+      "Improves data accuracy",
+      "Enhances team visibility"
+    ]
+  },
+  {
+    "slug": "figma",
+    "name": "Figma",
+    "category": "communication",
+    "description": "Seamless integration with Figma to boost your team's productivity.",
+    "how_it_works": "Connect your SpireTrack workspace to Figma to automatically sync data, events, and notifications. Reduce manual work and keep your systems aligned.",
+    "benefits": [
+      "Saves time",
+      "Improves data accuracy",
+      "Enhances team visibility"
+    ]
+  },
+  {
+    "slug": "figma",
+    "name": "Figma",
+    "category": "engineering",
+    "description": "Seamless integration with Figma to boost your team's productivity.",
+    "how_it_works": "Connect your SpireTrack workspace to Figma to automatically sync data, events, and notifications. Reduce manual work and keep your systems aligned.",
+    "benefits": [
+      "Saves time",
+      "Improves data accuracy",
+      "Enhances team visibility"
+    ]
+  },
+  {
+    "slug": "figma",
+    "name": "Figma",
+    "category": "design",
+    "description": "Seamless integration with Figma to boost your team's productivity.",
+    "how_it_works": "Connect your SpireTrack workspace to Figma to automatically sync data, events, and notifications. Reduce manual work and keep your systems aligned.",
+    "benefits": [
+      "Saves time",
+      "Improves data accuracy",
+      "Enhances team visibility"
+    ]
+  },
+  {
+    "slug": "figma",
+    "name": "Figma",
+    "category": "project-management",
+    "description": "Seamless integration with Figma to boost your team's productivity.",
+    "how_it_works": "Connect your SpireTrack workspace to Figma to automatically sync data, events, and notifications. Reduce manual work and keep your systems aligned.",
+    "benefits": [
+      "Saves time",
+      "Improves data accuracy",
+      "Enhances team visibility"
+    ]
+  },
+  {
+    "slug": "figma",
+    "name": "Figma",
+    "category": "documentation",
+    "description": "Seamless integration with Figma to boost your team's productivity.",
+    "how_it_works": "Connect your SpireTrack workspace to Figma to automatically sync data, events, and notifications. Reduce manual work and keep your systems aligned.",
+    "benefits": [
+      "Saves time",
+      "Improves data accuracy",
+      "Enhances team visibility"
+    ]
+  },
+  {
+    "slug": "figma",
+    "name": "Figma",
+    "category": "analytics",
+    "description": "Seamless integration with Figma to boost your team's productivity.",
+    "how_it_works": "Connect your SpireTrack workspace to Figma to automatically sync data, events, and notifications. Reduce manual work and keep your systems aligned.",
+    "benefits": [
+      "Saves time",
+      "Improves data accuracy",
+      "Enhances team visibility"
+    ]
+  },
+  {
+    "slug": "figma",
+    "name": "Figma",
+    "category": "hr",
+    "description": "Seamless integration with Figma to boost your team's productivity.",
+    "how_it_works": "Connect your SpireTrack workspace to Figma to automatically sync data, events, and notifications. Reduce manual work and keep your systems aligned.",
+    "benefits": [
+      "Saves time",
+      "Improves data accuracy",
+      "Enhances team visibility"
+    ]
+  },
+  {
+    "slug": "figma",
+    "name": "Figma",
+    "category": "marketing",
+    "description": "Seamless integration with Figma to boost your team's productivity.",
+    "how_it_works": "Connect your SpireTrack workspace to Figma to automatically sync data, events, and notifications. Reduce manual work and keep your systems aligned.",
+    "benefits": [
+      "Saves time",
+      "Improves data accuracy",
+      "Enhances team visibility"
+    ]
+  },
+  {
+    "slug": "figma",
+    "name": "Figma",
+    "category": "communication",
+    "description": "Seamless integration with Figma to boost your team's productivity.",
+    "how_it_works": "Connect your SpireTrack workspace to Figma to automatically sync data, events, and notifications. Reduce manual work and keep your systems aligned.",
+    "benefits": [
+      "Saves time",
+      "Improves data accuracy",
+      "Enhances team visibility"
+    ]
+  },
+  {
+    "slug": "figma",
+    "name": "Figma",
+    "category": "engineering",
+    "description": "Seamless integration with Figma to boost your team's productivity.",
+    "how_it_works": "Connect your SpireTrack workspace to Figma to automatically sync data, events, and notifications. Reduce manual work and keep your systems aligned.",
+    "benefits": [
+      "Saves time",
+      "Improves data accuracy",
+      "Enhances team visibility"
+    ]
+  },
+  {
+    "slug": "figma",
+    "name": "Figma",
+    "category": "design",
+    "description": "Seamless integration with Figma to boost your team's productivity.",
+    "how_it_works": "Connect your SpireTrack workspace to Figma to automatically sync data, events, and notifications. Reduce manual work and keep your systems aligned.",
+    "benefits": [
+      "Saves time",
+      "Improves data accuracy",
+      "Enhances team visibility"
+    ]
+  },
+  {
+    "slug": "figma",
+    "name": "Figma",
+    "category": "project-management",
+    "description": "Seamless integration with Figma to boost your team's productivity.",
+    "how_it_works": "Connect your SpireTrack workspace to Figma to automatically sync data, events, and notifications. Reduce manual work and keep your systems aligned.",
+    "benefits": [
+      "Saves time",
+      "Improves data accuracy",
+      "Enhances team visibility"
+    ]
+  },
+  {
+    "slug": "figma",
+    "name": "Figma",
+    "category": "documentation",
+    "description": "Seamless integration with Figma to boost your team's productivity.",
+    "how_it_works": "Connect your SpireTrack workspace to Figma to automatically sync data, events, and notifications. Reduce manual work and keep your systems aligned.",
+    "benefits": [
+      "Saves time",
+      "Improves data accuracy",
+      "Enhances team visibility"
+    ]
+  },
+  {
+    "slug": "figma",
+    "name": "Figma",
+    "category": "analytics",
+    "description": "Seamless integration with Figma to boost your team's productivity.",
+    "how_it_works": "Connect your SpireTrack workspace to Figma to automatically sync data, events, and notifications. Reduce manual work and keep your systems aligned.",
+    "benefits": [
+      "Saves time",
+      "Improves data accuracy",
+      "Enhances team visibility"
+    ]
+  },
+  {
+    "slug": "figma",
+    "name": "Figma",
+    "category": "hr",
+    "description": "Seamless integration with Figma to boost your team's productivity.",
+    "how_it_works": "Connect your SpireTrack workspace to Figma to automatically sync data, events, and notifications. Reduce manual work and keep your systems aligned.",
+    "benefits": [
+      "Saves time",
+      "Improves data accuracy",
+      "Enhances team visibility"
+    ]
+  },
+  {
+    "slug": "figma",
+    "name": "Figma",
+    "category": "marketing",
+    "description": "Seamless integration with Figma to boost your team's productivity.",
+    "how_it_works": "Connect your SpireTrack workspace to Figma to automatically sync data, events, and notifications. Reduce manual work and keep your systems aligned.",
+    "benefits": [
+      "Saves time",
+      "Improves data accuracy",
+      "Enhances team visibility"
+    ]
+  },
+  {
+    "slug": "figma",
+    "name": "Figma",
+    "category": "communication",
+    "description": "Seamless integration with Figma to boost your team's productivity.",
+    "how_it_works": "Connect your SpireTrack workspace to Figma to automatically sync data, events, and notifications. Reduce manual work and keep your systems aligned.",
+    "benefits": [
+      "Saves time",
+      "Improves data accuracy",
+      "Enhances team visibility"
+    ]
+  },
+  {
+    "slug": "figma",
+    "name": "Figma",
+    "category": "engineering",
+    "description": "Seamless integration with Figma to boost your team's productivity.",
+    "how_it_works": "Connect your SpireTrack workspace to Figma to automatically sync data, events, and notifications. Reduce manual work and keep your systems aligned.",
+    "benefits": [
+      "Saves time",
+      "Improves data accuracy",
+      "Enhances team visibility"
+    ]
+  },
+  {
+    "slug": "figma",
+    "name": "Figma",
+    "category": "design",
+    "description": "Seamless integration with Figma to boost your team's productivity.",
+    "how_it_works": "Connect your SpireTrack workspace to Figma to automatically sync data, events, and notifications. Reduce manual work and keep your systems aligned.",
+    "benefits": [
+      "Saves time",
+      "Improves data accuracy",
+      "Enhances team visibility"
+    ]
+  },
+  {
+    "slug": "figma",
+    "name": "Figma",
+    "category": "project-management",
+    "description": "Seamless integration with Figma to boost your team's productivity.",
+    "how_it_works": "Connect your SpireTrack workspace to Figma to automatically sync data, events, and notifications. Reduce manual work and keep your systems aligned.",
+    "benefits": [
+      "Saves time",
+      "Improves data accuracy",
+      "Enhances team visibility"
+    ]
+  },
+  {
+    "slug": "figma",
+    "name": "Figma",
+    "category": "documentation",
+    "description": "Seamless integration with Figma to boost your team's productivity.",
+    "how_it_works": "Connect your SpireTrack workspace to Figma to automatically sync data, events, and notifications. Reduce manual work and keep your systems aligned.",
+    "benefits": [
+      "Saves time",
+      "Improves data accuracy",
+      "Enhances team visibility"
+    ]
+  },
+  {
+    "slug": "figma",
+    "name": "Figma",
+    "category": "analytics",
+    "description": "Seamless integration with Figma to boost your team's productivity.",
+    "how_it_works": "Connect your SpireTrack workspace to Figma to automatically sync data, events, and notifications. Reduce manual work and keep your systems aligned.",
+    "benefits": [
+      "Saves time",
+      "Improves data accuracy",
+      "Enhances team visibility"
+    ]
+  },
+  {
+    "slug": "figma",
+    "name": "Figma",
+    "category": "hr",
+    "description": "Seamless integration with Figma to boost your team's productivity.",
+    "how_it_works": "Connect your SpireTrack workspace to Figma to automatically sync data, events, and notifications. Reduce manual work and keep your systems aligned.",
+    "benefits": [
+      "Saves time",
+      "Improves data accuracy",
+      "Enhances team visibility"
+    ]
+  },
+  {
+    "slug": "figma",
+    "name": "Figma",
+    "category": "marketing",
+    "description": "Seamless integration with Figma to boost your team's productivity.",
+    "how_it_works": "Connect your SpireTrack workspace to Figma to automatically sync data, events, and notifications. Reduce manual work and keep your systems aligned.",
+    "benefits": [
+      "Saves time",
+      "Improves data accuracy",
+      "Enhances team visibility"
+    ]
+  },
+  {
+    "slug": "figma",
+    "name": "Figma",
+    "category": "communication",
+    "description": "Seamless integration with Figma to boost your team's productivity.",
+    "how_it_works": "Connect your SpireTrack workspace to Figma to automatically sync data, events, and notifications. Reduce manual work and keep your systems aligned.",
+    "benefits": [
+      "Saves time",
+      "Improves data accuracy",
+      "Enhances team visibility"
+    ]
+  },
+  {
+    "slug": "figma",
+    "name": "Figma",
+    "category": "engineering",
+    "description": "Seamless integration with Figma to boost your team's productivity.",
+    "how_it_works": "Connect your SpireTrack workspace to Figma to automatically sync data, events, and notifications. Reduce manual work and keep your systems aligned.",
+    "benefits": [
+      "Saves time",
+      "Improves data accuracy",
+      "Enhances team visibility"
+    ]
+  },
+  {
+    "slug": "figma",
+    "name": "Figma",
+    "category": "design",
+    "description": "Seamless integration with Figma to boost your team's productivity.",
+    "how_it_works": "Connect your SpireTrack workspace to Figma to automatically sync data, events, and notifications. Reduce manual work and keep your systems aligned.",
+    "benefits": [
+      "Saves time",
+      "Improves data accuracy",
+      "Enhances team visibility"
+    ]
+  },
+  {
+    "slug": "figma",
+    "name": "Figma",
+    "category": "project-management",
+    "description": "Seamless integration with Figma to boost your team's productivity.",
+    "how_it_works": "Connect your SpireTrack workspace to Figma to automatically sync data, events, and notifications. Reduce manual work and keep your systems aligned.",
+    "benefits": [
+      "Saves time",
+      "Improves data accuracy",
+      "Enhances team visibility"
+    ]
+  },
+  {
+    "slug": "figma",
+    "name": "Figma",
+    "category": "documentation",
+    "description": "Seamless integration with Figma to boost your team's productivity.",
+    "how_it_works": "Connect your SpireTrack workspace to Figma to automatically sync data, events, and notifications. Reduce manual work and keep your systems aligned.",
+    "benefits": [
+      "Saves time",
+      "Improves data accuracy",
+      "Enhances team visibility"
+    ]
+  },
+  {
+    "slug": "figma",
+    "name": "Figma",
+    "category": "analytics",
+    "description": "Seamless integration with Figma to boost your team's productivity.",
+    "how_it_works": "Connect your SpireTrack workspace to Figma to automatically sync data, events, and notifications. Reduce manual work and keep your systems aligned.",
+    "benefits": [
+      "Saves time",
+      "Improves data accuracy",
+      "Enhances team visibility"
+    ]
+  },
+  {
+    "slug": "figma",
+    "name": "Figma",
+    "category": "hr",
+    "description": "Seamless integration with Figma to boost your team's productivity.",
+    "how_it_works": "Connect your SpireTrack workspace to Figma to automatically sync data, events, and notifications. Reduce manual work and keep your systems aligned.",
+    "benefits": [
+      "Saves time",
+      "Improves data accuracy",
+      "Enhances team visibility"
+    ]
+  },
+  {
+    "slug": "figma",
+    "name": "Figma",
+    "category": "marketing",
+    "description": "Seamless integration with Figma to boost your team's productivity.",
+    "how_it_works": "Connect your SpireTrack workspace to Figma to automatically sync data, events, and notifications. Reduce manual work and keep your systems aligned.",
+    "benefits": [
+      "Saves time",
+      "Improves data accuracy",
+      "Enhances team visibility"
+    ]
+  },
+  {
+    "slug": "figma",
+    "name": "Figma",
+    "category": "communication",
+    "description": "Seamless integration with Figma to boost your team's productivity.",
+    "how_it_works": "Connect your SpireTrack workspace to Figma to automatically sync data, events, and notifications. Reduce manual work and keep your systems aligned.",
+    "benefits": [
+      "Saves time",
+      "Improves data accuracy",
+      "Enhances team visibility"
+    ]
+  },
+  {
+    "slug": "figma",
+    "name": "Figma",
+    "category": "engineering",
+    "description": "Seamless integration with Figma to boost your team's productivity.",
+    "how_it_works": "Connect your SpireTrack workspace to Figma to automatically sync data, events, and notifications. Reduce manual work and keep your systems aligned.",
+    "benefits": [
+      "Saves time",
+      "Improves data accuracy",
+      "Enhances team visibility"
+    ]
+  },
+  {
+    "slug": "figma",
+    "name": "Figma",
+    "category": "design",
+    "description": "Seamless integration with Figma to boost your team's productivity.",
+    "how_it_works": "Connect your SpireTrack workspace to Figma to automatically sync data, events, and notifications. Reduce manual work and keep your systems aligned.",
+    "benefits": [
+      "Saves time",
+      "Improves data accuracy",
+      "Enhances team visibility"
+    ]
+  },
+  {
+    "slug": "figma",
+    "name": "Figma",
+    "category": "project-management",
+    "description": "Seamless integration with Figma to boost your team's productivity.",
+    "how_it_works": "Connect your SpireTrack workspace to Figma to automatically sync data, events, and notifications. Reduce manual work and keep your systems aligned.",
+    "benefits": [
+      "Saves time",
+      "Improves data accuracy",
+      "Enhances team visibility"
+    ]
+  },
+  {
+    "slug": "figma",
+    "name": "Figma",
+    "category": "documentation",
+    "description": "Seamless integration with Figma to boost your team's productivity.",
+    "how_it_works": "Connect your SpireTrack workspace to Figma to automatically sync data, events, and notifications. Reduce manual work and keep your systems aligned.",
+    "benefits": [
+      "Saves time",
+      "Improves data accuracy",
+      "Enhances team visibility"
+    ]
+  },
+  {
+    "slug": "figma",
+    "name": "Figma",
+    "category": "analytics",
+    "description": "Seamless integration with Figma to boost your team's productivity.",
+    "how_it_works": "Connect your SpireTrack workspace to Figma to automatically sync data, events, and notifications. Reduce manual work and keep your systems aligned.",
+    "benefits": [
+      "Saves time",
+      "Improves data accuracy",
+      "Enhances team visibility"
+    ]
+  },
+  {
+    "slug": "figma",
+    "name": "Figma",
+    "category": "hr",
+    "description": "Seamless integration with Figma to boost your team's productivity.",
+    "how_it_works": "Connect your SpireTrack workspace to Figma to automatically sync data, events, and notifications. Reduce manual work and keep your systems aligned.",
+    "benefits": [
+      "Saves time",
+      "Improves data accuracy",
+      "Enhances team visibility"
+    ]
+  },
+  {
+    "slug": "figma",
+    "name": "Figma",
+    "category": "marketing",
+    "description": "Seamless integration with Figma to boost your team's productivity.",
+    "how_it_works": "Connect your SpireTrack workspace to Figma to automatically sync data, events, and notifications. Reduce manual work and keep your systems aligned.",
+    "benefits": [
+      "Saves time",
+      "Improves data accuracy",
+      "Enhances team visibility"
+    ]
+  },
+  {
+    "slug": "figma",
+    "name": "Figma",
+    "category": "communication",
+    "description": "Seamless integration with Figma to boost your team's productivity.",
+    "how_it_works": "Connect your SpireTrack workspace to Figma to automatically sync data, events, and notifications. Reduce manual work and keep your systems aligned.",
+    "benefits": [
+      "Saves time",
+      "Improves data accuracy",
+      "Enhances team visibility"
+    ]
+  },
+  {
+    "slug": "figma",
+    "name": "Figma",
+    "category": "engineering",
+    "description": "Seamless integration with Figma to boost your team's productivity.",
+    "how_it_works": "Connect your SpireTrack workspace to Figma to automatically sync data, events, and notifications. Reduce manual work and keep your systems aligned.",
+    "benefits": [
+      "Saves time",
+      "Improves data accuracy",
+      "Enhances team visibility"
+    ]
+  },
+  {
+    "slug": "figma",
+    "name": "Figma",
+    "category": "design",
+    "description": "Seamless integration with Figma to boost your team's productivity.",
+    "how_it_works": "Connect your SpireTrack workspace to Figma to automatically sync data, events, and notifications. Reduce manual work and keep your systems aligned.",
+    "benefits": [
+      "Saves time",
+      "Improves data accuracy",
+      "Enhances team visibility"
+    ]
+  },
+  {
+    "slug": "figma",
+    "name": "Figma",
+    "category": "project-management",
+    "description": "Seamless integration with Figma to boost your team's productivity.",
+    "how_it_works": "Connect your SpireTrack workspace to Figma to automatically sync data, events, and notifications. Reduce manual work and keep your systems aligned.",
+    "benefits": [
+      "Saves time",
+      "Improves data accuracy",
+      "Enhances team visibility"
+    ]
+  },
+  {
+    "slug": "figma",
+    "name": "Figma",
+    "category": "documentation",
+    "description": "Seamless integration with Figma to boost your team's productivity.",
+    "how_it_works": "Connect your SpireTrack workspace to Figma to automatically sync data, events, and notifications. Reduce manual work and keep your systems aligned.",
+    "benefits": [
+      "Saves time",
+      "Improves data accuracy",
+      "Enhances team visibility"
+    ]
+  },
+  {
+    "slug": "figma",
+    "name": "Figma",
+    "category": "analytics",
+    "description": "Seamless integration with Figma to boost your team's productivity.",
+    "how_it_works": "Connect your SpireTrack workspace to Figma to automatically sync data, events, and notifications. Reduce manual work and keep your systems aligned.",
+    "benefits": [
+      "Saves time",
+      "Improves data accuracy",
+      "Enhances team visibility"
+    ]
+  },
+  {
+    "slug": "figma",
+    "name": "Figma",
+    "category": "hr",
+    "description": "Seamless integration with Figma to boost your team's productivity.",
+    "how_it_works": "Connect your SpireTrack workspace to Figma to automatically sync data, events, and notifications. Reduce manual work and keep your systems aligned.",
+    "benefits": [
+      "Saves time",
+      "Improves data accuracy",
+      "Enhances team visibility"
+    ]
+  },
+  {
+    "slug": "figma",
+    "name": "Figma",
+    "category": "marketing",
+    "description": "Seamless integration with Figma to boost your team's productivity.",
+    "how_it_works": "Connect your SpireTrack workspace to Figma to automatically sync data, events, and notifications. Reduce manual work and keep your systems aligned.",
+    "benefits": [
+      "Saves time",
+      "Improves data accuracy",
+      "Enhances team visibility"
+    ]
+  },
+  {
+    "slug": "figma",
+    "name": "Figma",
+    "category": "communication",
+    "description": "Seamless integration with Figma to boost your team's productivity.",
+    "how_it_works": "Connect your SpireTrack workspace to Figma to automatically sync data, events, and notifications. Reduce manual work and keep your systems aligned.",
+    "benefits": [
+      "Saves time",
+      "Improves data accuracy",
+      "Enhances team visibility"
+    ]
+  },
+  {
+    "slug": "figma",
+    "name": "Figma",
+    "category": "engineering",
+    "description": "Seamless integration with Figma to boost your team's productivity.",
+    "how_it_works": "Connect your SpireTrack workspace to Figma to automatically sync data, events, and notifications. Reduce manual work and keep your systems aligned.",
+    "benefits": [
+      "Saves time",
+      "Improves data accuracy",
+      "Enhances team visibility"
+    ]
+  },
+  {
+    "slug": "figma",
+    "name": "Figma",
+    "category": "design",
+    "description": "Seamless integration with Figma to boost your team's productivity.",
+    "how_it_works": "Connect your SpireTrack workspace to Figma to automatically sync data, events, and notifications. Reduce manual work and keep your systems aligned.",
+    "benefits": [
+      "Saves time",
+      "Improves data accuracy",
+      "Enhances team visibility"
+    ]
+  },
+  {
+    "slug": "figma",
+    "name": "Figma",
+    "category": "project-management",
+    "description": "Seamless integration with Figma to boost your team's productivity.",
+    "how_it_works": "Connect your SpireTrack workspace to Figma to automatically sync data, events, and notifications. Reduce manual work and keep your systems aligned.",
+    "benefits": [
+      "Saves time",
+      "Improves data accuracy",
+      "Enhances team visibility"
+    ]
+  },
+  {
+    "slug": "figma",
+    "name": "Figma",
+    "category": "documentation",
+    "description": "Seamless integration with Figma to boost your team's productivity.",
+    "how_it_works": "Connect your SpireTrack workspace to Figma to automatically sync data, events, and notifications. Reduce manual work and keep your systems aligned.",
+    "benefits": [
+      "Saves time",
+      "Improves data accuracy",
+      "Enhances team visibility"
+    ]
+  },
+  {
+    "slug": "figma",
+    "name": "Figma",
+    "category": "analytics",
+    "description": "Seamless integration with Figma to boost your team's productivity.",
+    "how_it_works": "Connect your SpireTrack workspace to Figma to automatically sync data, events, and notifications. Reduce manual work and keep your systems aligned.",
+    "benefits": [
+      "Saves time",
+      "Improves data accuracy",
+      "Enhances team visibility"
+    ]
+  },
+  {
+    "slug": "figma",
+    "name": "Figma",
+    "category": "hr",
+    "description": "Seamless integration with Figma to boost your team's productivity.",
+    "how_it_works": "Connect your SpireTrack workspace to Figma to automatically sync data, events, and notifications. Reduce manual work and keep your systems aligned.",
+    "benefits": [
+      "Saves time",
+      "Improves data accuracy",
+      "Enhances team visibility"
+    ]
+  },
+  {
+    "slug": "figma",
+    "name": "Figma",
+    "category": "marketing",
+    "description": "Seamless integration with Figma to boost your team's productivity.",
+    "how_it_works": "Connect your SpireTrack workspace to Figma to automatically sync data, events, and notifications. Reduce manual work and keep your systems aligned.",
+    "benefits": [
+      "Saves time",
+      "Improves data accuracy",
+      "Enhances team visibility"
+    ]
+  },
+  {
+    "slug": "figma",
+    "name": "Figma",
+    "category": "communication",
+    "description": "Seamless integration with Figma to boost your team's productivity.",
+    "how_it_works": "Connect your SpireTrack workspace to Figma to automatically sync data, events, and notifications. Reduce manual work and keep your systems aligned.",
+    "benefits": [
+      "Saves time",
+      "Improves data accuracy",
+      "Enhances team visibility"
+    ]
+  },
+  {
+    "slug": "figma",
+    "name": "Figma",
+    "category": "engineering",
+    "description": "Seamless integration with Figma to boost your team's productivity.",
+    "how_it_works": "Connect your SpireTrack workspace to Figma to automatically sync data, events, and notifications. Reduce manual work and keep your systems aligned.",
+    "benefits": [
+      "Saves time",
+      "Improves data accuracy",
+      "Enhances team visibility"
+    ]
+  },
+  {
+    "slug": "figma",
+    "name": "Figma",
+    "category": "design",
+    "description": "Seamless integration with Figma to boost your team's productivity.",
+    "how_it_works": "Connect your SpireTrack workspace to Figma to automatically sync data, events, and notifications. Reduce manual work and keep your systems aligned.",
+    "benefits": [
+      "Saves time",
+      "Improves data accuracy",
+      "Enhances team visibility"
+    ]
+  },
+  {
+    "slug": "figma",
+    "name": "Figma",
+    "category": "project-management",
+    "description": "Seamless integration with Figma to boost your team's productivity.",
+    "how_it_works": "Connect your SpireTrack workspace to Figma to automatically sync data, events, and notifications. Reduce manual work and keep your systems aligned.",
+    "benefits": [
+      "Saves time",
+      "Improves data accuracy",
+      "Enhances team visibility"
+    ]
+  }
+]

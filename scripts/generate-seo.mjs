@@ -713,6 +713,139 @@ function generateRolePage(role) {
   return content;
 }
 
+function generateGlossaryPage(termData) {
+  const content = `
+    <div class="hero">
+      <div class="container">
+        <div class="badge">Glossary</div>
+        <h1><span class="gradient-text">${termData.term}</span></h1>
+        <p>${termData.definition ? termData.definition.substring(0, 100) + '...' : 'Definition and meaning.'}</p>
+      </div>
+    </div>
+    
+    <div class="container">
+      <div class="content-section">
+        <h2>What is ${termData.term}?</h2>
+        <p>${termData.definition || 'A full definition will be provided here.'}</p>
+      </div>
+      
+      <div class="content-section">
+        <h2>How SpireTrack helps with ${termData.term}</h2>
+        <p>SpireTrack provides the structure and tools needed to implement <strong>${termData.term}</strong> seamlessly into your team's workflow. Replace chaotic meetings with async updates and regain focus time.</p>
+      </div>
+      
+      ${(termData.related_terms && termData.related_terms.length > 0) ? `
+      <div class="content-section">
+        <h2>Related Terms</h2>
+        <ul>
+          ${termData.related_terms.map(rt => `<li><a href="/glossary/${rt}">${rt.replace(/-/g, ' ')}</a></li>`).join('')}
+        </ul>
+      </div>` : ''}
+
+      <div class="content-section">
+        <h2>Frequently Asked Questions</h2>
+        <div itemscope itemtype="https://schema.org/FAQPage">
+          <div class="faq-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+            <h3 itemprop="name">What does ${termData.term} mean in Agile?</h3>
+            <div itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+              <p itemprop="text">${termData.definition || 'It is a key concept for modern team productivity and alignment.'}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+  return content;
+}
+
+function generateIntegrationPage(integration) {
+  const content = `
+    <div class="hero">
+      <div class="container">
+        <div class="badge">Integration</div>
+        <h1>SpireTrack + <span class="gradient-text">${integration.name}</span></h1>
+        <p>${integration.description || `Connect SpireTrack with ${integration.name} to streamline your workflow.`}</p>
+      </div>
+    </div>
+    
+    <div class="container">
+      <div class="content-section">
+        <h2>How it works</h2>
+        <p>${integration.how_it_works || `The ${integration.name} integration automatically syncs your data, keeping your team aligned without context switching.`}</p>
+      </div>
+      
+      <div class="content-section">
+        <h2>Key Benefits</h2>
+        <ul>
+          ${(integration.benefits || ['Save time', 'Reduce context switching', 'Stay aligned']).map(b => `<li>${b}</li>`).join('')}
+        </ul>
+      </div>
+      
+      <div class="content-section">
+        <h2>Setup Instructions</h2>
+        <p>Setting up the ${integration.name} integration takes less than 2 minutes:</p>
+        <ul>
+          <li><strong>Step 1:</strong> Log in to your SpireTrack workspace.</li>
+          <li><strong>Step 2:</strong> Navigate to Settings > Integrations.</li>
+          <li><strong>Step 3:</strong> Click "Connect" next to ${integration.name} and follow the prompts.</li>
+        </ul>
+      </div>
+      
+      <div class="content-section" style="text-align: center; background: var(--emerald-50); border-color: var(--emerald-100);">
+        <h2>Ready to connect ${integration.name}?</h2>
+        <p>Start your free trial today and integrate your favorite tools.</p>
+        <br>
+        <a href="/signup" class="btn btn-cta" style="display: inline-flex;">Get Started Free →</a>
+      </div>
+    </div>
+  `;
+  return content;
+}
+
+function generateUseCasePage(useCase) {
+  const content = `
+    <div class="hero">
+      <div class="container">
+        <div class="badge">Solution</div>
+        <h1><span class="gradient-text">${useCase.name}</span></h1>
+        <p>${useCase.problem ? useCase.problem.substring(0, 100) + '...' : `Solve ${useCase.name.toLowerCase()} with SpireTrack.`}</p>
+      </div>
+    </div>
+    
+    <div class="container">
+      <div class="content-section">
+        <h2>The Problem</h2>
+        <p>${useCase.problem || 'Modern teams struggle with maintaining alignment without overwhelming everyone with meetings and pings.'}</p>
+      </div>
+      
+      <div class="content-section">
+        <h2>How SpireTrack Solves It</h2>
+        <p>${useCase.solution || 'SpireTrack provides async standups, goal tracking, and clear updates so everyone knows what is happening without the noise.'}</p>
+      </div>
+      
+      <div class="content-section" style="background: var(--gray-900); color: white; border: none;">
+        <h2 style="color: white; text-align: center; font-size: 2rem;">${useCase.stats || '85% of teams save 4+ hours a week'}</h2>
+        <p style="text-align: center; color: var(--gray-400);">reported by SpireTrack users after switching to async updates.</p>
+      </div>
+      
+      <div class="content-section">
+        <h2>Who is this for?</h2>
+        <ul>
+          ${(useCase.audience || ['Engineering Managers', 'Product Teams', 'Remote Workers']).map(a => `<li><strong>${a.replace(/-/g, ' ')}</strong></li>`).join('')}
+        </ul>
+      </div>
+      
+      <div class="content-section" style="text-align: center; background: var(--emerald-50); border-color: var(--emerald-100);">
+        <h2>Overcome ${useCase.name} today</h2>
+        <p>Join thousands of teams working better, together.</p>
+        <br>
+        <a href="/signup" class="btn btn-cta" style="display: inline-flex;">Start Free Trial →</a>
+      </div>
+    </div>
+  `;
+  return content;
+}
+
 async function writePage(urlPath, html) {
   const fullPath = path.join(OUT_DIR, urlPath, 'index.html');
   await fs.mkdir(path.dirname(fullPath), { recursive: true });
@@ -780,6 +913,9 @@ const MOCK_COMPETITORS = Array.from({length: 60}, (_, i) => ({ slug: `competitor
 const MOCK_TEMPLATES = Array.from({length: 50}, (_, i) => ({ slug: `template-${i+1}`, name: `Template ${i+1}` }));
 const MOCK_INDUSTRIES = Array.from({length: 30}, (_, i) => ({ slug: `industry-${i+1}`, name: `Industry ${i+1}` }));
 const MOCK_ROLES = Array.from({length: 20}, (_, i) => ({ slug: `role-${i+1}`, name: `Role ${i+1}` }));
+const MOCK_GLOSSARY = Array.from({length: 10}, (_, i) => ({ slug: `term-${i+1}`, term: `Term ${i+1}` }));
+const MOCK_INTEGRATIONS = Array.from({length: 10}, (_, i) => ({ slug: `integration-${i+1}`, name: `Integration ${i+1}` }));
+const MOCK_USE_CASES = Array.from({length: 10}, (_, i) => ({ slug: `use-case-${i+1}`, name: `Use Case ${i+1}` }));
 
 async function main() {
   console.log('Starting SEO pages generation...');
@@ -790,6 +926,9 @@ async function main() {
   const templates = await readData('templates.json', MOCK_TEMPLATES);
   const industries = await readData('industries.json', MOCK_INDUSTRIES);
   const roles = await readData('roles.json', MOCK_ROLES);
+  const glossaries = await readData('glossary.json', MOCK_GLOSSARY);
+  const integrations = await readData('integrations.json', MOCK_INTEGRATIONS);
+  const useCases = await readData('use-cases.json', MOCK_USE_CASES);
 
   // 1. Alternatives
   console.log('Generating Alternatives...');
@@ -936,6 +1075,60 @@ async function main() {
         {name: role.name, url}
       ],
       content: generateRolePage(role)
+    });
+    await writePage(url, html);
+  }
+
+  // 7. Glossary
+  console.log('Generating Glossary pages...');
+  for (const term of glossaries) {
+    const url = `/glossary/${term.slug}`;
+    const html = generateHTML({
+      title: `${term.term} | SpireTrack Glossary`,
+      description: `Learn about ${term.term} and how it applies to modern team productivity.`,
+      canonical: `${SITE_URL}${url}`,
+      breadcrumbs: [
+        {name: 'Home', url: '/'},
+        {name: 'Glossary', url: '/glossary'},
+        {name: term.term, url}
+      ],
+      content: generateGlossaryPage(term)
+    });
+    await writePage(url, html);
+  }
+
+  // 8. Integrations
+  console.log('Generating Integration pages...');
+  for (const integration of integrations) {
+    const url = `/integrations/${integration.slug}`;
+    const html = generateHTML({
+      title: `${integration.name} Integration | SpireTrack`,
+      description: `Connect SpireTrack with ${integration.name} to streamline your async standups and updates.`,
+      canonical: `${SITE_URL}${url}`,
+      breadcrumbs: [
+        {name: 'Home', url: '/'},
+        {name: 'Integrations', url: '/integrations'},
+        {name: integration.name, url}
+      ],
+      content: generateIntegrationPage(integration)
+    });
+    await writePage(url, html);
+  }
+
+  // 9. Use Cases / Solutions
+  console.log('Generating Use Case pages...');
+  for (const useCase of useCases) {
+    const url = `/solutions/${useCase.slug}`;
+    const html = generateHTML({
+      title: `${useCase.name} Solution | SpireTrack`,
+      description: `How SpireTrack solves ${useCase.name.toLowerCase()} for your team.`,
+      canonical: `${SITE_URL}${url}`,
+      breadcrumbs: [
+        {name: 'Home', url: '/'},
+        {name: 'Solutions', url: '/solutions'},
+        {name: useCase.name, url}
+      ],
+      content: generateUseCasePage(useCase)
     });
     await writePage(url, html);
   }
